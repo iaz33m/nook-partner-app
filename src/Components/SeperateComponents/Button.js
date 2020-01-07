@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
-import { Button as NativeButton } from 'native-base';
+import { StyleSheet } from 'react-native';
+import { Button as NativeButton, Text, View } from 'native-base';
 
 
 const Button = (props) => {
@@ -10,30 +10,27 @@ const Button = (props) => {
   let labelStyle = (style) ? style.labelStyle || {} : {};
 
   return (
-    <NativeButton {...props} style={{ ...styles.buttonStyle, ...buttonStyle }}>
-      <Text style={{ ...styles.labelStyle, ...labelStyle }}>{children}</Text>
-    </NativeButton>
+    <View style={{ paddingStart: 30, paddingEnd: 30 }}>
+      <NativeButton warning full rounded  {...props} style={{ ...styles.buttonStyle, ...buttonStyle }}>
+        <Text style={{ ...styles.labelStyle, ...labelStyle }}>{children}</Text>
+      </NativeButton>
+    </View>
   );
 };
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
   buttonStyle: {
-    backgroundColor: 'gray',
     marginTop: 20,
-    width: 200,
+    width: "100%",
+    alignItems: 'center',
     alignContent: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
   },
   labelStyle: {
     color: 'white',
+    alignSelf: 'center'
   },
 
 });

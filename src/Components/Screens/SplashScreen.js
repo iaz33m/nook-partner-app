@@ -2,21 +2,22 @@ import React from 'react';
 
 import { connect } from "react-redux";
 
-import { StyleSheet, Text, View,Image } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import * as NavigationService from '../../NavigationService'
 
 class SplashScreen extends React.Component {
 
 
-  componentDidMount(){
-    
-    const {user,navigation} = this.props;
+  componentDidMount() {
 
-    const {navigate} = navigation;
+    const { user, navigation } = this.props;
 
-    let screen = (!user) ? "HomeScreen":"LoginScreen";
-    
-    setTimeout(()=>{
-      navigate(screen);
+
+    let screen = (user) ? "HomeScreen" : "LoginScreen";
+
+    setTimeout(() => {
+      console.log("load done")
+      NavigationService.navigateAndResetStack(screen);
     }, 2000); // 2 sec
 
   }

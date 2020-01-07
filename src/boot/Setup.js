@@ -12,6 +12,7 @@ import reducers from "../Store/Reducers";
 
 import App from "../App";
 import getTheme from "../theme/components";
+
 import variables from "../theme/variables/commonColor";
 
 export default class Setup extends Component {
@@ -21,6 +22,7 @@ export default class Setup extends Component {
             isReady: false
         };
     }
+
     componentWillMount() {
         this.loadFonts();
     }
