@@ -1,12 +1,14 @@
 import React from 'react';
 import { StyleSheet, View, Image, ScrollView } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
-import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton, Item, Picker, Form } from 'native-base';
+import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton, Item, Picker, Form, CheckBox } from 'native-base';
 import Button from './../SeperateComponents/Button';
 import InputField from './../SeperateComponents/InputField';
 import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
 import * as NavigationService from '../../NavigationService';
+import Colors from '../../helper/Colors'
+import { Rating, AirbnbRating } from 'react-native-ratings';
 
 class AddNookScreen extends React.Component {
 
@@ -16,27 +18,6 @@ class AddNookScreen extends React.Component {
       selected2: "All Nooks"
     };
   }
-  static navigationOptions = ({ navigation }) => ({
-    drawerIcon: ({ tintColor }) => (
-      <Icon
-        name="home"
-        size={30}
-        color='white'
-      />
-    ),
-    headerTitle: "Home",
-    headerLeft:
-      <View style={{ paddingLeft: 16 }}>
-        <Icon
-          name="md-menu"
-          size={30}
-          color='white'
-          onPress={() => navigation.toggleDrawer()} />
-
-      </View>,
-
-
-  })
 
   onValueChange2(value) {
     this.setState({
@@ -48,31 +29,105 @@ class AddNookScreen extends React.Component {
 
     return (
 
-      <View style={{ flex: 1, }}>
+      <View style={{ flex: 1, backgroundColor: Colors.gray }}>
         <Header />
-        <View style={{ flex: 1, }}>
-          <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Add Nook</TitleText>
-          <Form>
-            <Item picker>
+        <ScrollView style={{ flex: 1 }}>
+          <View style={{ flex: 1, padding: 25 }}>
+            <TitleText style={{ fontWeight: 'bold', fontSize: 20, }} >Add Nook</TitleText>
+
+            <Item picker style={styles.pickerStyle}>
               <Picker
                 mode="dropdown"
 
                 iosIcon={<Icon name="arrow-down" />}
                 style={{ width: "100%" }}
-                placeholder="Select your SIM"
+                placeholder="Room Catagories"
                 placeholderStyle={{ color: "#bfc6ea" }}
                 placeholderIconColor="#007aff"
                 selectedValue={this.state.selected2}
-                onValueChange={this.onValueChange2.bind(this)}
-              >
+                onValueChange={this.onValueChange2.bind(this)}>
                 <Picker.Item label="DHA" value="key0" />
                 <Picker.Item label="Defence" value="key1" />
                 <Picker.Item label="Defence" value="key2" />
               </Picker>
             </Item>
-          </Form>
-
-        </View>
+            <Item picker style={styles.pickerStyle}>
+              <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                style={{ width: "100%" }}
+                placeholder="Nook Type"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.selected2}
+                onValueChange={this.onValueChange2.bind(this)}>
+                <Picker.Item label="DHA" value="key0" />
+                <Picker.Item label="Defence" value="key1" />
+                <Picker.Item label="Defence" value="key2" />
+              </Picker>
+            </Item>
+            <View style={[styles.container, {
+              marginBottom: 10,
+            }]}>
+              <View style={styles.child}>
+                <View style={styles.childItem}>
+                  <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >
+                    Nook Description
+                    </TitleText>
+                  <Text>Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
+                </View>
+              </View>
+            </View>
+            <View style={[styles.container, {
+              marginBottom: 10,
+            }]}>
+              <View style={styles.child}>
+                <View style={[styles.childItem, {
+                  flexDirection: 'row',
+                  borderBottomWidth: 1,
+                  borderBottomColor: 'black',
+                }]}>
+                  <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, }} >Rating</TitleText>
+                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                    <AirbnbRating showRating={false} size={20} />
+                  </View>
+                </View>
+                <View style={styles.checkbox}>
+                  <View style={styles.checkboxItem}>
+                    <Text>Fernished</Text>
+                    <CheckBox checked={true} />
+                  </View>
+                  <View style={styles.checkboxItem}>
+                    <Text>AC</Text>
+                    <CheckBox checked={true} />
+                  </View>
+                  <View style={styles.checkboxItem}>
+                    <Text>TV</Text>
+                    <CheckBox checked={true} />
+                  </View>
+                </View>
+                <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                  <View style={styles.checkboxItem}>
+                    <Text>Wifi</Text>
+                    <CheckBox checked={true} />
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={styles.container} >
+              <View style={[styles.child, { height: 170, justifyContent: 'center', alignContent: 'center', alignItems: 'center' }]}>
+                <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, }} >
+                  Select Image
+                </TitleText>
+                <Icon
+                  style={{ marginTop: 10 }}
+                  name="add-circle"
+                  onPress={() => { }}
+                />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
 
       </View >
     );
@@ -80,8 +135,24 @@ class AddNookScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  checkbox: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    padding: 20,
+    paddingEnd: 35,
+  },
+  checkboxItem: {
+    flexDirection: 'row'
+  },
+  pickerStyle: {
+    backgroundColor: Colors.white,
+    borderRadius: 10, marginTop: 25,
+  },
+  childItem: {
+    padding: 20,
+  },
   container: {
-    flex: 1, margin: 25,
+    flex: 1,
     shadowColor: '#000',
     shadowOffset: { width: 10, height: 10 },
     shadowOpacity: 0.8,
@@ -89,6 +160,7 @@ const styles = StyleSheet.create({
   },
   child: {
     flex: 1,
+    marginTop: 25,
     borderRadius: 15,
     // To round image corners
     overflow: 'hidden',

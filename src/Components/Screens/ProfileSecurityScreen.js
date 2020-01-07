@@ -8,7 +8,7 @@ import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
 import * as NavigationService from '../../NavigationService';
 
-class UserProfileScreen extends React.Component {
+class ProfileSecurityScreen extends React.Component {
 
   render() {
     return (
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default UserProfileScreen;
+export default ProfileSecurityScreen;

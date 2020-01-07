@@ -5,29 +5,9 @@ import { DrawerItems } from 'react-navigation';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import * as NavigationService from '../../NavigationService';
+import Colors from '../../helper/Colors';
 
 class HomeScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
-    drawerIcon: ({ tintColor }) => (
-      <Icon
-        name="home"
-        size={30}
-        color='white'
-      />
-    ),
-    headerTitle: "Home",
-    headerLeft:
-      <View style={{ paddingLeft: 16 }}>
-        <Icon
-          name="md-menu"
-          size={30}
-          color='white'
-          onPress={() => navigation.toggleDrawer()} />
-
-      </View>,
-
-
-  })
   render() {
 
     return (
@@ -46,6 +26,9 @@ class HomeScreen extends React.Component {
                   onPress={() => { NavigationService.navigate("AddNookScreen") }}
                 />
               </View>
+              <View style={{ padding: 25, paddingTop: 10 }}>
+                <Text>Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
+              </View>
             </View>
           </View>
           <View style={[styles.container, {
@@ -58,6 +41,9 @@ class HomeScreen extends React.Component {
                   name="add-circle"
                 />
               </View>
+              <View style={{ padding: 25, paddingTop: 10 }}>
+                <Text>Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -68,7 +54,8 @@ class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    margin: 25,
+    padding: 25,
+    backgroundColor: Colors.gray,
   },
   childItem: {
 

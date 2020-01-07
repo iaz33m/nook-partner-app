@@ -8,6 +8,7 @@ import ComplaintsScreen from "./Components/Screens/ComplaintsScreen";
 import NotificationScreen from "./Components/Screens/NotificationScreen";
 import AddNookScreen from "./Components/Screens/AddNookScreen";
 import ProfileSecurityScreen from "./Components/Screens/ProfileSecurityScreen";
+import ProfileScreen from "./Components/Screens/ProfileScreen";
 
 import LoginScreen from "./Components/Screens/Auth/LoginScreen";
 import RegisterScreen from "./Components/Screens/Auth/RegisterScreen";
@@ -65,7 +66,7 @@ const TabScreens = createBottomTabNavigator(
   {
     // other screens
     Profile: {
-      screen: ProfileSecurityScreen
+      screen: ProfileScreen
     },
     Notification: {
       screen: NotificationScreen,
