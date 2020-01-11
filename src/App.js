@@ -7,7 +7,7 @@ import VisitsScreen from "./Components/Screens/VisitsScreen";
 import ComplaintsScreen from "./Components/Screens/ComplaintsScreen";
 import NotificationScreen from "./Components/Screens/NotificationScreen";
 import AddNookScreen from "./Components/Screens/AddNookScreen";
-import ProfileSecurityScreen from "./Components/Screens/ProfileSecurityScreen";
+
 import ProfileScreen from "./Components/Screens/ProfileScreen";
 
 import LoginScreen from "./Components/Screens/Auth/LoginScreen";
@@ -19,6 +19,7 @@ import { createSwitchNavigator, createAppContainer, createDrawerNavigator, Drawe
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import * as NavigationService from './NavigationService';
+import PaymentScreen from './Components/Screens/PaymentScreen';
 const DrawerContent = (props) => (
 
   <View>
@@ -58,6 +59,8 @@ const customTabs = ({ navigation }) => ({
       return renderNav(routeName, 'home', tintColor, focused);
     } else if (routeName === 'Complaints') {
       return renderNav(routeName, 'home', tintColor, focused);
+    } else if (routeName === 'Payment') {
+      return renderNav(routeName, 'home', tintColor, focused);
     }
   }
 });
@@ -79,6 +82,9 @@ const TabScreens = createBottomTabNavigator(
     },
     Visits: {
       screen: VisitsScreen
+    },
+    Payment: {
+      screen: PaymentScreen
     },
   },
   {
@@ -138,7 +144,6 @@ const AppNavigator = createStackNavigator(
     AddNookScreen,
     GuideScreen,
     ForgotPasswordScreen,
-    ProfileSecurityScreen,
     RegisterScreen
   }, {
   initialRouteName: "TabScreens",

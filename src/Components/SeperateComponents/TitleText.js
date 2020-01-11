@@ -9,7 +9,7 @@ const TitleText = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text textAlign="center" style={{ ...style, ...styles.labelStyle, }}>{children}</Text>
+      <Text textAlign="center" style={{ ...style, }}>{children}</Text>
     </View>
   );
 };
@@ -19,9 +19,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  labelStyle: {
-    color: 'black',
   },
 
 });

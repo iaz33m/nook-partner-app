@@ -15,10 +15,19 @@ class ProfileScreen extends React.Component {
     return (
       <View style={{ flex: 1, }}>
         <Header />
-        <View style={styles.container}>
-          <View style={styles.child}>
-            <ScrollView>
-              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >User Profile</TitleText>
+        <ScrollView contentContainerStyle={{ backgroundColor: Colors.gray }}>
+
+          <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >User Profile</TitleText>
+
+          <View style={styles.imageContainer}>
+            <View style={styles.imageView}></View>
+            <Image style={styles.imageButton}
+              source={require('./../../../assets/camera_icon.png')}
+            />
+          </View>
+
+          <View style={styles.container}>
+            <View style={styles.child}>
               <TitleText style={{ alignSelf: 'flex-start', margin: 15, fontWeight: 'bold', marginBottom: 0, fontSize: 18, }}>
                 Personal Information
               </TitleText>
@@ -45,15 +54,48 @@ class ProfileScreen extends React.Component {
               <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 20, }}>
                 <Button >Update</Button>
               </View>
-            </ScrollView>
+            </View>
           </View>
-        </View>
+          <View style={styles.container}>
+            <View style={styles.child}>
+              <TitleText style={{ alignSelf: 'flex-start', margin: 15, fontWeight: 'bold', marginBottom: 0, fontSize: 18, }}>Security</TitleText>
+              <View style={{ marginTop: 15, marginBottom: 5, }}>
+                <InputField iconName="eye" secureTextEntry>Password</InputField>
+                <InputField iconName="eye" secureTextEntry>Confrim Password</InputField>
+              </View>
+              <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50, marginBottom: 20, }}>
+                <Button onPress={() => alert("Login")}  >Submit</Button>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
       </View >
     );
   }
 }
 
 const styles = StyleSheet.create({
+  imageContainer: {
+    height: 160,
+    width: 160,
+    marginBottom: 20,
+    alignSelf: 'center'
+  },
+  imageButton: {
+    position: 'absolute',
+    bottom: -7,
+    alignSelf: "flex-end"
+  },
+  imageView: {
+    height: "100%",
+    width: "100%",
+    position: 'relative',
+    marginTop: 20,
+    borderWidth: 2,
+    borderColor: Colors.primaryColor,
+    alignSelf: 'center',
+    borderRadius: 100
+  },
   textArea: {
     margin: 20,
     paddingTop: 10
@@ -75,13 +117,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1, padding: 25,
-    backgroundColor: Colors.gray,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.8,
     shadowRadius: 15
   },
   child: {
+    padding: 15,
     borderRadius: 15,
     // To round image corners
     overflow: 'hidden',

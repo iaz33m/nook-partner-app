@@ -26,9 +26,7 @@ export default InputField;
 
 const styles = StyleSheet.create({
     container: {
-        marginLeft: 30,
         borderColor: 'transparent',
-        marginRight: 30,
         marginTop: 20,
 
         flex: 1,

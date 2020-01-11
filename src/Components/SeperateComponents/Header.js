@@ -1,23 +1,18 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, Image } from 'react-native';
 import { Button as NativeButton, Icon } from 'native-base';
 import Constants from 'expo-constants';
 import * as NavigationService from '../../NavigationService'
 
 const Header = (props) => {
-    let { children, style } = props;
-
-    let buttonStyle = (style) ? style.buttonStyle || {} : {};
-    let labelStyle = (style) ? style.labelStyle || {} : {};
-
     return (
         <View style={styles.container}>
             <NativeButton onPress={() => { NavigationService.goBack() }} style={styles.buttonStyle} transparent>
                 <Icon name='arrow-back' />
             </NativeButton>
-            <NativeButton style={styles.buttonStyle} transparent>
-                <Icon name='arrow-back' />
-            </NativeButton>
+            <Image style={styles.buttonStyle}
+                source={require('./../../../assets/nooks_logo.png')}
+            />
             <NativeButton style={styles.buttonStyle} transparent>
                 <Icon name='arrow-back' />
             </NativeButton>
