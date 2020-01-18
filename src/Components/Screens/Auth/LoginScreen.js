@@ -7,19 +7,20 @@ import InputField from './../../SeperateComponents/InputField';
 import Header from '../../SeperateComponents/Header'
 import TitleText from '../../SeperateComponents/TitleText'
 import * as NavigationService from '../../../NavigationService';
+import Colors from '../../../helper/Colors'
 
 class LoginScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, }}>
-        <Header />
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
+        <Header skipButton={() => { }} />
         <View style={styles.container}>
           <View style={styles.child}>
             <View style={{ flex: 1, }}>
               <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Login</TitleText>
               <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Login to continue Nook </TitleText>
-              <View style={{ flex: 1, marginTop: '5%' }}>
+              <View style={{ flex: 1, marginTop: '5%', marginStart: '5%', marginEnd: '5%' }}>
                 <InputField iconName="mail">Username</InputField>
                 <InputField iconName="eye" secureTextEntry>Password</InputField>
               </View>
@@ -39,8 +40,12 @@ class LoginScreen extends React.Component {
               </View>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
                 <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
-                  <Icon name='home' style={{ marginEnd: 20 }} />
-                  <Icon name='home' style={{ marginStart: 20 }} />
+                  <Image style={{ marginEnd: 20, width: 40, height: 40 }}
+                    source={require('./../../../../assets/facebook.png')}
+                  />
+                  <Image style={{ marginEnd: 20, width: 40, height: 40 }}
+                    source={require('./../../../../assets/google.png')}
+                  />
                 </View>
                 <View style={{ marginTop: 20, flexDirection: 'row' }} >
                   <Text>Don't have an account? </Text><Text style={{

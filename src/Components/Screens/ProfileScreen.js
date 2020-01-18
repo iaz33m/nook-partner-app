@@ -13,7 +13,7 @@ class ProfileScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, }}>
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
         <Header />
         <ScrollView contentContainerStyle={{ backgroundColor: Colors.gray }}>
 
@@ -40,12 +40,22 @@ class ProfileScreen extends React.Component {
               </TitleText>
               <View style={styles.checkbox}>
                 <View style={styles.checkboxItem}>
-                  <Icon name="home" />
+                  <Image style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                    source={require('./../../../assets/male.png')}
+                  />
                   <Text>Male</Text>
                   <CheckBox checked={true} />
                 </View>
                 <View style={styles.checkboxItem}>
-                  <Icon name="home" />
+                  <Image style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                    source={require('./../../../assets/female.png')}
+                  />
                   <Text>Female</Text>
                   <CheckBox checked={true} />
                 </View>
@@ -64,7 +74,7 @@ class ProfileScreen extends React.Component {
                 <InputField iconName="eye" secureTextEntry>Confrim Password</InputField>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50, marginBottom: 20, }}>
-                <Button onPress={() => alert("Login")}  >Submit</Button>
+                <Button onPress={() => alert("Login")}  >Update Password</Button>
               </View>
             </View>
           </View>
@@ -82,6 +92,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   imageButton: {
+    width: 40,
+    height: 40,
     position: 'absolute',
     bottom: -7,
     alignSelf: "flex-end"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
 import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton, Item, Picker, Form, CheckBox } from 'native-base';
 import Button from './../SeperateComponents/Button';
@@ -29,7 +29,7 @@ class AddNookScreen extends React.Component {
 
     return (
 
-      <View style={{ flex: 1, backgroundColor: Colors.gray }}>
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
         <Header />
         <ScrollView style={{ flex: 1 }}>
           <View style={{ flex: 1, padding: 25 }}>
@@ -116,14 +116,17 @@ class AddNookScreen extends React.Component {
             </View>
             <View style={styles.container} >
               <View style={[styles.child, { height: 170, justifyContent: 'center', alignContent: 'center', alignItems: 'center' }]}>
-                <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, }} >
+                <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, }} >
                   Select Image
                 </TitleText>
-                <Icon
-                  style={{ marginTop: 10 }}
-                  name="add-circle"
-                  onPress={() => { }}
-                />
+                <TouchableOpacity>
+                  <Image style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                    source={require('./../../../assets/add.png')}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
           </View>

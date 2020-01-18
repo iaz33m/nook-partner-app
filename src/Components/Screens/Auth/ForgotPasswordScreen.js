@@ -7,18 +7,19 @@ import InputField from '../../SeperateComponents/InputField';
 import Header from '../../SeperateComponents/Header'
 import TitleText from '../../SeperateComponents/TitleText'
 import * as NavigationService from '../../../NavigationService';
+import Colors from '../../../helper/Colors';
 
 class ForgotPasswordScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, }}>
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
         <Header />
         <View style={styles.container}>
           <View style={styles.child}>
             <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Forgot Password!</TitleText>
             <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Enter your email address (Required) </TitleText>
-            <View style={{ marginTop: 30 }}>
+            <View style={{ marginTop: 30, marginStart: '5%', marginEnd: '5%' }}>
               <InputField iconName="mail">Username</InputField>
             </View>
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50, marginBottom: 20, }}>

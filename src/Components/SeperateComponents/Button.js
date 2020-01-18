@@ -11,7 +11,7 @@ const Button = (props) => {
 
   return (
     <View style={{ paddingStart: 30, paddingEnd: 30 }}>
-      <NativeButton warning full rounded  {...props} style={{ ...styles.buttonStyle, ...buttonStyle }}>
+      <NativeButton onPress={props.onPress} warning full rounded  {...props} style={{ ...styles.buttonStyle, ...buttonStyle }}>
         <Text style={{ ...styles.labelStyle, ...labelStyle }}>{children}</Text>
       </NativeButton>
     </View>

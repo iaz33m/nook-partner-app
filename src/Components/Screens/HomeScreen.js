@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { Icon, Drawer } from "native-base";
 import { DrawerItems } from 'react-navigation';
 import Header from '../SeperateComponents/Header';
@@ -11,7 +11,7 @@ class HomeScreen extends React.Component {
   render() {
 
     return (
-      <View style={{ flex: 1, }}>
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
         <Header />
 
         <View style={styles.main}>
@@ -21,10 +21,15 @@ class HomeScreen extends React.Component {
             <View style={styles.child}>
               <View style={styles.childItem}>
                 <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, }} >Add Nook</TitleText>
-                <Icon
-                  name="add-circle"
-                  onPress={() => { NavigationService.navigate("AddNookScreen") }}
-                />
+
+                <TouchableOpacity onPress={() => { NavigationService.navigate("AddNookScreen") }}>
+                  <Image style={{
+                    width: 30,
+                    height: 30,
+                  }}
+                    source={require('./../../../assets/add.png')}
+                  />
+                </TouchableOpacity>
               </View>
               <View style={{ padding: 25, paddingTop: 10 }}>
                 <Text>Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
@@ -37,9 +42,14 @@ class HomeScreen extends React.Component {
             <View style={styles.child}>
               <View style={styles.childItem}>
                 <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, }} >Manage Nooks</TitleText>
-                <Icon
-                  name="add-circle"
-                />
+                <TouchableOpacity onPress={() => { }}>
+                  <Image style={{
+                    width: 30,
+                    height: 30,
+                  }}
+                    source={require('./../../../assets/add.png')}
+                  />
+                </TouchableOpacity>
               </View>
               <View style={{ padding: 25, paddingTop: 10 }}>
                 <Text>Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>

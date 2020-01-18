@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, KeyboardAvoidingView } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
 import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton } from 'native-base';
 import Button from './../../SeperateComponents/Button';
@@ -7,22 +7,27 @@ import InputField from './../../SeperateComponents/InputField';
 import Header from '../../SeperateComponents/Header'
 import TitleText from '../../SeperateComponents/TitleText'
 import * as NavigationService from '../../../NavigationService';
+import Colors from '../../../helper/Colors'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 class RegisterScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, }}>
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
         <Header />
         <View style={styles.container}>
           <View style={styles.child}>
-            <ScrollView>
+
+            <KeyboardAwareScrollView>
               <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Sign Up</TitleText>
               <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Sign up to continue Nook </TitleText>
-              <InputField iconName="person">User Name</InputField>
-              <InputField iconName="mail" >Email Address</InputField>
-              <InputField iconName="eye" secureTextEntry>Password</InputField>
-              <InputField iconName="eye" secureTextEntry>Confirm Password</InputField>
+              <View style={{ marginStart: '5%', marginEnd: '5%' }}>
+                <InputField iconName="person">User Name</InputField>
+                <InputField iconName="mail" >Email Address</InputField>
+                <InputField iconName="eye" secureTextEntry>Password</InputField>
+                <InputField iconName="eye" secureTextEntry>Confirm Password</InputField>
+              </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
                 <Button onPress={() => alert("Login")}>Sign Up</Button>
               </View>
@@ -32,10 +37,14 @@ class RegisterScreen extends React.Component {
                 }} onPress={() => NavigationService.goBack()}>Login!</Text>
               </View>
               <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row', alignSelf: 'center', }}>
-                <Icon name='home' style={{ marginEnd: 20 }} />
-                <Icon name='home' style={{ marginStart: 20 }} />
+                <Image style={{ marginEnd: 20, width: 40, height: 40 }}
+                  source={require('./../../../../assets/facebook.png')}
+                />
+                <Image style={{ marginEnd: 20, width: 40, height: 40 }}
+                  source={require('./../../../../assets/google.png')}
+                />
               </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
           </View>
 
         </View>

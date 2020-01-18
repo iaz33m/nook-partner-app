@@ -1,21 +1,41 @@
 import React from 'react';
-import { Text, StyleSheet, View, Image } from 'react-native';
+import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { Button as NativeButton, Icon } from 'native-base';
 import Constants from 'expo-constants';
 import * as NavigationService from '../../NavigationService'
 
 const Header = (props) => {
+
+    let skipButton = null;
+    let options = null;
+    if (props.skipButton)
+        skipButton = <TouchableOpacity style={styles.buttonStyle} transparent>
+            <Text style={{ textDecorationLine: 'underline' }}>Skip</Text>
+        </TouchableOpacity>;
+    if (props.optionButton)
+        options = <TouchableOpacity onPress={() => { NavigationService.goBack() }} style={styles.buttonStyle} transparent>
+            <Image style={styles.buttonStyle}
+                source={require('./../../../assets/vertical_dot.png')}
+            />
+        </TouchableOpacity>
+
     return (
         <View style={styles.container}>
-            <NativeButton onPress={() => { NavigationService.goBack() }} style={styles.buttonStyle} transparent>
-                <Icon name='arrow-back' />
-            </NativeButton>
-            <Image style={styles.buttonStyle}
-                source={require('./../../../assets/nooks_logo.png')}
-            />
-            <NativeButton style={styles.buttonStyle} transparent>
-                <Icon name='arrow-back' />
-            </NativeButton>
+
+            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                <TouchableOpacity onPress={() => { NavigationService.goBack() }} style={styles.buttonStyle} transparent>
+                    <Icon name='arrow-back' />
+                </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+                <Image style={styles.buttonStyle}
+                    source={require('./../../../assets/nooks_logo.png')}
+                />
+            </View>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                {options}
+                {skipButton}
+            </View>
         </View>
     );
 };
@@ -23,15 +43,15 @@ const Header = (props) => {
 
 const styles = StyleSheet.create({
     buttonStyle: {
-        marginTop: Constants.statusBarHeight + 5,
-        marginBottom: 5
+        margin: 10,
+        marginTop: 15,
+        marginBottom: 15
     },
     container: {
+        marginTop: Constants.statusBarHeight,
         flexDirection: 'row',
         width: '100%',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        alignContent: 'center',
         backgroundColor: '#fff',
         alignSelf: 'flex-start',
         shadowColor: '#000',

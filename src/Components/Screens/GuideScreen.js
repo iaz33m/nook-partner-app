@@ -7,6 +7,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
 import Swiper from 'react-native-swiper'
+import Colors from '../../helper/Colors';
 class GuideScreen extends React.Component {
 
 
@@ -22,7 +23,7 @@ class GuideScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, }}>
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
         <View style={styles.header}>
           <Icon name="arrow-back" />
         </View>

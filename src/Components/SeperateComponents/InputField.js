@@ -29,14 +29,12 @@ const styles = StyleSheet.create({
         borderColor: 'transparent',
         marginTop: 20,
 
-        flex: 1,
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.8,
         shadowRadius: 30
     },
     child: {
-        flex: 1,
         paddingStart: 15,
         paddingEnd: 15,
         flexDirection: 'row',

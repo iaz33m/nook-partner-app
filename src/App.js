@@ -3,9 +3,9 @@ import React from 'react';
 import SplashScreen from "./Components/Screens/SplashScreen";
 import GuideScreen from "./Components/Screens/GuideScreen";
 import HomeScreen from "./Components/Screens/HomeScreen";
-import VisitsScreen from "./Components/Screens/VisitsScreen";
+import VisitsScreen from "./Components/Screens/Visits/VisitsScreen";
 import ComplaintsScreen from "./Components/Screens/ComplaintsScreen";
-import NotificationScreen from "./Components/Screens/NotificationScreen";
+import MyNookScreen from "./Components/Screens/MyNookScreen";
 import AddNookScreen from "./Components/Screens/AddNookScreen";
 
 import ProfileScreen from "./Components/Screens/ProfileScreen";
@@ -39,28 +39,45 @@ const DrawerContent = (props) => (
   </View>
 )
 
-const renderNav = (routeName, name, tintColor, focused) => (
-  <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
-    <Icon name={name} color={tintColor} size={12} style={{ paddingBottom: 4, paddingTop: 10 }} />
-    <Text style={{ paddingBottom: 8 }}>{routeName}</Text>
-  </View>
-)
-
 const customTabs = ({ navigation }) => ({
   tabBarIcon: ({ focused, horizontal, tintColor }) => {
     const { routeName } = navigation.state;
     if (routeName === 'Profile') {
-      return renderNav(routeName, 'person', tintColor, focused);
+      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/profile.png')}
+        />
+      </View>;
     } else if (routeName === 'Home') {
-      return renderNav(routeName, 'home', tintColor, focused);
-    } else if (routeName === 'Notification') {
-      return renderNav(routeName, 'notifications', tintColor, focused);
+      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/home.png')}
+        />
+      </View>;
+    } else if (routeName === 'MyNook') {
+      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/complaints.png')}
+        />
+      </View>;
     } else if (routeName === 'Visits') {
-      return renderNav(routeName, 'home', tintColor, focused);
+      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/visits.png')}
+        />
+      </View>;
     } else if (routeName === 'Complaints') {
-      return renderNav(routeName, 'home', tintColor, focused);
+      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/complaints.png')}
+        />
+      </View>;
     } else if (routeName === 'Payment') {
-      return renderNav(routeName, 'home', tintColor, focused);
+      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/payments.png')}
+        />
+      </View>;
     }
   }
 });
@@ -71,8 +88,8 @@ const TabScreens = createBottomTabNavigator(
     Profile: {
       screen: ProfileScreen
     },
-    Notification: {
-      screen: NotificationScreen,
+    MyNook: {
+      screen: MyNookScreen,
     },
     Home: {
       screen: HomeScreen
@@ -94,9 +111,9 @@ const TabScreens = createBottomTabNavigator(
     tabBarPosition: 'bottom',
     initialRouteName: 'Home',
     tabBarOptions: {
-      activeTintColor: '#6C1D7C',
+      activeTintColor: 'transparent',
       inactiveTintColor: 'rgba(0,0,0,0.6)',
-      showLabel: false,
+      showLabel: true,
       style: {
         shadowColor: 'rgba(58,55,55,0.1)',
         shadowOffset: { width: 0, height: 0 },
@@ -107,7 +124,7 @@ const TabScreens = createBottomTabNavigator(
         backgroundColor: '#fff',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        height: 70
+        height: 60
       },
       activeTabStyle: {
         backgroundColor: 'white',
@@ -146,7 +163,7 @@ const AppNavigator = createStackNavigator(
     ForgotPasswordScreen,
     RegisterScreen
   }, {
-  initialRouteName: "TabScreens",
+  initialRouteName: "SplashScreen",
   headerMode: 'none'
 }
 );

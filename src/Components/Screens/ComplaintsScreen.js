@@ -2,29 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Icon, Drawer } from "native-base";
 import { DrawerItems } from 'react-navigation';
+import Colors from '../../helper/Colors';
 
 class ComplaintsScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
-    drawerIcon: ({ tintColor }) => (
-      <Icon
-        name="home"
-        size={30}
-        color='white'
-      />
-    ),
-    headerTitle: "Home",
-    headerLeft:
-      <View style={{ paddingLeft: 16 }}>
-        <Icon
-          name="md-menu"
-          size={30}
-          color='white'
-          onPress={() => navigation.toggleDrawer()} />
 
-      </View>,
-
-
-  })
   render() {
 
     return (
@@ -38,7 +19,7 @@ class ComplaintsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.backgroundColor,
     alignItems: 'center',
     justifyContent: 'center',
   },

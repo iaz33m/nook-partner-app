@@ -2,26 +2,33 @@ import React from 'react';
 import { StyleSheet, View, ScrollView, Image } from 'react-native';
 import { Icon, Text } from "native-base";
 import { DrawerItems } from 'react-navigation';
-import Colors from '../../helper/Colors';
-import Header from '../SeperateComponents/Header';
-import TitleText from '../SeperateComponents/TitleText';
-import InputField from '../SeperateComponents/InputField';
-import Button from '../SeperateComponents/Button';
+import Colors from '../../../helper/Colors';
+import Header from '../../SeperateComponents/Header';
+import TitleText from '../../SeperateComponents/TitleText';
+import InputField from '../../SeperateComponents/InputField';
+import Button from '../../SeperateComponents/Button';
 
 class VisitsScreen extends React.Component {
   render() {
 
     return (
-      <View style={{ flex: 1, backgroundColor: Colors.gray }}>
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
         <Header />
+        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Visits</TitleText>
+        <Image style={{
+          width: 30,
+          height: 30,
+          marginEnd: 25,
+          marginBottom: 5,
+          alignSelf: 'flex-end'
+        }}
+          source={require('./../../../../assets/filter.png')}
+        />
         <ScrollView >
-
-          <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Visits</TitleText>
-
           <View style={styles.container}>
             <View style={styles.child}>
               <Image style={{ position: 'absolute', }}
-                source={require('./../../../assets/feature.png')}
+                source={require('./../../../../assets/feature.png')}
               />
               <Text style={{ marginTop: 12, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >pending</Text>
               <View style={{ flexDirection: 'row', margin: 15, marginTop: 30 }}>
@@ -47,7 +54,7 @@ class VisitsScreen extends React.Component {
           <View style={styles.container}>
             <View style={styles.child}>
               <Image style={{ position: 'absolute', }}
-                source={require('./../../../assets/feature.png')}
+                source={require('./../../../../assets/feature.png')}
               />
               <Text style={{ marginTop: 12, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >pending</Text>
               <View style={{ flexDirection: 'row', margin: 15, marginTop: 30 }}>
@@ -119,6 +126,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1, padding: 25,
+    paddingTop: 10,
+    paddingBottom: 10,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.8,
