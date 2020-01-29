@@ -8,7 +8,7 @@ import * as NavigationService from '../../NavigationService';
 import Colors from '../../helper/Colors';
 import { AirbnbRating } from 'react-native-ratings';
 
-class HomeScreen extends React.Component {
+class NookListScreen extends React.Component {
   render() {
 
 
@@ -36,7 +36,7 @@ class HomeScreen extends React.Component {
             source={require('./../../../assets/filter.png')}
           />
         </View>
-        <ScrollView >
+        <ScrollView style={{ marginTop: 10 }}>
           <View style={styles.container}>
             <View style={styles.child}>
               <Image style={{ position: 'absolute', }}
@@ -181,4 +181,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default HomeScreen
+export default NookListScreen

@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, FlatList, ScrollView, Image } from 'react-native';
 import { Icon, Text } from "native-base";
-import { DrawerItems, FlatList } from 'react-navigation';
+import { DrawerItems } from 'react-navigation';
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';

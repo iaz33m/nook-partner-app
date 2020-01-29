@@ -2,7 +2,7 @@ import React from 'react';
 
 import SplashScreen from "./Components/Screens/SplashScreen";
 import GuideScreen from "./Components/Screens/GuideScreen";
-import HomeScreen from "./Components/Screens/HomeScreen";
+import NookListScreen from "./Components/Screens/NookListScreen";
 import VisitsScreen from "./Components/Screens/Visits/VisitsScreen";
 import ComplaintsScreen from "./Components/Screens/ComplaintsScreen";
 import MyNookScreen from "./Components/Screens/MyNookScreen";
@@ -20,6 +20,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import * as NavigationService from './NavigationService';
 import PaymentScreen from './Components/Screens/PaymentScreen';
+import HomeScreen from './Components/Screens/Home/HomeScreen';
+import NookDetailScreen from './Components/Screens/NookDetail/NookDetailScreen';
 const DrawerContent = (props) => (
 
   <View>
@@ -135,24 +137,6 @@ const TabScreens = createBottomTabNavigator(
   }
 );
 
-const appStackNavigator = createStackNavigator({ HomeScreen }, {
-  navigationOptions:
-  {
-    title: 'Lobby',
-    drawerIcon: ({ tintColor }) => (
-      <Icon
-        name="home"
-        size={30}
-        color='white'
-      />
-    ),
-  },
-})
-
-const appDrawerNavigator = createDrawerNavigator({ Home: appStackNavigator, Login: LoginScreen, Register: RegisterScreen }, {
-  contentComponent: DrawerContent,
-})
-
 const AppNavigator = createStackNavigator(
   {
     SplashScreen,
@@ -160,6 +144,7 @@ const AppNavigator = createStackNavigator(
     TabScreens,
     AddNookScreen,
     GuideScreen,
+    NookDetailScreen,
     ForgotPasswordScreen,
     RegisterScreen
   }, {

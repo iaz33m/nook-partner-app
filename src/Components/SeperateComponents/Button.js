@@ -10,7 +10,7 @@ const Button = (props) => {
   let labelStyle = (style) ? style.labelStyle || {} : {};
 
   return (
-    <View style={{ paddingStart: 30, paddingEnd: 30 }}>
+    <View style={{ paddingStart: 15, paddingEnd: 15 }}>
       <NativeButton onPress={props.onPress} warning full rounded  {...props} style={{ ...styles.buttonStyle, ...buttonStyle }}>
         <Text style={{ ...styles.labelStyle, ...labelStyle }}>{children}</Text>
       </NativeButton>
@@ -22,7 +22,7 @@ const Button = (props) => {
 const styles = StyleSheet.create({
 
   buttonStyle: {
-    marginTop: 20,
+    marginTop: 15,
     width: "100%",
     alignItems: 'center',
     alignContent: 'center',

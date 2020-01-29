@@ -8,24 +8,27 @@ const Header = (props) => {
 
     let skipButton = null;
     let options = null;
+    let backButton = true;
     if (props.skipButton)
         skipButton = <TouchableOpacity style={styles.buttonStyle} transparent>
             <Text style={{ textDecorationLine: 'underline' }}>Skip</Text>
         </TouchableOpacity>;
     if (props.optionButton)
-        options = <TouchableOpacity onPress={() => { NavigationService.goBack() }} style={styles.buttonStyle} transparent>
+        options = <TouchableOpacity onPress={props.optionButton} style={styles.buttonStyle} transparent>
             <Image style={styles.buttonStyle}
                 source={require('./../../../assets/vertical_dot.png')}
             />
         </TouchableOpacity>
-
+    if (props.backButton) {
+        backButton = <TouchableOpacity onPress={() => { NavigationService.goBack() }} style={styles.buttonStyle} transparent>
+            <Icon name='arrow-back' />
+        </TouchableOpacity>
+    }
     return (
         <View style={styles.container}>
 
             <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                <TouchableOpacity onPress={() => { NavigationService.goBack() }} style={styles.buttonStyle} transparent>
-                    <Icon name='arrow-back' />
-                </TouchableOpacity>
+                {backButton}
             </View>
             <View style={{ flex: 1, alignItems: 'center' }}>
                 <Image style={styles.buttonStyle}
@@ -44,8 +47,8 @@ const Header = (props) => {
 const styles = StyleSheet.create({
     buttonStyle: {
         margin: 10,
-        marginTop: 15,
-        marginBottom: 15
+        marginTop: 12,
+        marginBottom: 12
     },
     container: {
         marginTop: Constants.statusBarHeight,
