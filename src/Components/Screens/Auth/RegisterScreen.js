@@ -12,6 +12,59 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 class RegisterScreen extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      usernameError: '',
+      emailError: '',
+      passwordError: '',
+      confirmPasswordError: ''
+    };
+  }
+
+  handleSignup = () => {
+    console.log(this.state);
+    this.setState({
+      usernameError: '',
+      emailError: '',
+      passwordError: '',
+      confirmPasswordError: ''
+    });
+
+    if(this.state.username.length < 5 || this.state.username.length > 50) {
+      this.setState({
+        usernameError: "Username must be greater than 5 and less than 50."
+      });
+      return;
+    }
+
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+    if(reg.test(this.state.email) === false) {
+      this.setState({
+        emailError: "Email is not correct."
+      });
+      return;
+    }
+
+    if(this.state.password.length < 6 || this.state.password.length > 50) {
+      this.setState({
+        passwordError: "Password must be greater than 6 and less than 50."
+      });
+      return;
+    }
+
+    if(this.state.password !== this.state.confirmPassword) {
+      this.setState({
+        confirmPasswordError: "Please type same password in both fields."
+      });
+      return;
+    }
+  }
+
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
@@ -23,13 +76,33 @@ class RegisterScreen extends React.Component {
               <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Sign Up</TitleText>
               <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Sign up to continue Nook </TitleText>
               <View style={{ marginStart: '5%', marginEnd: '5%' }}>
-                <InputField iconName="person">User Name</InputField>
-                <InputField iconName="mail" >Email Address</InputField>
-                <InputField iconName="eye" secureTextEntry>Password</InputField>
-                <InputField iconName="eye" secureTextEntry>Confirm Password</InputField>
+                <InputField
+                  onChangeText={username => this.setState({username})}
+                  iconName="person"
+                  value={this.state.username}
+                  errorMessage={this.state.usernameError}
+                >User Name</InputField>
+                <InputField
+                  onChangeText={email => this.setState({email})}
+                  value={this.state.email}
+                  iconName="mail"
+                  errorMessage={this.state.emailError}
+                >Email Address</InputField>
+                <InputField
+                  iconName="eye"
+                  secureTextEntry
+                  onChangeText={password => this.setState({password})}
+                  errorMessage={this.state.passwordError}
+                >Password</InputField>
+                <InputField
+                  iconName="eye"
+                  secureTextEntry
+                  onChangeText={confirmPassword => this.setState({confirmPassword})}
+                  errorMessage={this.state.confirmPasswordError}
+                >Confirm Password</InputField>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                <Button onPress={() => alert("Login")}>Sign Up</Button>
+                <Button onPress={this.handleSignup}>Sign Up</Button>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, flexDirection: 'row' }}>
                 <Text>Already have an account? </Text><Text style={{

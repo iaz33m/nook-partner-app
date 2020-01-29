@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { Item, Input, Icon, View } from 'native-base';
+import { Item, Input, Icon, View, Text } from 'native-base';
 import Colors from '../../helper/Colors'
 
 
 const InputField = (props) => {
 
-    let { children, style, regular, secureTextEntry, iconName } = props;
+    let { children, style, regular, secureTextEntry, iconName, value, onChangeText, errorMessage } = props;
     //let {inputStyleMain} = style;
     let inputStyleMain = (style) ? style.inputStyleMain || {} : {};
 
@@ -16,8 +16,11 @@ const InputField = (props) => {
     return (
         <Item regular style={{ ...styles.container, ...inputStyleMain }}>
             <View style={styles.child}>
-                <Input  {...inputProps} placeholder={children} />
+                <Input  {...inputProps} value={value} onChangeText={onChangeText} placeholder={children} />
                 <Icon name={iconName} />
+            </View>
+            <View style={{width: '100%'}}>
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
             </View>
         </Item>
     );
@@ -32,7 +35,8 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.8,
-        shadowRadius: 30
+        shadowRadius: 30,
+        flexDirection: 'column',
     },
     child: {
         paddingStart: 15,
@@ -48,5 +52,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         // Android shadow
         elevation: 4
+    },
+    errorMessage: {
+        fontSize: 12,
+        color: 'red',
+        textAlign: 'left',
+        paddingLeft: 20
     }
 });
