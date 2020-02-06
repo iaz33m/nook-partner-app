@@ -10,6 +10,8 @@ import { AirbnbRating } from 'react-native-ratings';
 import styles from './styles';
 import InputField from '../../SeperateComponents/InputField';
 import MapView from 'react-native-maps';
+import { Marker } from 'react-native-maps';
+
 import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
 
@@ -19,8 +21,17 @@ class HomeScreen extends React.Component {
     super(props)
     this.state = {
       tabIndex: 0,
-      isDialogVisible: true
+      isDialogVisible: false,
+      markers: {
+        latlng: {
+          latitude: 31.435076,
+          longitude: 74.3000764,
+        },
+        title: "",
+        description: ""
+      }
     }
+
   }
 
   showDialog = () => {
@@ -30,7 +41,21 @@ class HomeScreen extends React.Component {
   mapView = () => {
     return (<View style={{ flex: 1 }}>
 
-      <MapView style={styles.mapStyle} />
+      <MapView initialRegion={{
+        ...this.state.markers.latlng,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }} style={styles.mapStyle} >
+        <Marker onPress={(coordinate, points) => {
+          this.setState({ isDialogVisible: true });
+        }}
+          image={require('./../../../../assets/marker.png')}
+          coordinate={{
+            latitude: 31.435076,
+            longitude: 74.3000764,
+          }}
+        />
+      </MapView>
       <TouchableOpacity style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
         <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', paddingStart: 20 }]}>
           <Image resizeMode="contain" source={require('./../../../../assets/search.png')} style={{ height: 20, width: 20, }} />
@@ -85,8 +110,11 @@ class HomeScreen extends React.Component {
       </TouchableOpacity>
 
       <ScrollView style={{ flex: 1, marginTop: 10 }}>
-        <View style={styles.container}>
-          <View style={styles.child}>
+        <View style={styles.container} >
+          <TouchableOpacity style={styles.child} onPress={() => {
+            this.setState({ isDialogVisible: false });
+            NavigationService.navigate("NookDetailScreen")
+          }}>
             <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text>Type</Text>
               <Text>Price</Text>
@@ -98,7 +126,7 @@ class HomeScreen extends React.Component {
               </View>
             </CardItem>
             <TitleText style={{ marginTop: 10, marginBottom: 10, fontSize: 20, }} >NK-123</TitleText>
-          </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.container}>
           <View style={styles.child}>

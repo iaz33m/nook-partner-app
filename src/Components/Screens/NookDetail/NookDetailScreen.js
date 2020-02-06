@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
-import { Icon, Drawer, Card, CardItem } from "native-base";
+import { Icon, Drawer, Card, CardItem, Textarea } from "native-base";
 import { DrawerItems } from 'react-navigation';
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
@@ -9,7 +9,7 @@ import Colors from '../../../helper/Colors';
 import { AirbnbRating } from 'react-native-ratings';
 import styles from './styles';
 import InputField from '../../SeperateComponents/InputField';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
 
@@ -19,6 +19,15 @@ class NookDetailScreen extends React.Component {
     super(props)
     this.state = {
       tabIndex: 0,
+      isDialogVisible: false,
+      markers: {
+        latlng: {
+          latitude: 31.435076,
+          longitude: 74.3000764,
+        },
+        title: "",
+        description: ""
+      }
     }
   }
 
@@ -26,45 +35,27 @@ class NookDetailScreen extends React.Component {
   mapView = () => {
     return (<View style={{ flex: 1 }}>
 
-      <MapView style={styles.mapStyle} />
+      <MapView initialRegion={{
+        ...this.state.markers.latlng,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }} style={styles.mapStyle} >
+        <Marker onPress={(coordinate, points) => {
+
+        }}
+          image={require('./../../../../assets/marker.png')}
+          coordinate={{
+            latitude: 31.435076,
+            longitude: 74.3000764,
+          }}
+        />
+      </MapView>
       <TouchableOpacity style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
         <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', paddingStart: 20 }]}>
           <Image resizeMode="contain" source={require('./../../../../assets/search.png')} style={{ height: 20, width: 20, }} />
           <Text style={{ margin: 15, }}>Enter desired location</Text>
         </View>
       </TouchableOpacity>
-      <PopupDialog
-        width={0.9} height={0.8}
-        ref={"popupDialog"}
-        visible={this.state.isDialogVisible}
-        onTouchOutside={() => {
-          this.setState({ isDialogVisible: false });
-        }}>
-        <View style={{ flex: 1, padding: 15, }}>
-          <TouchableOpacity onPress={() => {
-            this.setState({ isDialogVisible: false });
-          }}>
-            <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
-          </TouchableOpacity>
-          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >NK-123</TitleText>
-          <Image resizeMode="contain" source={require('./../../../../assets/test_image.jpeg')} style={{ borderRadius: 5, height: 200, width: null, marginTop: 15 }} />
-          <View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
-            <View style={{ flex: 1, alignItems: 'flex-start' }}>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Price</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Distance</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Gender</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Partner time</TitleText>
-            </View>
-            <View style={{ flex: 1, alignItems: 'flex-end' }}>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >8000</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >9/1 km</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Male</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Pak Arab</TitleText>
-            </View>
-          </View>
-          <Button onPress={() => { NavigationService.navigate("NookDetailScreen") }}>See More</Button>
-        </View>
-      </PopupDialog>
     </View>)
   }
 
@@ -153,6 +144,42 @@ class NookDetailScreen extends React.Component {
                 </View>
               </View>
             </View>
+            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >
+              Feature
+            </TitleText>
+
+            <View style={{ flexWrap: 'wrap', flexDirection: 'row', }}>
+              <View style={{ width: "25%" }}>
+                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
+                  <Text>Wifi</Text>
+                </Card>
+              </View>
+              <View style={{ width: "25%" }}>
+                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
+                  <Text>Card</Text>
+                </Card>
+              </View>
+              <View style={{ width: "25%" }}>
+                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
+                  <Text>TV</Text>
+                </Card>
+              </View>
+              <View style={{ width: "25%" }}>
+                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
+                  <Text>Intenet</Text>
+                </Card>
+              </View>
+              <View style={{ width: "25%" }}>
+                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
+                  <Text>Iron</Text>
+                </Card>
+              </View>
+
+            </View>
+
+            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
+              Location
+            </TitleText>
             <View style={{ height: 400 }}>
               {view}
             </View>
@@ -160,9 +187,46 @@ class NookDetailScreen extends React.Component {
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
               <Text style={{ margin: 15, fontSize: 16, }}>+89222120240</Text>
             </View>
-            <Button onPress={() => { }}>Book Now</Button>
+            <Button onPress={() => { this.setState({ isDialogVisible: true }); }}>Book Now</Button>
             <Button onPress={() => { }}>Schedule List</Button>
           </View>
+          <PopupDialog
+            width={0.9} height={0.55}
+            ref={"popupDialog"}
+            visible={this.state.isDialogVisible}
+            onTouchOutside={() => {
+              this.setState({ isDialogVisible: false });
+            }}>
+            <View style={{ flex: 1, padding: 25, }}>
+              <TouchableOpacity onPress={() => {
+                this.setState({ isDialogVisible: false });
+              }}>
+                <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+              </TouchableOpacity>
+              <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
+                Date
+            </TitleText>
+              <TouchableOpacity style={[styles.container, { width: "100%", flex: 0, padding: 0 }]}>
+                <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15 }]}>
+                  <Text style={{ margin: 15, }}>01/01/2020</Text>
+                  <Image resizeMode="contain" source={require('./../../../../assets/date.png')} style={{ height: 20, width: 20, }} />
+                </View>
+              </TouchableOpacity>
+              <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 15 }} >
+                Time
+            </TitleText>
+              <TouchableOpacity style={[styles.container, { width: "100%", flex: 0, padding: 0 }]}>
+                <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15 }]}>
+                  <Text style={{ margin: 15, }}>10:30Pm</Text>
+                  <Image resizeMode="contain" source={require('./../../../../assets/time.png')} style={{ height: 20, width: 20, }} />
+                </View>
+              </TouchableOpacity>
+              <Button onPress={() => {
+                this.setState({ isDialogVisible: false });
+
+              }}>Schedule</Button>
+            </View>
+          </PopupDialog>
         </ScrollView>
       </View >
     );

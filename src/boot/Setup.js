@@ -14,6 +14,7 @@ import App from "../App";
 import getTheme from "../theme/components";
 
 import variables from "../theme/variables/commonColor";
+import { MenuProvider } from 'react-native-popup-menu';
 
 export default class Setup extends Component {
     constructor() {
@@ -43,11 +44,13 @@ export default class Setup extends Component {
         const store = createStore(combineReducers(reducers), compose(applyMiddleware(thunk)));
 
         return (
-            <Provider store={store}>
-                <StyleProvider style={getTheme(variables)}>
-                    <App />
-                </StyleProvider>
-            </Provider>
+            <MenuProvider>
+                <Provider store={store}>
+                    <StyleProvider style={getTheme(variables)}>
+                        <App />
+                    </StyleProvider>
+                </Provider>
+            </MenuProvider>
         );
     }
 }

@@ -3,7 +3,13 @@ import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { Button as NativeButton, Icon } from 'native-base';
 import Constants from 'expo-constants';
 import * as NavigationService from '../../NavigationService'
-
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+} from 'react-native-popup-menu';
+import TitleText from './TitleText';
 const Header = (props) => {
 
     let skipButton = null;
@@ -15,9 +21,36 @@ const Header = (props) => {
         </TouchableOpacity>;
     if (props.optionButton)
         options = <TouchableOpacity onPress={props.optionButton} style={styles.buttonStyle} transparent>
-            <Image style={styles.buttonStyle}
-                source={require('./../../../assets/vertical_dot.png')}
-            />
+            <Menu>
+                <MenuTrigger >
+                    <Image resizeMode="contain" style={[styles.buttonStyle, { height: 20, width: 20, }]}
+                        source={require('./../../../assets/vertical_dot.png')}
+                    />
+                </MenuTrigger>
+                <MenuOptions>
+                    <MenuOption onSelect={() => alert(`Logout`)} >
+                        <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, marginStart: 5 }}>
+                            <Image resizeMode="contain" style={{ height: 20, width: 20, }}
+                                source={require('./../../../assets/logout.png')}
+                            />
+                            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, marginStart: 10 }} >
+                                Logout
+                            </TitleText>
+                        </View>
+                    </MenuOption>
+                    <MenuOption onSelect={() => alert(`Exit`)} >
+                        <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, marginStart: 5 }}>
+                            <Image resizeMode="contain" style={{ height: 20, width: 20, }}
+                                source={require('./../../../assets/exit.png')}
+                            />
+                            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, marginStart: 10 }} >
+                                Exit
+                            </TitleText>
+                        </View>
+                    </MenuOption>
+
+                </MenuOptions>
+            </Menu>
         </TouchableOpacity>
     if (props.backButton) {
         backButton = <TouchableOpacity onPress={() => { NavigationService.goBack() }} style={styles.buttonStyle} transparent>
@@ -51,6 +84,7 @@ const styles = StyleSheet.create({
         marginBottom: 12
     },
     container: {
+        height: 60,
         marginTop: Constants.statusBarHeight,
         flexDirection: 'row',
         width: '100%',

@@ -3,9 +3,9 @@ import Colors from "../../../helper/Colors";
 
 const styles = StyleSheet.create({
     mapStyle: {
-        width: "95%",
+        width: "100%",
         alignSelf: 'center',
-        height: Dimensions.get('window').height,
+        height: "95%",
     },
     tabContainer: {
         flex: 1,

@@ -67,7 +67,7 @@ class MyNookScreen extends React.Component {
     return (
 
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
-        <Header />
+        <Header backButton={true} />
         <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >My Nook</TitleText>
 
         <FlatList contentContainerStyle={styles.scrollView}

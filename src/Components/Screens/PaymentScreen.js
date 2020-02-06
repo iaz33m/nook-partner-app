@@ -9,13 +9,14 @@ import TitleText from '../SeperateComponents/TitleText'
 import * as NavigationService from '../../NavigationService';
 import Colors from '../../helper/Colors'
 import { Rating, AirbnbRating } from 'react-native-ratings';
-
+import PopupDialog from 'react-native-popup-dialog';
 class PaymentScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      selected2: "All Nooks"
+      selected2: "All Nooks",
+      isDialogVisible: false,
     };
   }
 
@@ -30,28 +31,21 @@ class PaymentScreen extends React.Component {
     return (
 
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
-        <Header />
+        <Header backButton={true} />
         <ScrollView style={{ flex: 1 }}>
           <View style={{ flex: 1, padding: 25 }}>
             <TitleText style={{ fontWeight: 'bold', fontSize: 20, }} >Payments</TitleText>
             <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }} >
               Rent Receipt
             </TitleText>
-            <Item picker style={styles.pickerStyle}>
-              <Picker
-                mode="dropdown"
-                iosIcon={<Icon name="arrow-down" />}
-                style={{ width: "100%" }}
-                placeholder="Room Catagories"
-                placeholderStyle={{ color: "#bfc6ea" }}
-                placeholderIconColor="#007aff"
-                selectedValue={this.state.selected2}
-                onValueChange={this.onValueChange2.bind(this)}>
-                <Picker.Item label="123-12500 PKR" value="key0" />
-                <Picker.Item label="123-12500 PKR" value="key1" />
-                <Picker.Item label="123-12500 PKR" value="key2" />
-              </Picker>
-            </Item>
+            <TouchableOpacity onPress={() => {
+              this.setState({ isDialogVisible: true })
+            }} style={[styles.container, { width: "100%", flex: 0, padding: 0, marginBottom: 15, marginTop: 15 }]}>
+              <View style={[styles.child, { borderRadius: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15 }]}>
+                <Text style={{ margin: 15, }}>10:30Pm</Text>
+                <Image resizeMode="contain" source={require('./../../../assets/arrow_down.png')} style={{ height: 20, width: 20, }} />
+              </View>
+            </TouchableOpacity>
             <View style={[styles.container, {
               marginBottom: 10,
             }]}>
@@ -104,7 +98,91 @@ class PaymentScreen extends React.Component {
             </View>
           </View>
         </ScrollView>
-
+        <PopupDialog
+          width={0.9} height={0.8}
+          ref={"popupDialog"}
+          visible={this.state.isDialogVisible}
+          onTouchOutside={() => {
+            this.setState({ isDialogVisible: false });
+          }}>
+          <View style={{ flex: 1, padding: 25, }}>
+            <TouchableOpacity onPress={() => {
+              this.setState({ isDialogVisible: false });
+            }}>
+              <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+            </TouchableOpacity>
+            <ScrollView style={{ marginTop: 10 }}>
+              <Card style={{ borderRadius: 10, padding: 15, backgroundColor: Colors.primaryColor }}>
+                <View style={{ flex: 1, flexDirection: 'row', }}>
+                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.orange }} >12500PKR</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.white }} >Late date charges</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.white }} >Due Date</TitleText>
+                  </View>
+                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.orange }} >Paid</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.white }} >100PKR/Day</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.white }} >02/02/2020</TitleText>
+                  </View>
+                </View>
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, marginBottom: 10, }}>
+                  <Button onPress={() => alert("Login")}  >Submit</Button>
+                </View>
+              </Card>
+              <Card style={{ borderRadius: 10, padding: 15 }}>
+                <View style={{ flex: 1, flexDirection: 'row', }}>
+                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.orange }} >12500PKR</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Late date charges</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Due Date</TitleText>
+                  </View>
+                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.orange }} >Paid</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >100PKR/Day</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >02/02/2020</TitleText>
+                  </View>
+                </View>
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, marginBottom: 10, }}>
+                  <Button onPress={() => alert("Login")}  >Submit</Button>
+                </View>
+              </Card>
+              <Card style={{ borderRadius: 10, padding: 15, backgroundColor: Colors.primaryColor }}>
+                <View style={{ flex: 1, flexDirection: 'row', }}>
+                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.orange }} >12500PKR</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.white }} >Late date charges</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.white }} >Due Date</TitleText>
+                  </View>
+                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.orange }} >Paid</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.white }} >100PKR/Day</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.white }} >02/02/2020</TitleText>
+                  </View>
+                </View>
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, marginBottom: 10, }}>
+                  <Button onPress={() => alert("Login")}  >Submit</Button>
+                </View>
+              </Card>
+              <Card style={{ borderRadius: 10, padding: 15 }}>
+                <View style={{ flex: 1, flexDirection: 'row', }}>
+                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.orange }} >12500PKR</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Late date charges</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >Due Date</TitleText>
+                  </View>
+                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, color: Colors.orange }} >Paid</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >100PKR/Day</TitleText>
+                    <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }} >02/02/2020</TitleText>
+                  </View>
+                </View>
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, marginBottom: 10, }}>
+                  <Button onPress={() => alert("Login")}  >Submit</Button>
+                </View>
+              </Card>
+            </ScrollView>
+          </View>
+        </PopupDialog>
       </View >
     );
   }

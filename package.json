@@ -21,6 +21,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-maps": "0.26.1",
     "react-native-popup-dialog": "^0.18.3",
+    "react-native-popup-menu": "^0.15.6",
     "react-native-ratings": "^6.5.0",
     "react-native-swiper": "^1.6.0-nightly.5",
     "react-navigation": "^3.1.4",

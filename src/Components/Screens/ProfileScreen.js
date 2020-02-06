@@ -8,19 +8,22 @@ import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
 import * as NavigationService from '../../NavigationService';
 import Colors from '../../helper/Colors';
+import Color from 'color';
 
 class ProfileScreen extends React.Component {
 
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
-        <Header />
+        <Header backButton={true} />
         <ScrollView contentContainerStyle={{ backgroundColor: Colors.gray }}>
 
           <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >User Profile</TitleText>
 
           <View style={styles.imageContainer}>
-            <View style={styles.imageView}></View>
+            <View style={styles.imageView}>
+
+            </View>
             <Image style={styles.imageButton}
               source={require('./../../../assets/camera_icon.png')}
             />
@@ -61,9 +64,6 @@ class ProfileScreen extends React.Component {
                 </View>
               </View>
               <Textarea style={styles.textArea} rowSpan={5} bordered placeholder="Type your address" />
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 20, }}>
-                <Button >Update</Button>
-              </View>
             </View>
           </View>
           <View style={styles.container}>
@@ -77,6 +77,9 @@ class ProfileScreen extends React.Component {
                 <Button onPress={() => alert("Login")}  >Update Password</Button>
               </View>
             </View>
+          </View>
+          <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 20, }}>
+            <Button >Update</Button>
           </View>
         </ScrollView>
       </View >
@@ -105,6 +108,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderWidth: 2,
     borderColor: Colors.primaryColor,
+    backgroundColor: Colors.white,
     alignSelf: 'center',
     borderRadius: 100
   },

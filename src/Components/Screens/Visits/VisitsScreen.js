@@ -13,7 +13,7 @@ class VisitsScreen extends React.Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
-        <Header />
+        <Header backButton={true} />
         <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Visits</TitleText>
         <Image style={{
           width: 30,
@@ -27,11 +27,11 @@ class VisitsScreen extends React.Component {
         <ScrollView >
           <View style={styles.container}>
             <View style={styles.child}>
-              <Image style={{ position: 'absolute', }}
+              <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
                 source={require('./../../../../assets/feature.png')}
               />
-              <Text style={{ marginTop: 12, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >pending</Text>
-              <View style={{ flexDirection: 'row', margin: 15, marginTop: 30 }}>
+              <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >pending</Text>
+              <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
                   <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Date</TitleText>
@@ -53,11 +53,11 @@ class VisitsScreen extends React.Component {
           </View>
           <View style={styles.container}>
             <View style={styles.child}>
-              <Image style={{ position: 'absolute', }}
+              <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
                 source={require('./../../../../assets/feature.png')}
               />
-              <Text style={{ marginTop: 12, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >pending</Text>
-              <View style={{ flexDirection: 'row', margin: 15, marginTop: 30 }}>
+              <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >pending</Text>
+              <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
                   <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Date</TitleText>
