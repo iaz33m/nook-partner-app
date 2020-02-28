@@ -31,7 +31,7 @@ class PaymentScreen extends React.Component {
     return (
 
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
-        <Header backButton={true} />
+        <Header backButton={true} optionButton={true} />
         <ScrollView style={{ flex: 1 }}>
           <View style={{ flex: 1, padding: 25 }}>
             <TitleText style={{ fontWeight: 'bold', fontSize: 20, }} >Payments</TitleText>

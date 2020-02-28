@@ -35,29 +35,29 @@ class RegisterScreen extends React.Component {
       confirmPasswordError: ''
     });
 
-    if(this.state.username.length < 5 || this.state.username.length > 50) {
+    if (this.state.username.length < 5 || this.state.username.length > 50) {
       this.setState({
         usernameError: "Username must be greater than 5 and less than 50."
       });
       return;
     }
 
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-    if(reg.test(this.state.email) === false) {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(this.state.email) === false) {
       this.setState({
         emailError: "Email is not correct."
       });
       return;
     }
 
-    if(this.state.password.length < 6 || this.state.password.length > 50) {
+    if (this.state.password.length < 6 || this.state.password.length > 50) {
       this.setState({
         passwordError: "Password must be greater than 6 and less than 50."
       });
       return;
     }
 
-    if(this.state.password !== this.state.confirmPassword) {
+    if (this.state.password !== this.state.confirmPassword) {
       this.setState({
         confirmPasswordError: "Please type same password in both fields."
       });
@@ -68,22 +68,22 @@ class RegisterScreen extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-        <Header />
+        <Header backButton={true} />
         <View style={styles.container}>
           <View style={styles.child}>
 
             <KeyboardAwareScrollView>
               <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Sign Up</TitleText>
-              <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Sign up to continue Nook </TitleText>
+              <TitleText style={{ margin: 15, marginBottom: 10, fontSize: 16, }}>Sign up to continue Nook </TitleText>
               <View style={{ marginStart: '5%', marginEnd: '5%' }}>
                 <InputField
-                  onChangeText={username => this.setState({username})}
+                  onChangeText={username => this.setState({ username })}
                   iconName="person"
                   value={this.state.username}
                   errorMessage={this.state.usernameError}
                 >User Name</InputField>
                 <InputField
-                  onChangeText={email => this.setState({email})}
+                  onChangeText={email => this.setState({ email })}
                   value={this.state.email}
                   iconName="mail"
                   errorMessage={this.state.emailError}
@@ -91,13 +91,13 @@ class RegisterScreen extends React.Component {
                 <InputField
                   iconName="eye"
                   secureTextEntry
-                  onChangeText={password => this.setState({password})}
+                  onChangeText={password => this.setState({ password })}
                   errorMessage={this.state.passwordError}
                 >Password</InputField>
                 <InputField
                   iconName="eye"
                   secureTextEntry
-                  onChangeText={confirmPassword => this.setState({confirmPassword})}
+                  onChangeText={confirmPassword => this.setState({ confirmPassword })}
                   errorMessage={this.state.confirmPasswordError}
                 >Confirm Password</InputField>
               </View>

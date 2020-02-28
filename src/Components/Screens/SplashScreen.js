@@ -13,8 +13,8 @@ class SplashScreen extends React.Component {
     const { user, navigation } = this.props;
 
 
-    //let screen = (user) ? "HomeScreen" : "LoginScreen";
-    let screen = (user) ? "HomeScreen" : "RegisterScreen";
+    let screen = (user) ? "HomeScreen" : "LoginScreen";
+    // let screen = (user) ? "HomeScreen" : "RegisterScreen";
 
     setTimeout(() => {
       console.log("load done")

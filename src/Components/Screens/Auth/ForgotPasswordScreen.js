@@ -14,7 +14,7 @@ class ForgotPasswordScreen extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-        <Header />
+        <Header backButton={true} />
         <View style={styles.container}>
           <View style={styles.child}>
             <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Forgot Password!</TitleText>
