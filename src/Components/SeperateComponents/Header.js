@@ -68,7 +68,7 @@ const Header = (props) => {
             <Text style={{ textDecorationLine: 'underline' }} onPress={props.skipButton}>Skip</Text>
         </TouchableOpacity>;
     if (props.optionButton)
-        options = <TouchableOpacity onPress={props.optionButton} style={styles.buttonStyle} transparent>
+        options = <TouchableOpacity style={styles.buttonStyle} transparent>
             <Menu>
                 <MenuTrigger >
                     <Image resizeMode="contain" style={[styles.buttonStyle, { height: 20, width: 20, }]}
@@ -99,7 +99,7 @@ const Header = (props) => {
     return (
         <View style={styles.container}>
 
-            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+            <View style={{ flex: 1, marginStart: 5, alignItems: 'flex-start' }}>
                 {backButton}
             </View>
             <View style={{ flex: 1, alignItems: 'center' }}>

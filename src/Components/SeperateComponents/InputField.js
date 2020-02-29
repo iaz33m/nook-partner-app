@@ -35,8 +35,6 @@ export default InputField;
 const styles = StyleSheet.create({
     container: {
         borderColor: 'transparent',
-        marginTop: 20,
-
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.8,

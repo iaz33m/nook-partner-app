@@ -185,9 +185,7 @@ class HomeScreen extends React.Component {
     }
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
-        <Header backButton={false} optionButton={() => {
-
-        }} />
+        <Header backButton={false} optionButton={true} />
         <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Nook</TitleText>
 
         <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
