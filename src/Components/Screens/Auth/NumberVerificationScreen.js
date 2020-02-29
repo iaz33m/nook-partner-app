@@ -11,7 +11,7 @@ import * as NavigationService from '../../../NavigationService';
 import Colors from '../../../helper/Colors';
 import * as actions from '../../../Store/Actions/AuthActions';
 
-class ForgotPasswordScreen extends React.Component {
+class NumberVerificationScreen extends React.Component {
 
   state = {
     view: 'sendCode',
@@ -21,26 +21,24 @@ class ForgotPasswordScreen extends React.Component {
   };
 
   sendCode = () => {
-    const { sendPasswordsResetCode } = this.props;
+    const { sendNumberVerificationCode } = this.props;
     const { number } = this.state;
     if (!number) {
       return alert('Number is Required');
     }
 
-    sendPasswordsResetCode({
+    sendNumberVerificationCode({
       data: { number },
       onSuccess: (data) => {
         const { token } = data;
-        this.setState({ view: 'changePassword', code: JSON.stringify(token) });
+        this.setState({ view: 'verifyNumber', code: JSON.stringify(token) });
       },
-      onError: message => {
-        alert(message);
-      }
+      onError: alert
     });
   }
 
-  changePassword = () => {
-    const { changePassword } = this.props;
+  verifyNumber = () => {
+    const { verifyNumber } = this.props;
     const { code, password, number } = this.state;
 
     if (!code) {
@@ -50,7 +48,7 @@ class ForgotPasswordScreen extends React.Component {
       return alert('Password is Required');
     }
 
-    changePassword({
+    verifyNumber({
       data: { token: code, password, number },
       onSuccess: () => {
         NavigationService.navigateAndResetStack("LoginScreen");
@@ -85,7 +83,7 @@ class ForgotPasswordScreen extends React.Component {
         </View >
       );
     }
-    if (view === 'changePassword') {
+    if (view === 'verifyNumber') {
       return (
         <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
           <Header />
@@ -103,7 +101,7 @@ class ForgotPasswordScreen extends React.Component {
                 >New Password</InputField>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
-                <Button onPress={this.changePassword}  >Change Password</Button>
+                <Button onPress={this.verifyNumber}  >Change Password</Button>
               </View>
             </View>
           </View>
@@ -142,7 +140,7 @@ const styles = StyleSheet.create({
 export default connect(
   null,
   {
-    sendPasswordsResetCode: actions.sendPasswordsResetCode,
-    changePassword: actions.changePassword,
+    sendNumberVerificationCode: actions.sendNumberVerificationCode,
+    verifyNumber: actions.verifyNumber,
   }
-)(ForgotPasswordScreen);
+)(NumberVerificationScreen);

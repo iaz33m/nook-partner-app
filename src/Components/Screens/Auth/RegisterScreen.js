@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from "react-redux";
 import { StyleSheet, View, Image, ScrollView, KeyboardAvoidingView } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
 import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton } from 'native-base';
@@ -9,63 +10,86 @@ import TitleText from '../../SeperateComponents/TitleText'
 import * as NavigationService from '../../../NavigationService';
 import Colors from '../../../helper/Colors'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import * as actions from '../../../Store/Actions/AuthActions';
 
 class RegisterScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      email: '',
+      name: '',
+      number: '',
       password: '',
       confirmPassword: '',
-      usernameError: '',
-      emailError: '',
+      nameError: '',
+      numberError: '',
       passwordError: '',
       confirmPasswordError: ''
     };
   }
 
   handleSignup = () => {
-    console.log(this.state);
     this.setState({
-      usernameError: '',
-      emailError: '',
+      nameError: '',
+      numberError: '',
       passwordError: '',
       confirmPasswordError: ''
     });
 
-    if(this.state.username.length < 5 || this.state.username.length > 50) {
-      this.setState({
-        usernameError: "Username must be greater than 5 and less than 50."
+    const { register } = this.props;
+
+    const { name, number, password, confirmPassword } = this.state;
+
+    if (name.length < 5 || name.length > 50) {
+      return this.setState({
+        nameError: "Name must be greater than 5 and less than 50."
       });
-      return;
     }
 
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
-    if(reg.test(this.state.email) === false) {
-      this.setState({
-        emailError: "Email is not correct."
+    if (!number) {
+      return this.setState({
+        numberError: "Number is required."
       });
-      return;
     }
 
-    if(this.state.password.length < 6 || this.state.password.length > 50) {
-      this.setState({
+    if (password.length < 6 || password.length > 50) {
+      return this.setState({
         passwordError: "Password must be greater than 6 and less than 50."
       });
-      return;
     }
 
-    if(this.state.password !== this.state.confirmPassword) {
-      this.setState({
+    if (password !== confirmPassword) {
+      return this.setState({
         confirmPasswordError: "Please type same password in both fields."
       });
-      return;
     }
+    
+    register({
+      data: { name, number, password },
+      onSuccess: () => {
+        NavigationService.navigateAndResetStack("LoginScreen");
+        alert('Registration was succesfull, you can login now');
+      },
+      onError: message => {
+        alert(message);
+      }
+    });
+
   }
 
   render() {
+
+    const {
+      name,
+      number,
+      password,
+      confirmPassword,
+      nameError,
+      numberError,
+      passwordError,
+      confirmPasswordError,
+    } = this.state;
+
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
         <Header />
@@ -77,28 +101,28 @@ class RegisterScreen extends React.Component {
               <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Sign up to continue Nook </TitleText>
               <View style={{ marginStart: '5%', marginEnd: '5%' }}>
                 <InputField
-                  onChangeText={username => this.setState({username})}
+                  onChangeText={name => this.setState({ name })}
                   iconName="person"
-                  value={this.state.username}
-                  errorMessage={this.state.usernameError}
-                >User Name</InputField>
+                  value={name}
+                  errorMessage={nameError}
+                >Name</InputField>
                 <InputField
-                  onChangeText={email => this.setState({email})}
-                  value={this.state.email}
-                  iconName="mail"
-                  errorMessage={this.state.emailError}
-                >Email Address</InputField>
+                  onChangeText={number => this.setState({ number })}
+                  value={number}
+                  iconName="md-phone-portrait"
+                  errorMessage={numberError}
+                >Number</InputField>
                 <InputField
                   iconName="eye"
                   secureTextEntry
-                  onChangeText={password => this.setState({password})}
-                  errorMessage={this.state.passwordError}
+                  onChangeText={password => this.setState({ password })}
+                  errorMessage={passwordError}
                 >Password</InputField>
                 <InputField
                   iconName="eye"
                   secureTextEntry
-                  onChangeText={confirmPassword => this.setState({confirmPassword})}
-                  errorMessage={this.state.confirmPasswordError}
+                  onChangeText={confirmPassword => this.setState({ confirmPassword })}
+                  errorMessage={confirmPasswordError}
                 >Confirm Password</InputField>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
@@ -109,14 +133,14 @@ class RegisterScreen extends React.Component {
                   textDecorationLine: 'underline',
                 }} onPress={() => NavigationService.goBack()}>Login!</Text>
               </View>
-              <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row', alignSelf: 'center', }}>
+              {/* <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row', alignSelf: 'center', }}>
                 <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                   source={require('./../../../../assets/facebook.png')}
                 />
                 <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                   source={require('./../../../../assets/google.png')}
                 />
-              </View>
+              </View> */}
             </KeyboardAwareScrollView>
           </View>
 
@@ -147,4 +171,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export default RegisterScreen;
+export default connect(
+  null,
+  { register: actions.register }
+)(RegisterScreen);

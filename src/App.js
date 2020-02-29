@@ -44,38 +44,51 @@ const DrawerContent = (props) => (
 const customTabs = ({ navigation }) => ({
   tabBarIcon: ({ focused, horizontal, tintColor }) => {
     const { routeName } = navigation.state;
+    const tabStyle = { flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 };
     if (routeName === 'Profile') {
-      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+      return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
           source={require('./../assets/profile.png')}
         />
       </View>;
-    } else if (routeName === 'Home') {
-      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+    }
+
+    if (routeName === 'Home') {
+      return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
           source={require('./../assets/home.png')}
         />
       </View>;
-    } else if (routeName === 'MyNook') {
-      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+    }
+
+    if (routeName === 'MyNook') {
+      return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
           source={require('./../assets/complaints.png')}
         />
       </View>;
-    } else if (routeName === 'Visits') {
-      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+    }
+
+    if (routeName === 'Visits') {
+      return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
           source={require('./../assets/visits.png')}
         />
       </View>;
-    } else if (routeName === 'Complaints') {
-      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+    }
+
+
+    if (routeName === 'Complaints') {
+      return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
           source={require('./../assets/complaints.png')}
         />
       </View>;
-    } else if (routeName === 'Payment') {
-      return <View style={{ flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 }}>
+    }
+
+
+    if (routeName === 'Payment') {
+      return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
           source={require('./../assets/payments.png')}
         />
@@ -96,9 +109,9 @@ const TabScreens = createBottomTabNavigator(
     Home: {
       screen: HomeScreen
     },
-    Complaints: {
-      screen: ComplaintsScreen
-    },
+    // Complaints: {
+    //   screen: ComplaintsScreen
+    // },
     Visits: {
       screen: VisitsScreen
     },

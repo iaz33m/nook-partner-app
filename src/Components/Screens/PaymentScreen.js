@@ -1,15 +1,16 @@
 import React from 'react';
+import { connect } from "react-redux";
 import { StyleSheet, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
-import { Container, Content, Card, CardItem, Body, Text, Icon, Item, Picker, Form, CheckBox } from 'native-base';
+import { Card, Text, Icon, Item, Picker } from 'native-base';
 import Button from './../SeperateComponents/Button';
-import InputField from './../SeperateComponents/InputField';
 import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
-import * as NavigationService from '../../NavigationService';
 import Colors from '../../helper/Colors'
-import { Rating, AirbnbRating } from 'react-native-ratings';
 import PopupDialog from 'react-native-popup-dialog';
+
+import * as NavigationService from '../../NavigationService';
+
 class PaymentScreen extends React.Component {
 
   constructor(props) {
@@ -18,6 +19,13 @@ class PaymentScreen extends React.Component {
       selected2: "All Nooks",
       isDialogVisible: false,
     };
+  }
+
+  componentDidMount() {
+    const { user } = this.props;
+    if (!user) {
+      NavigationService.navigateAndResetStack('LoginScreen');
+    }
   }
 
   onValueChange2(value) {
@@ -217,5 +225,12 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapStateToProps = state => {
+  return {
+    user: state.AuthReducer.user,
+  };
+};
 
-export default PaymentScreen
+export default connect(
+  mapStateToProps
+)(PaymentScreen);

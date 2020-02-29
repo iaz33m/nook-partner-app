@@ -1,16 +1,23 @@
 import React from 'react';
+import { connect } from "react-redux";
 import { StyleSheet, View, ScrollView, Image } from 'react-native';
-import { Icon, Text } from "native-base";
-import { DrawerItems } from 'react-navigation';
+import { Text } from "native-base";
 import Colors from '../../../helper/Colors';
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
-import InputField from '../../SeperateComponents/InputField';
 import Button from '../../SeperateComponents/Button';
+import * as NavigationService from '../../../NavigationService';
 
 class VisitsScreen extends React.Component {
-  render() {
 
+  componentDidMount() {
+    const { user } = this.props;
+    if (!user) {
+      NavigationService.navigateAndResetStack('LoginScreen');
+    }
+  }
+
+  render() {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
         <Header backButton={true} />
@@ -145,4 +152,13 @@ const styles = StyleSheet.create({
   }
 })
 
-export default VisitsScreen
+
+const mapStateToProps = state => {
+  return {
+    user: state.AuthReducer.user,
+  };
+};
+
+export default connect(
+  mapStateToProps
+)(VisitsScreen);

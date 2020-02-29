@@ -2,37 +2,41 @@ import React from 'react';
 
 import { connect } from "react-redux";
 
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import * as NavigationService from '../../NavigationService'
+import * as actions from '../../Store/Actions/AuthActions';
 
 class SplashScreen extends React.Component {
 
 
   componentDidMount() {
 
-    const { user, navigation } = this.props;
+    const { syncWithAsyncStorage } = this.props;
 
-
-    //let screen = (user) ? "HomeScreen" : "LoginScreen";
-    let screen = (user) ? "HomeScreen" : "RegisterScreen";
-
-    setTimeout(() => {
-      console.log("load done")
-      NavigationService.navigateAndResetStack(screen);
-    }, 0); // 2 sec
-
+    syncWithAsyncStorage({
+      onSuccess: ({user, skiped}) => {
+        if(user !== undefined){
+          let screen = (user || skiped === 'true') ? "TabScreens" : "LoginScreen";
+          setTimeout(() => {
+            NavigationService.navigateAndResetStack(screen);
+          }, 1000);
+        }
+      }
+    });
   }
 
   render() {
+    
     return (
       <View style={styles.container}>
         <Image
-          source={require('./../../../assets/logo.png')}
+          source={require('./../../../assets/nookLogo.jpg')}
         />
       </View>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -46,11 +50,12 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    user: state.AuthReducer.user
+    user: state.AuthReducer.user,
+    skiped: state.AuthReducer.skiped,
   };
 };
 
 export default connect(
   mapStateToProps,
-  null
+  { syncWithAsyncStorage: actions.syncWithAsyncStorage }
 )(SplashScreen);

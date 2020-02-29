@@ -1,16 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, ScrollView, Image } from 'react-native';
-import { Icon, Text } from "native-base";
-import { DrawerItems } from 'react-navigation';
+import { connect } from "react-redux";
+import { StyleSheet, View, FlatList, } from 'react-native';
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
-import InputField from '../SeperateComponents/InputField';
 import Button from '../SeperateComponents/Button';
-import { Rating, AirbnbRating } from 'react-native-ratings';
-
-
-
+import { AirbnbRating } from 'react-native-ratings';
+import * as NavigationService from '../../NavigationService';
 function Item(props) {
   let view;
 
@@ -62,6 +58,15 @@ class MyNookScreen extends React.Component {
       },
     }
   }
+
+
+  componentDidMount(){
+    const {user} = this.props;
+    if(!user){
+      NavigationService.navigateAndResetStack('LoginScreen');
+    }
+  }
+
   render() {
 
     return (
@@ -81,16 +86,8 @@ class MyNookScreen extends React.Component {
                   ...item,
                   showRating: true
                 }
-
-
                 const finalResult = { ...this.state.requestData, [item.id]: newItem }
                 this.setState({ requestData: finalResult })
-                console.log(this.state.requestData);
-                // this.setState({
-                //   requestData: {
-                //     ...this.state.requestData, [item.id]: newItem
-                // }
-                // })
               }}
 
             />
@@ -125,5 +122,12 @@ const styles = StyleSheet.create({
   }
 })
 
+const mapStateToProps = state => {
+  return {
+      user: state.AuthReducer.user,
+  };
+};
 
-export default MyNookScreen
+export default connect(
+  mapStateToProps
+)(MyNookScreen);

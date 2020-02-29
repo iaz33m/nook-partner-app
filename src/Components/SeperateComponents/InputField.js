@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Item, Input, Icon, View, Text } from 'native-base';
-import Colors from '../../helper/Colors'
 
 
 const InputField = (props) => {
@@ -19,9 +18,15 @@ const InputField = (props) => {
                 <Input  {...inputProps} value={value} onChangeText={onChangeText} placeholder={children} />
                 <Icon name={iconName} />
             </View>
-            <View style={{width: '100%'}}>
-                <Text style={styles.errorMessage}>{errorMessage}</Text>
-            </View>
+            {(() => {
+                if (errorMessage) {
+                    return (
+                        <View style={{ width: '100%' }}>
+                            <Text style={styles.errorMessage}>{errorMessage}</Text>
+                        </View>
+                    )
+                }
+            })()}
         </Item>
     );
 };
@@ -57,6 +62,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: 'red',
         textAlign: 'left',
-        paddingLeft: 20
+        paddingLeft: 20,
+        marginTop: '2%'
     }
 });

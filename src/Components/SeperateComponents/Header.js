@@ -1,8 +1,13 @@
 import React from 'react';
+import { connect } from "react-redux";
 import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { Button as NativeButton, Icon } from 'native-base';
 import Constants from 'expo-constants';
-import * as NavigationService from '../../NavigationService'
+import * as NavigationService from '../../NavigationService';
+import * as actions from '../../Store/Actions/AuthActions';
+
+import { BackHandler } from 'react-native';
+
 import {
     Menu,
     MenuOptions,
@@ -10,6 +15,49 @@ import {
     MenuTrigger,
 } from 'react-native-popup-menu';
 import TitleText from './TitleText';
+
+
+const renderAuthLinks = ({ user,logout }) => {
+    
+    const logoutUser = () => {
+        logout({
+            token:user.access_token,
+            onError: alert,
+            onSuccess: () => {
+                NavigationService.navigateAndResetStack('LoginScreen')
+            }
+        });
+    };
+
+    if (user) {
+        return (
+            <MenuOption onSelect={logoutUser} >
+                <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, marginStart: 5 }}>
+                    <Image resizeMode="contain" style={{ height: 20, width: 20, }}
+                        source={require('./../../../assets/logout.png')}
+                    />
+                    <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, marginStart: 10 }} >
+                        Logout
+                </TitleText>
+                </View>
+            </MenuOption>
+        );
+    }
+
+    return (
+        <MenuOption onSelect={() => NavigationService.navigateAndResetStack('LoginScreen')} >
+            <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, marginStart: 5 }}>
+                <Image resizeMode="contain" style={{ height: 20, width: 20, }}
+                    source={require('./../../../assets/logout.png')}
+                />
+                <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, marginStart: 10 }} >
+                    Login
+                </TitleText>
+            </View>
+        </MenuOption>
+    );
+}
+
 const Header = (props) => {
 
     let skipButton = null;
@@ -17,7 +65,7 @@ const Header = (props) => {
     let backButton = true;
     if (props.skipButton)
         skipButton = <TouchableOpacity style={styles.buttonStyle} transparent>
-            <Text style={{ textDecorationLine: 'underline' }}>Skip</Text>
+            <Text style={{ textDecorationLine: 'underline' }} onPress={props.skipButton}>Skip</Text>
         </TouchableOpacity>;
     if (props.optionButton)
         options = <TouchableOpacity onPress={props.optionButton} style={styles.buttonStyle} transparent>
@@ -28,17 +76,8 @@ const Header = (props) => {
                     />
                 </MenuTrigger>
                 <MenuOptions>
-                    <MenuOption onSelect={() => alert(`Logout`)} >
-                        <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, marginStart: 5 }}>
-                            <Image resizeMode="contain" style={{ height: 20, width: 20, }}
-                                source={require('./../../../assets/logout.png')}
-                            />
-                            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, marginStart: 10 }} >
-                                Logout
-                            </TitleText>
-                        </View>
-                    </MenuOption>
-                    <MenuOption onSelect={() => alert(`Exit`)} >
+                    {renderAuthLinks(props)}
+                    <MenuOption onSelect={() => BackHandler.exitApp()} >
                         <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, marginStart: 5 }}>
                             <Image resizeMode="contain" style={{ height: 20, width: 20, }}
                                 source={require('./../../../assets/exit.png')}
@@ -100,6 +139,15 @@ const styles = StyleSheet.create({
         // Android shadow
         elevation: 10
     },
-
 });
-export default Header;
+
+const mapStateToProps = state => {
+    return {
+        user: state.AuthReducer.user
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    { logout: actions.logout }
+)(Header);
