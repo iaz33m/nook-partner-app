@@ -109,9 +109,9 @@ const TabScreens = createBottomTabNavigator(
     Home: {
       screen: HomeScreen
     },
-    // Complaints: {
-    //   screen: ComplaintsScreen
-    // },
+    Complaints: {
+      screen: ComplaintsScreen
+    },
     Visits: {
       screen: VisitsScreen
     },

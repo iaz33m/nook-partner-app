@@ -1,22 +1,48 @@
 import React from 'react';
+import { connect } from "react-redux";
 import { StyleSheet, Text, View, ScrollView, Image, Modal, TouchableHighlight, TouchableOpacity } from 'react-native';
-import { Icon, Drawer, Card, CardItem, Item, Picker } from "native-base";
+import { Icon, Drawer, Card, CardItem, Item, Picker, Spinner } from "native-base";
 import { DrawerItems } from 'react-navigation';
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
 import { AirbnbRating } from 'react-native-ratings';
+import * as actions from '../../Store/Actions/ComplainsActions';
 
 class ComplaintsScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      statses: {
+        "": "All",
+        "pending": "Pending",
+        "in_progress": "In Progress",
+        "approved": "Approved",
+        "rejected": "Rejected",
+      },
+      loading: true,
       selected2: "All Nooks",
       modalVisible: false,
       showMore: false,
+      filter: {
+        status: '',
+      }
     };
+  }
+
+  componentDidMount() {
+    this.applyFilter();
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { complains } = nextProps;
+    const { complains: oldComplains } = prevState;
+    if (JSON.stringify(complains) !== JSON.stringify(oldComplains)) {
+      return { complains: [...complains] };
+    }
+    return null;
   }
 
   onValueChange2(value) {
@@ -25,93 +51,120 @@ class ComplaintsScreen extends React.Component {
     });
   }
 
-  render() {
 
-    let filterView = null;
-    if (this.state.modalVisible) {
-      let showMoreView = null;
-      if (this.state.showMore) {
-        showMoreView = <View>
-          <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 18, }}>All Nooks</Text>
-          </View>
-          <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 18, }}>Home</Text>
-          </View>
-          <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 18, }}>DHA</Text>
-          </View>
-          <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 18, }}>Defence</Text>
-          </View>
-        </View>;
-      }
+  applyFilter = () => {
+    const { user: { access_token }, getComplains } = this.props;
+    const { filter } = this.state;
+    this.setState({ loading: true,modalVisible: false });
+    getComplains({
+      onError: (error) => {
+        alert(error);
+        this.setState({ loading: false });
+      },
+      onSuccess: () => {
+        this.setState({ loading: false });
+      },
+      filter,
+      token: access_token
+    });
+  }
 
-      filterView = <View style={{ position: 'absolute', width: "70%", height: "82%", marginTop: "20%", alignSelf: 'flex-end', backgroundColor: "white" }}>
-        <View style={{}}>
-          <TouchableOpacity onPress={() => {
-            this.setState({ modalVisible: false })
-          }}>
-            <Image style={{
-              width: 20,
-              margin: 10,
-              marginTop: 15,
-              height: 20,
-              alignSelf: 'flex-end'
-            }}
-              resizeMode="contain"
-              source={require('./../../../assets/close.png')}
-            />
-          </TouchableOpacity>
-          <TitleText style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }} >Filter</TitleText>
 
-          <View style={{ padding: 15, flexDirection: 'row', backgroundColor: Colors.gray, justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID 123</Text>
-          </View>
-          <View style={{ padding: 15, flexDirection: 'row', backgroundColor: Colors.gray, justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Status</Text>
-            <TouchableOpacity onPress={() => {
-              this.setState({ showMore: !this.state.showMore })
-            }}>
-              <Image resizeMode="contain" style={{
-                width: 20,
-                marginTop: 5,
-                height: 20,
-                alignSelf: 'flex-end'
-              }}
-                source={require('./../../../assets/arrow_down.png')}
-              />
-            </TouchableOpacity>
-          </View>
-          {showMoreView}
-        </View>
-      </View>;
+  renderFilterView = () => {
+    const { modalVisible, statses,filter } = this.state;
+
+    if (!modalVisible) {
+      return;
     }
 
     return (
-      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
+      <View style={{ position: 'absolute', width: "70%", height: "82%", marginTop: "20%", alignSelf: 'flex-end', backgroundColor: "white" }}>
+        <TouchableOpacity onPress={() => {
+          this.setState({ modalVisible: false })
+        }}>
+          <Image style={{
+            width: 20,
+            margin: 10,
+            marginTop: 15,
+            height: 20,
+            alignSelf: 'flex-end'
+          }}
+            resizeMode="contain"
+            source={require('./../../../assets/close.png')}
+          />
+        </TouchableOpacity>
+        <TitleText style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }} >Filter</TitleText>
 
-        <Header backButton={true} />
-        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Select Nook</TitleText>
-        <View style={{ padding: 20, paddingTop: 5 }}>
-          <Item picker style={styles.pickerStyle}>
-            <Picker
-              mode="dropdown"
-              iosIcon={<Icon name="arrow-down" />}
-              style={{ width: "100%" }}
-              placeholder="Room Catagories"
-              placeholderStyle={{ color: "#bfc6ea" }}
-              placeholderIconColor="#007aff"
-              selectedValue={this.state.selected2}
-              onValueChange={this.onValueChange2.bind(this)}>
-              <Picker.Item label="Muhammad Waqas" value="key0" />
-              <Picker.Item label="Azeem Tariq" value="key1" />
-              <Picker.Item label="Muhammad Awaise" value="key2" />
-            </Picker>
-          </Item>
+
+        <Item picker style={styles.pickerStyle}>
+          <Picker
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ width: "100%" }}
+            placeholder="Room Catagories"
+            placeholderStyle={{ color: "#bfc6ea" }}
+            placeholderIconColor="#007aff"
+            selectedValue={filter.status}
+            onValueChange={status => this.setState({filter:{...filter,status}})}>
+            <Picker.Item label="All Complains" value="" />
+            {Object.keys(statses)
+            .filter(k => k)
+            .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
+          </Picker>
+        </Item>
+
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Button onPress={this.applyFilter}>Apply Filter</Button>
+        </View>
+
+      </View>
+    );
+  }
+
+  renderComplains = () => {
+    const { complains } = this.props;
+    const { statses, loading } = this.state;
+
+    if (loading) {
+      return <Spinner color='black' />;
+    }
+
+    return (
+      <ScrollView>
+        {complains.map(c => (
+            <View key={c.id} style={[styles.container, {
+              marginBottom: 10,
+            }]}>
+              <View style={styles.child}>
+                <View>
+                  <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID: {c.id}</Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{statses[c.status]}</Text>
+                  </View>
+                  <View style={{ padding: 10 }}>
+                    <Text>{c.description}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          ))}
+      </ScrollView>
+    );
+  }
+
+  render() {
+
+
+    const { filter: { status }, statses } = this.state;
+
+    return (
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
+        <Header />
+        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Complains</TitleText>
+        <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
             <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }} >
-              Pending complaints
+              {statses[status]} Complains
             </TitleText>
             <TouchableOpacity onPress={() => {
               this.setState({ modalVisible: true })
@@ -127,56 +180,9 @@ class ComplaintsScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          <ScrollView style={{ marginTop: 10 }}>
-
-            <View style={[styles.container, {
-              marginBottom: 10,
-            }]}>
-              <View style={styles.child}>
-                <View>
-                  <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID 123</Text>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Status</Text>
-                  </View>
-                  <View style={{ padding: 10 }}>
-                    <Text>Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={[styles.container, {
-              marginBottom: 10,
-            }]}>
-              <View style={styles.child}>
-                <View>
-                  <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID 123</Text>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Status</Text>
-                  </View>
-                  <View style={{ padding: 10 }}>
-                    <Text>Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={[styles.container, {
-              marginBottom: 10,
-            }]}>
-              <View style={styles.child}>
-                <View>
-                  <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID 123</Text>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Status</Text>
-                  </View>
-                  <View style={{ padding: 10 }}>
-                    <Text>Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </ScrollView>
+          {this.renderComplains()}
         </View>
-        {filterView}
+        {this.renderFilterView()}
       </View >
     );
   }
@@ -230,10 +236,14 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingStart:5,
+    paddingEnd:5,
+    paddingTop:5,
+    paddingBottom: 15,
     shadowColor: '#000',
     shadowOffset: { width: 10, height: 10 },
     shadowOpacity: 0.8,
-    shadowRadius: 15
+    shadowRadius: 5
   },
   child: {
     flex: 1,
@@ -249,5 +259,16 @@ const styles = StyleSheet.create({
 });
 
 
+const mapStateToProps = state => {
+  return {
+    complains: state.ComplainsReducer.complains,
+    user: state.AuthReducer.user,
+  };
+};
 
-export default ComplaintsScreen
+export default connect(
+  mapStateToProps,
+  {
+    getComplains: actions.getComplains,
+  },
+)(ComplaintsScreen);
