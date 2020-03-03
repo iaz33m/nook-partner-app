@@ -148,7 +148,7 @@ class MyNookScreen extends React.Component {
     return (
 
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
-        <Header backButton={true} />
+        <Header backButton={false} optionButton={true} />
         <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >My Nook</TitleText>
         {this.renderNookDetails()}
       </View >

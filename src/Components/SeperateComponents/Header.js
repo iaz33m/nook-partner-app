@@ -22,7 +22,10 @@ const renderAuthLinks = ({ user,logout }) => {
     const logoutUser = () => {
         logout({
             token:user.access_token,
-            onError: alert,
+            onError: (error) => {
+                console.log({error});
+                NavigationService.navigateAndResetStack('LoginScreen')
+            },
             onSuccess: () => {
                 NavigationService.navigateAndResetStack('LoginScreen')
             }

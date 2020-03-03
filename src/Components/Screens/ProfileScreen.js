@@ -128,7 +128,7 @@ class ProfileScreen extends React.Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
-        <Header backButton={true} />
+        <Header backButton={false} optionButton={true} />
         <ScrollView contentContainerStyle={{ backgroundColor: Colors.gray, paddingBottom: 200 }}>
 
           <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >User Profile</TitleText>

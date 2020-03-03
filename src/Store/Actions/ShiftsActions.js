@@ -4,7 +4,7 @@ import APIModel from '../../Models/APIModal';
 
 const fallBackErrorMessage = 'Something went wrong, please try again later!';
 
-const getComplains = options => async dispatch => {
+const getShifts = options => async dispatch => {
     const { filter, token, onError,onSuccess } = options;
     let queryString = '';
     Object.keys(filter).forEach(key => {
@@ -12,7 +12,7 @@ const getComplains = options => async dispatch => {
     })
     try {
 
-        const res = await axios.get(`${APIModel.HOST}/auth/user/complains?${queryString}`, {
+        const res = await axios.get(`${APIModel.HOST}/auth/user/shifts?${queryString}`, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -21,7 +21,7 @@ const getComplains = options => async dispatch => {
         });
 
         dispatch({
-            type: actions.SET_COMPLAINS,
+            type: actions.SET_SHIFTS,
             payload: res.data.data
         });
 
@@ -38,4 +38,4 @@ const getComplains = options => async dispatch => {
     }
 };
 
-export { getComplains };
+export { getShifts };

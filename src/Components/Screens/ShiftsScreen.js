@@ -6,9 +6,9 @@ import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
-import * as actions from '../../Store/Actions/ComplainsActions';
+import * as actions from '../../Store/Actions/ShiftsActions';
 
-class ComplaintsScreen extends React.Component {
+class ShiftsScreen extends React.Component {
 
   constructor(props) {
     super(props);
@@ -32,12 +32,11 @@ class ComplaintsScreen extends React.Component {
     this.applyFilter();
   }
 
-
   applyFilter = () => {
-    const { user: { access_token }, getComplains } = this.props;
+    const { user: { access_token }, getShifts } = this.props;
     const { filter } = this.state;
     this.setState({ loading: true,modalVisible: false });
-    getComplains({
+    getShifts({
       onError: (error) => {
         alert(error);
         this.setState({ loading: false });
@@ -87,7 +86,7 @@ class ComplaintsScreen extends React.Component {
             placeholderIconColor="#007aff"
             selectedValue={filter.status}
             onValueChange={status => this.setState({filter:{...filter,status}})}>
-            <Picker.Item label="All Complains" value="" />
+            <Picker.Item label="All Shifts" value="" />
             {Object.keys(statses)
             .filter(k => k)
             .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
@@ -102,8 +101,8 @@ class ComplaintsScreen extends React.Component {
     );
   }
 
-  renderComplains = () => {
-    const { complains } = this.props;
+  renderShifts = () => {
+    const { shifts } = this.props;
     const { statses, loading } = this.state;
 
     if (loading) {
@@ -112,7 +111,7 @@ class ComplaintsScreen extends React.Component {
 
     return (
       <ScrollView>
-        {complains.map(c => (
+        {shifts.map(c => (
             <View key={c.id} style={[styles.container, {
               marginBottom: 10,
             }]}>
@@ -123,7 +122,7 @@ class ComplaintsScreen extends React.Component {
                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{statses[c.status]}</Text>
                   </View>
                   <View style={{ padding: 10 }}>
-                    <Text>{c.description}</Text>
+                    <Text>{c.details}</Text>
                   </View>
                 </View>
               </View>
@@ -141,11 +140,11 @@ class ComplaintsScreen extends React.Component {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
         <Header />
-        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Complains</TitleText>
+        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Shifts</TitleText>
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
             <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }} >
-              {statses[status]} Complains
+              {statses[status]} Shifts
             </TitleText>
             <TouchableOpacity onPress={() => {
               this.setState({ modalVisible: true })
@@ -161,7 +160,7 @@ class ComplaintsScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          {this.renderComplains()}
+          {this.renderShifts()}
         </View>
         {this.renderFilterView()}
       </View >
@@ -242,7 +241,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    complains: state.ComplainsReducer.complains,
+    shifts: state.ShiftsReducer.shifts,
     user: state.AuthReducer.user,
   };
 };
@@ -250,6 +249,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    getComplains: actions.getComplains,
+    getShifts: actions.getShifts,
   },
-)(ComplaintsScreen);
+)(ShiftsScreen);
