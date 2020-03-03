@@ -98,14 +98,14 @@ class LoginScreen extends React.Component {
                 </View> */}
               </View>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
-                {/* <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
+                <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                     source={require('./../../../../assets/facebook.png')}
                   />
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                     source={require('./../../../../assets/google.png')}
                   />
-                </View> */}
+                </View>
                 <View style={{ marginTop: 20, flexDirection: 'row' }} >
                   <Text>Don't have an account? </Text><Text style={{
                     textDecorationLine: 'underline',

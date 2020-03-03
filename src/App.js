@@ -5,6 +5,9 @@ import GuideScreen from "./Components/Screens/GuideScreen";
 import NookListScreen from "./Components/Screens/NookListScreen";
 import VisitsScreen from "./Components/Screens/Visits/VisitsScreen";
 import ComplaintsScreen from "./Components/Screens/ComplaintsScreen";
+import ShiftsScreen from "./Components/Screens/ShiftsScreen";
+import BookingsScreen from "./Components/Screens/BookingsScreen";
+import NoticesScreen from "./Components/Screens/NoticesScreen";
 import MyNookScreen from "./Components/Screens/MyNookScreen";
 import AddNookScreen from "./Components/Screens/AddNookScreen";
 
@@ -87,6 +90,32 @@ const customTabs = ({ navigation }) => ({
       </View>;
     }
 
+    if (routeName === 'Notices') {
+      return <View style={tabStyle}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/complaints.png')}
+        />
+      </View>;
+    }
+
+    if (routeName === 'Bookings') {
+      return <View style={tabStyle}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/complaints.png')}
+        />
+      </View>;
+    }
+    
+    if (routeName === 'Shifts') {
+      return <View style={tabStyle}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/complaints.png')}
+        />
+      </View>;
+    }
+
+    
+
 
     if (routeName === 'Payment') {
       return <View style={tabStyle}>
@@ -107,18 +136,27 @@ const TabScreens = createBottomTabNavigator(
     MyNook: {
       screen: MyNookScreen,
     },
+    Bookings: {
+      screen: BookingsScreen
+    },
     Home: {
       screen: HomeScreen
     },
-    // Complaints: {
-    //   screen: ComplaintsScreen
+    Complaints: {
+      screen: ComplaintsScreen
+    },
+    Notices: {
+      screen: NoticesScreen
+    },
+    Shifts: {
+      screen: ShiftsScreen
+    },
+    // Visits: {
+    //   screen: VisitsScreen
     // },
-    Visits: {
-      screen: VisitsScreen
-    },
-    Payment: {
-      screen: PaymentScreen
-    },
+    // Payment: {
+    //   screen: PaymentScreen
+    // },
   },
   {
     defaultNavigationOptions: customTabs,
@@ -127,7 +165,7 @@ const TabScreens = createBottomTabNavigator(
     tabBarPosition: 'bottom',
     initialRouteName: 'Home',
     tabBarOptions: {
-      activeTintColor: 'transparent',
+      activeTintColor: '#E59413',
       inactiveTintColor: 'rgba(0,0,0,0.6)',
       showLabel: true,
       style: {

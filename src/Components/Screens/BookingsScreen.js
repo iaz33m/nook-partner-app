@@ -6,9 +6,9 @@ import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
-import * as actions from '../../Store/Actions/ComplainsActions';
+import * as actions from '../../Store/Actions/BookingsActions';
 
-class ComplaintsScreen extends React.Component {
+class BookingsScreen extends React.Component {
 
   constructor(props) {
     super(props);
@@ -32,12 +32,11 @@ class ComplaintsScreen extends React.Component {
     this.applyFilter();
   }
 
-
   applyFilter = () => {
-    const { user: { access_token }, getComplains } = this.props;
+    const { user: { access_token }, getBookings } = this.props;
     const { filter } = this.state;
     this.setState({ loading: true,modalVisible: false });
-    getComplains({
+    getBookings({
       onError: (error) => {
         alert(error);
         this.setState({ loading: false });
@@ -87,7 +86,7 @@ class ComplaintsScreen extends React.Component {
             placeholderIconColor="#007aff"
             selectedValue={filter.status}
             onValueChange={status => this.setState({filter:{...filter,status}})}>
-            <Picker.Item label="All Complains" value="" />
+            <Picker.Item label="All Bookings" value="" />
             {Object.keys(statses)
             .filter(k => k)
             .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
@@ -102,8 +101,8 @@ class ComplaintsScreen extends React.Component {
     );
   }
 
-  renderComplains = () => {
-    const { complains } = this.props;
+  renderBookings = () => {
+    const { bookings } = this.props;
     const { statses, loading } = this.state;
 
     if (loading) {
@@ -112,7 +111,7 @@ class ComplaintsScreen extends React.Component {
 
     return (
       <ScrollView>
-        {complains.map(c => (
+        {bookings.map(c => (
             <View key={c.id} style={[styles.container, {
               marginBottom: 10,
             }]}>
@@ -122,8 +121,9 @@ class ComplaintsScreen extends React.Component {
                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID: {c.id}</Text>
                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{statses[c.status]}</Text>
                   </View>
-                  <View style={{ padding: 10 }}>
-                    <Text>{c.description}</Text>
+                  <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Rent: {c.rent} Rs</Text>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Security: {c.security} Rs</Text>
                   </View>
                 </View>
               </View>
@@ -140,12 +140,12 @@ class ComplaintsScreen extends React.Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-        <Header />
-        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Complains</TitleText>
+        <Header backButton={false} optionButton={true} />
+        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Bookings</TitleText>
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
             <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }} >
-              {statses[status]} Complains
+              {statses[status]} Bookings
             </TitleText>
             <TouchableOpacity onPress={() => {
               this.setState({ modalVisible: true })
@@ -161,7 +161,7 @@ class ComplaintsScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          {this.renderComplains()}
+          {this.renderBookings()}
         </View>
         {this.renderFilterView()}
       </View >
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    complains: state.ComplainsReducer.complains,
+    bookings: state.BookingsReducer.bookings,
     user: state.AuthReducer.user,
   };
 };
@@ -250,6 +250,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    getComplains: actions.getComplains,
+    getBookings: actions.getBookings,
   },
-)(ComplaintsScreen);
+)(BookingsScreen);
