@@ -12,6 +12,7 @@ import ProfileScreen from "./Components/Screens/ProfileScreen";
 
 import LoginScreen from "./Components/Screens/Auth/LoginScreen";
 import RegisterScreen from "./Components/Screens/Auth/RegisterScreen";
+import GooglePlacesInput from "./Components/Screens/AutoComplete";
 import ForgotPasswordScreen from "./Components/Screens/Auth/ForgotPasswordScreen";
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Icon } from "native-base";
@@ -159,7 +160,8 @@ const AppNavigator = createStackNavigator(
     GuideScreen,
     NookDetailScreen,
     ForgotPasswordScreen,
-    RegisterScreen
+    RegisterScreen,
+      GooglePlacesInput
   }, {
   initialRouteName: "SplashScreen",
   headerMode: 'none'

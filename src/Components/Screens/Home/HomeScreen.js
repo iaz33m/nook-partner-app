@@ -14,6 +14,10 @@ import { Marker } from 'react-native-maps';
 
 import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
+import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
+
+const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
+const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } }};
 
 class HomeScreen extends React.Component {
 
@@ -31,11 +35,6 @@ class HomeScreen extends React.Component {
         description: ""
       }
     }
-
-  }
-
-  showDialog = () => {
-
   }
 
   mapView = () => {
@@ -56,7 +55,8 @@ class HomeScreen extends React.Component {
           }}
         />
       </MapView>
-      <TouchableOpacity style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
+      <TouchableOpacity onPress={()=>NavigationService.navigate("GooglePlacesInput")}
+          style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
         <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', paddingStart: 20 }]}>
           <Image resizeMode="contain" source={require('./../../../../assets/search.png')} style={{ height: 20, width: 20, }} />
           <Text style={{ margin: 15, }}>Enter desired location</Text>
@@ -161,7 +161,6 @@ class HomeScreen extends React.Component {
       </ScrollView>
     </View>)
   }
-
   render() {
     console.log("state chenage", this.state.tabIndex)
 

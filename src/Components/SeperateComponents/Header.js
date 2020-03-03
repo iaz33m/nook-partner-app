@@ -18,7 +18,7 @@ import TitleText from './TitleText';
 
 
 const renderAuthLinks = ({ user,logout }) => {
-    
+
     const logoutUser = () => {
         logout({
             token:user.access_token,

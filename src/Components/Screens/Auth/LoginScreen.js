@@ -25,7 +25,7 @@ class LoginScreen extends React.Component {
 
   moveToHome = () => {
     NavigationService.navigateAndResetStack("TabScreens");
-  }
+  };
 
 
   login = () => {
