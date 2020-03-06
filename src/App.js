@@ -5,6 +5,7 @@ import GuideScreen from "./Components/Screens/GuideScreen";
 import NookListScreen from "./Components/Screens/NookListScreen";
 import VisitsScreen from "./Components/Screens/Visits/VisitsScreen";
 import ComplaintsScreen from "./Components/Screens/ComplaintsScreen";
+// import GoogleLoginTemp from "./Components/Temp/GoogleLoginTemp";
 import ShiftsScreen from "./Components/Screens/ShiftsScreen";
 import BookingsScreen from "./Components/Screens/BookingsScreen";
 import NoticesScreen from "./Components/Screens/NoticesScreen";
@@ -105,7 +106,7 @@ const customTabs = ({ navigation }) => ({
         />
       </View>;
     }
-    
+
     if (routeName === 'Shifts') {
       return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
@@ -114,7 +115,7 @@ const customTabs = ({ navigation }) => ({
       </View>;
     }
 
-    
+
 
 
     if (routeName === 'Payment') {
@@ -199,7 +200,8 @@ const AppNavigator = createStackNavigator(
     NookDetailScreen,
     ForgotPasswordScreen,
     RegisterScreen,
-      GooglePlacesInput
+      GooglePlacesInput,
+      // GoogleLoginTemp
   }, {
   initialRouteName: "SplashScreen",
   headerMode: 'none'

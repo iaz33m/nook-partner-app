@@ -20,6 +20,7 @@ import TitleText from './TitleText';
 const renderAuthLinks = ({ user,logout }) => {
 
     const logoutUser = () => {
+        // NavigationService.navigateAndResetStack('LoginScreen'); // TODO remove me after fb and google sign in
         logout({
             token:user.access_token,
             onError: (error) => {

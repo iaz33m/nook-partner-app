@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
+import {StyleSheet, View, Image, ScrollView, TouchableOpacity} from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
 import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton } from 'native-base';
 import Button from './../../SeperateComponents/Button';
@@ -11,8 +11,13 @@ import * as NavigationService from '../../../NavigationService';
 import Colors from '../../../helper/Colors';
 import { AsyncStorage } from 'react-native';
 import * as actions from '../../../Store/Actions/AuthActions';
-
-
+// import styles from "../Home/styles";
+import * as Google from "expo-google-app-auth";
+import {CLIENT_IDS} from "../../../helper/Constants"
+// const IOS_CLIENT_ID =
+//     CLIENT_IDS._google;
+const ANDROID_CLIENT_ID =
+    CLIENT_IDS._google;
 class LoginScreen extends React.Component {
 
   constructor(props) {
@@ -23,10 +28,36 @@ class LoginScreen extends React.Component {
     };
   }
 
+
   moveToHome = () => {
     NavigationService.navigateAndResetStack("TabScreens");
   };
+  signInWithGoogle = async () => {
+    console.log('google login pressed');
+    try {
+      const result = await Google.logInAsync({
+        // iosClientId: IOS_CLIENT_ID,
+        issuer: 'https://accounts.google.com',
+        androidClientId: ANDROID_CLIENT_ID,
+        scopes: ["profile", "email"]
+      });
 
+      if (result.type === "success") {
+        console.log("USERNAME: ", result.user.givenName);
+        console.log('signInAsync', result);
+        NavigationService.navigateAndResetStack("TabScreens");
+
+        return result.accessToken;
+      } else {
+        return { cancelled: true };
+      }
+    } catch (e) {
+      const message = 'Error with login -- '+ e;
+      console.log('LoginScreen.js.js 30 | Error with login', e);
+      alert(message);
+      return { error: true };
+    }
+  };
 
   login = () => {
     const { login } = this.props;
@@ -51,7 +82,7 @@ class LoginScreen extends React.Component {
     });
 
   }
-
+//TODO add touchable opacity on partner app home screen icon
   render() {
 
     const { number, password } = this.state;
@@ -99,12 +130,16 @@ class LoginScreen extends React.Component {
               </View>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
                 <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
+                  <TouchableOpacity onPress={() => console.log('fb pressed')}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                     source={require('./../../../../assets/facebook.png')}
                   />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.signInWithGoogle()}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                     source={require('./../../../../assets/google.png')}
                   />
+                  </TouchableOpacity>
                 </View>
                 <View style={{ marginTop: 20, flexDirection: 'row' }} >
                   <Text>Don't have an account? </Text><Text style={{
