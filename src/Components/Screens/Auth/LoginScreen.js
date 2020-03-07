@@ -13,9 +13,11 @@ import { AsyncStorage } from 'react-native';
 import * as actions from '../../../Store/Actions/AuthActions';
 // import styles from "../Home/styles";
 import * as Google from "expo-google-app-auth";
+import Expo from 'expo';
 import {CLIENT_IDS} from "../../../helper/Constants"
-// const IOS_CLIENT_ID =
-//     CLIENT_IDS._google;
+import * as Facebook from 'expo-facebook';
+const FACEBOOK_CLIENT_ID =
+    CLIENT_IDS._facebook;
 const ANDROID_CLIENT_ID =
     CLIENT_IDS._google;
 class LoginScreen extends React.Component {
@@ -52,10 +54,41 @@ class LoginScreen extends React.Component {
         return { cancelled: true };
       }
     } catch (e) {
-      const message = 'Error with login -- '+ e;
-      console.log('LoginScreen.js.js 30 | Error with login', e);
+      const message = 'Google Login Error: '+ e;
+      console.log('Google Login Error: ', e);
       alert(message);
       return { error: true };
+    }
+  };
+
+
+
+
+  signInWithFacebook = async () => {
+    try {
+      const {
+        type,
+        token,
+        expires,
+        permissions,
+        declinedPermissions
+      } = await Facebook.logInWithReadPermissionsAsync(FACEBOOK_CLIENT_ID, {
+        permissions: ["public_profile"]
+      });
+
+      if (type === "success") {
+        // Get the user's name using Facebook's Graph API
+        const response = await fetch(
+            `https://graph.facebook.com/me?access_token=${token}`
+        );
+        console.log("Logged in!", `Hi ${(await response.json()).name}!`);
+        NavigationService.navigateAndResetStack("TabScreens");
+      } else {
+        alert(`Facebook Login Error: Cancelled`);
+      }
+    } catch ({ message }) {
+      console.error(`Facebook Login Error: ${message}`);
+      alert(`Facebook Login Error: ${message}`);
     }
   };
 
@@ -130,7 +163,7 @@ class LoginScreen extends React.Component {
               </View>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
                 <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
-                  <TouchableOpacity onPress={() => console.log('fb pressed')}>
+                  <TouchableOpacity onPress={() => this.signInWithFacebook()}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                     source={require('./../../../../assets/facebook.png')}
                   />
