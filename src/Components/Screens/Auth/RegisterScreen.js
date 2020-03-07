@@ -77,6 +77,18 @@ class RegisterScreen extends React.Component {
 
   }
 
+  socialLogin = (provider) => {
+    const {socialLogin} = this.props;
+    socialLogin({
+      data: { provider },
+      onSuccess: (user) => {
+        // this.moveToHome();
+        console.log({user});
+      },
+      onError: alert
+    });
+  };
+
   render() {
 
     const {

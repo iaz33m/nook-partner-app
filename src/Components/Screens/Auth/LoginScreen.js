@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
 import {StyleSheet, View, Image, ScrollView, TouchableOpacity} from 'react-native';
-// import { Item, Input, Icon } from 'native-base';
 import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton } from 'native-base';
 import Button from './../../SeperateComponents/Button';
 import InputField from './../../SeperateComponents/InputField';
@@ -11,15 +10,7 @@ import * as NavigationService from '../../../NavigationService';
 import Colors from '../../../helper/Colors';
 import { AsyncStorage } from 'react-native';
 import * as actions from '../../../Store/Actions/AuthActions';
-// import styles from "../Home/styles";
-import * as Google from "expo-google-app-auth";
-import Expo from 'expo';
-import {CLIENT_IDS} from "../../../helper/Constants"
-import * as Facebook from 'expo-facebook';
-const FACEBOOK_CLIENT_ID =
-    CLIENT_IDS._facebook;
-const ANDROID_CLIENT_ID =
-    CLIENT_IDS._google;
+
 class LoginScreen extends React.Component {
 
   constructor(props) {
@@ -34,62 +25,16 @@ class LoginScreen extends React.Component {
   moveToHome = () => {
     NavigationService.navigateAndResetStack("TabScreens");
   };
-  signInWithGoogle = async () => {
-    console.log('google login pressed');
-    try {
-      const result = await Google.logInAsync({
-        // iosClientId: IOS_CLIENT_ID,
-        issuer: 'https://accounts.google.com',
-        androidClientId: ANDROID_CLIENT_ID,
-        scopes: ["profile", "email"]
-      });
 
-      if (result.type === "success") {
-        console.log("USERNAME: ", result.user.givenName);
-        console.log('signInAsync', result);
-        NavigationService.navigateAndResetStack("TabScreens");
-
-        return result.accessToken;
-      } else {
-        return { cancelled: true };
-      }
-    } catch (e) {
-      const message = 'Google Login Error: '+ e;
-      console.log('Google Login Error: ', e);
-      alert(message);
-      return { error: true };
-    }
-  };
-
-
-
-
-  signInWithFacebook = async () => {
-    try {
-      const {
-        type,
-        token,
-        expires,
-        permissions,
-        declinedPermissions
-      } = await Facebook.logInWithReadPermissionsAsync(FACEBOOK_CLIENT_ID, {
-        permissions: ["public_profile"]
-      });
-
-      if (type === "success") {
-        // Get the user's name using Facebook's Graph API
-        const response = await fetch(
-            `https://graph.facebook.com/me?access_token=${token}`
-        );
-        console.log("Logged in!", `Hi ${(await response.json()).name}!`);
-        NavigationService.navigateAndResetStack("TabScreens");
-      } else {
-        alert(`Facebook Login Error: Cancelled`);
-      }
-    } catch ({ message }) {
-      console.error(`Facebook Login Error: ${message}`);
-      alert(`Facebook Login Error: ${message}`);
-    }
+  socialLogin = (provider) => {
+    const {socialLogin} = this.props;
+    socialLogin({
+      data: { provider },
+      onSuccess: () => {
+        this.moveToHome();
+      },
+      onError: alert
+    });
   };
 
   login = () => {
@@ -107,11 +52,9 @@ class LoginScreen extends React.Component {
     login({
       data: { number, password },
       onSuccess: () => {
-        NavigationService.navigateAndResetStack("TabScreens");
+       this.moveToHome();
       },
-      onError: message => {
-        alert(message);
-      }
+      onError: alert
     });
 
   }
@@ -157,18 +100,18 @@ class LoginScreen extends React.Component {
                 <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
                   <Button onPress={this.login}  >Sign In</Button>
                 </View>
-                {/* <View style={{ marginTop: 10 }}>
+                <View style={{ marginTop: 10 }}>
                   <Text>or continue with</Text>
-                </View> */}
+                </View>
               </View>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
                 <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
-                  <TouchableOpacity onPress={() => this.signInWithFacebook()}>
+                  <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                     source={require('./../../../../assets/facebook.png')}
                   />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.signInWithGoogle()}>
+                  <TouchableOpacity onPress={() => this.socialLogin('google')}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                     source={require('./../../../../assets/google.png')}
                   />
@@ -212,5 +155,8 @@ const styles = StyleSheet.create({
 
 export default connect(
   null,
-  { login: actions.login }
+  { 
+    login: actions.login,
+    socialLogin: actions.socialLogin,
+  }
 )(LoginScreen);
