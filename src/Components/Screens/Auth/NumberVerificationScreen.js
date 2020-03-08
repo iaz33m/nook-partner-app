@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
-// import { Item, Input, Icon } from 'native-base';
-import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton } from 'native-base';
+import { StyleSheet, View } from 'react-native';
 import Button from '../../SeperateComponents/Button';
 import InputField from '../../SeperateComponents/InputField';
 import Header from '../../SeperateComponents/Header'
@@ -14,105 +12,72 @@ import * as actions from '../../../Store/Actions/AuthActions';
 class NumberVerificationScreen extends React.Component {
 
   state = {
-    view: 'sendCode',
-    number: '',
-    password: '',
     code: '',
   };
 
+  componentDidMount = () => {
+    this.sendCode();
+  }
+
   sendCode = () => {
-    const { sendNumberVerificationCode } = this.props;
-    const { number } = this.state;
-    if (!number) {
-      return alert('Number is Required');
-    }
+    const {
+      sendNumberVerificationCode,
+      user: {
+        access_token: token
+      }
+    } = this.props;
 
     sendNumberVerificationCode({
-      data: { number },
-      onSuccess: (data) => {
-        const { token } = data;
-        this.setState({ view: 'verifyNumber', code: JSON.stringify(token) });
-      },
+      token,
       onError: alert
     });
   }
 
   verifyNumber = () => {
-    const { verifyNumber } = this.props;
-    const { code, password, number } = this.state;
+
+    const {
+      verifyNumber,
+      user: {
+        access_token: token
+      }
+    } = this.props;
+
+    const { code } = this.state;
 
     if (!code) {
       return alert('Code is Required');
     }
-    if (!password) {
-      return alert('Password is Required');
-    }
 
     verifyNumber({
-      data: { token: code, password, number },
+      data: { code },
+      token,
       onSuccess: () => {
-        NavigationService.navigateAndResetStack("LoginScreen");
-        alert('Password Changed Successfully, you can login now');
+        NavigationService.navigateAndResetStack("TabScreens");
       },
-      onError: message => {
-        alert(message);
-      }
+      onError: alert
     });
   }
 
-
-  renderView = () => {
-    const { view, number, code, password } = this.state;
-
-    if (view === 'sendCode') {
-      return (
-        <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-          <Header />
-          <View style={styles.container}>
-            <View style={styles.child}>
-              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Forgot Password!</TitleText>
-              <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Enter your phone number (Required) </TitleText>
-              <View style={{ marginTop: 30, marginStart: '5%', marginEnd: '5%' }}>
-                <InputField iconName="md-phone-portrait" value={number} onChangeText={number => this.setState({ number })}>Number</InputField>
-              </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
-                <Button onPress={this.sendCode}  >Send Code</Button>
-              </View>
-            </View>
-          </View>
-        </View >
-      );
-    }
-    if (view === 'verifyNumber') {
-      return (
-        <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-          <Header />
-          <View style={styles.container}>
-            <View style={styles.child}>
-              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Forgot Password!</TitleText>
-              <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Enter Verification Code to reset your Password ! </TitleText>
-              <View style={{ marginTop: 30, marginStart: '5%', marginEnd: '5%' }}>
-                <InputField iconName="md-phone-portrait" value={code} onChangeText={code => this.setState({ code })}>Code</InputField>
-                <InputField
-                  iconName="eye"
-                  secureTextEntry
-                  onChangeText={password => this.setState({ password })}
-                  value={password}
-                >New Password</InputField>
-              </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
-                <Button onPress={this.verifyNumber}  >Change Password</Button>
-              </View>
-            </View>
-          </View>
-        </View >
-      );
-    }
-  }
-
   render() {
+    const { code } = this.state;
+    const { user: { number } } = this.props;
+
     return (
-      this.renderView()
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
+        <Header />
+        <View style={styles.container}>
+          <View style={styles.child}>
+            <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Verify Number!</TitleText>
+            <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Number Verification code is send to your number {number}</TitleText>
+            <View style={{ marginTop: 30, marginStart: '5%', marginEnd: '5%' }}>
+              <InputField iconName="md-phone-portrait" value={code} onChangeText={code => this.setState({ code })}>Code</InputField>
+            </View>
+            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
+              <Button onPress={this.verifyNumber}  >Verify Number</Button>
+            </View>
+          </View>
+        </View>
+      </View >
     );
   }
 }
@@ -137,8 +102,14 @@ const styles = StyleSheet.create({
   }
 })
 
+const mapStateToProps = state => {
+  return {
+    user: state.AuthReducer.user,
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     sendNumberVerificationCode: actions.sendNumberVerificationCode,
     verifyNumber: actions.verifyNumber,

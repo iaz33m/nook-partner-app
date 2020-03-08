@@ -67,8 +67,7 @@ class RegisterScreen extends React.Component {
     register({
       data: { name, number, password },
       onSuccess: () => {
-        NavigationService.navigateAndResetStack("LoginScreen");
-        alert('Registration was succesfull, you can login now');
+        NavigationService.navigateAndResetStack("NumberVerificationScreen");
       },
       onError: message => {
         alert(message);

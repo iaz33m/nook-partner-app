@@ -16,7 +16,7 @@ const register = options => async dispatch => {
   const { data, onSuccess, onError } = options;
   try {
 
-    const { data: user } = await axios.post(`${APIModel.HOST}/auth/register`, data, {
+    const { data: user } = await axios.post(`${APIModel.HOST}/auth/user_register`, data, {
       'headers': {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -26,12 +26,12 @@ const register = options => async dispatch => {
     const message = user.message;
     delete user.message;
 
-    // dispatch({
-    //   type: actions.LOGIN,
-    //   payload: {
-    //     user,
-    //   },
-    // });
+    dispatch({
+      type: actions.LOGIN,
+      payload: {
+        user,
+      },
+    });
 
     if (onSuccess) {
       onSuccess(message);
@@ -95,13 +95,14 @@ const changePassword = options => async () => {
 };
 
 const sendNumberVerificationCode = options => async () => {
-  const { data, onSuccess, onError } = options;
+  const { token, onSuccess, onError } = options;
   try {
 
-    const { data: response } = await axios.post(`${APIModel.HOST}/user/numberVerification/send`, data, {
+    const { data: response } = await axios.post(`${APIModel.HOST}/auth/user/numberVerification/send`, {}, {
       'headers': {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`
       }
     });
 
@@ -119,18 +120,19 @@ const sendNumberVerificationCode = options => async () => {
 };
 
 const verifyNumber = options => async () => {
-  const { data, onSuccess, onError } = options;
+  const { data, onSuccess, onError, token } = options;
   try {
 
-    const { data: response } = await axios.post(`${APIModel.HOST}/user/numberVerification/verify`, data, {
+    const { data: response } = await axios.post(`${APIModel.HOST}/auth/user/numberVerification/verify`, data, {
       'headers': {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`
       }
     });
 
     if (onSuccess) {
-      onSuccess(response);
+      onSuccess(response.message);
     }
   } catch (error) {
     const message = error.message || fallBackErrorMessage;
@@ -240,16 +242,10 @@ const getSocialUser = async (provider) => {
   return new Promise(async (resolve, reject) => {
     try {
 
-      console.log('Making Request');
-
-      await Facebook.initializeAsync(FACEBOOK_CLIENT_ID);
-
-      console.log('Making Request');
-
       const {
         type,
         token,
-      } = await Facebook.logInWithReadPermissionsAsync({
+      } = await Facebook.logInWithReadPermissionsAsync(FACEBOOK_CLIENT_ID,{
         permissions: ["public_profile"]
       });
 
