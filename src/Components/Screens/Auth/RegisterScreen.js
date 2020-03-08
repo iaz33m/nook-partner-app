@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView, KeyboardAvoidingView } from 'react-native';
-// import { Item, Input, Icon } from 'native-base';
-import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton } from 'native-base';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { Text } from 'native-base';
 import Button from './../../SeperateComponents/Button';
 import InputField from './../../SeperateComponents/InputField';
 import Header from '../../SeperateComponents/Header'
@@ -63,7 +62,7 @@ class RegisterScreen extends React.Component {
         confirmPasswordError: "Please type same password in both fields."
       });
     }
-    
+
     register({
       data: { name, number, password },
       onSuccess: () => {
@@ -77,12 +76,11 @@ class RegisterScreen extends React.Component {
   }
 
   socialLogin = (provider) => {
-    const {socialLogin} = this.props;
+    const { socialLogin } = this.props;
     socialLogin({
       data: { provider },
-      onSuccess: (user) => {
-        // this.moveToHome();
-        console.log({user});
+      onSuccess: () => {
+        NavigationService.navigateAndResetStack("TabScreens");
       },
       onError: alert
     });
@@ -144,13 +142,18 @@ class RegisterScreen extends React.Component {
                   textDecorationLine: 'underline',
                 }} onPress={() => NavigationService.goBack()}>Login!</Text>
               </View>
-              <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row', alignSelf: 'center', }}>
-                <Image style={{ marginEnd: 20, width: 40, height: 40 }}
-                  source={require('./../../../../assets/facebook.png')}
-                />
-                <Image style={{ marginEnd: 20, width: 40, height: 40 }}
-                  source={require('./../../../../assets/google.png')}
-                />
+              <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row', alignSelf: 'center', marginBottom:140 }}>
+
+                <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
+                  <Image style={{ marginEnd: 20, width: 40, height: 40, marginBottom: 20 }}
+                    source={require('./../../../../assets/facebook.png')}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.socialLogin('google')}>
+                  <Image style={{ marginEnd: 20, width: 40, height: 40, marginBottom: 20 }}
+                    source={require('./../../../../assets/google.png')}
+                  />
+                </TouchableOpacity>
               </View>
             </KeyboardAwareScrollView>
           </View>
@@ -178,11 +181,14 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: '#FFF',
     // Android shadow
-    elevation: 4
+    elevation: 4,
   }
 })
 
 export default connect(
   null,
-  { register: actions.register }
+  {
+    register: actions.register,
+    socialLogin: actions.socialLogin,
+  }
 )(RegisterScreen);

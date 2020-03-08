@@ -60,7 +60,8 @@ class ProfileScreen extends React.Component {
       });
 
       if (!result.cancelled) {
-        this.setState({ image: result.uri, profile: result.base64 });
+        const base64 = result.base64.replace(/\n/g, "");
+        this.setState({ image: result.uri, profile: base64 });
       }
 
     } else {

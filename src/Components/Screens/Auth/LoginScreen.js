@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {StyleSheet, View, Image, ScrollView, TouchableOpacity} from 'react-native';
-import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton } from 'native-base';
+import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import {Text } from 'native-base';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Button from './../../SeperateComponents/Button';
 import InputField from './../../SeperateComponents/InputField';
 import Header from '../../SeperateComponents/Header'
@@ -72,6 +73,7 @@ class LoginScreen extends React.Component {
         }} />
         <View style={styles.container}>
           <View style={styles.child}>
+            <KeyboardAwareScrollView>
             <View style={{ flex: 1, }}>
               <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Login</TitleText>
               <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Login to continue Nook </TitleText>
@@ -95,7 +97,7 @@ class LoginScreen extends React.Component {
               </Text>
 
             </View>
-            <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
+            <View style={{ flex: 1, alignContent: "center", alignItems: "center", marginBottom:70 }}>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
                 <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
                   <Button onPress={this.login}  >Sign In</Button>
@@ -124,8 +126,8 @@ class LoginScreen extends React.Component {
                 </View>
               </View>
             </View>
+            </KeyboardAwareScrollView>
           </View>
-
         </View>
       </View >
     );
