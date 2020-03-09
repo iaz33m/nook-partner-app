@@ -12,11 +12,13 @@ import InputField from '../../SeperateComponents/InputField';
 import MapView, { Marker } from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
+import WebView from "react-native-webview/lib/WebView.android";
 
 class NookDetailScreen extends React.Component {
 
   constructor(props) {
     super(props)
+
     this.state = {
       tabIndex: 0,
       isDialogVisible: false,
@@ -32,7 +34,7 @@ class NookDetailScreen extends React.Component {
   }
 
 
-  mapView = () => {
+  Map = () => {
     return (<View style={{ flex: 1 }}>
 
       <MapView initialRegion={{
@@ -41,12 +43,11 @@ class NookDetailScreen extends React.Component {
         longitudeDelta: 0.0421,
       }} style={styles.mapStyle} >
         <Marker onPress={(coordinate, points) => {
-
         }}
           image={require('./../../../../assets/marker.png')}
           coordinate={{
-            latitude: 31.435076,
-            longitude: 74.3000764,
+            latitude: this.state.markers.latlng.latitude,
+            longitude: this.state.markers.latlng.latitude,
           }}
         />
       </MapView>
@@ -59,9 +60,27 @@ class NookDetailScreen extends React.Component {
     </View>)
   }
 
+  componentDidMount() {
+    const nook = this.props.navigation.state.params;
+
+    if (nook.location){
+      this.setState({
+        markers: {
+          latlng: {
+            latitude: nook.location.lat,
+            longitude: nook.location.lng
+          }
+        }
+      });
+    }
+  }
 
   render() {
-    let view = this.mapView();
+    const nook = this.props.navigation.state.params;
+
+
+
+    let view = this.Map();
     let tab1Color;
     let tab2Color;
     let tab1Icon;
@@ -82,8 +101,6 @@ class NookDetailScreen extends React.Component {
 
     return (
 
-
-
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
         <Header backButton={true} optionButton={() => {
 
@@ -95,26 +112,54 @@ class NookDetailScreen extends React.Component {
 
             </View>
             <View style={{ flex: 1, width: '100%', marginTop: 10, position: 'absolute', }}>
-              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 22, }} >NK-123</TitleText>
+              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 22, }} >{nook.nookCode}</TitleText>
             </View>
           </View>
           <View style={{ borderRadius: 30, marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
             <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
-              <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Type</Text>
-              <Text style={{ margin: 15, fontSize: 16, }}>Rs1200</Text>
+              <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>{nook.type}</Text>
+              <Text style={{ margin: 15, fontSize: 16, }}>Rs{nook.price ? nook.price : Math.min(...nook.rooms.map(r=>r.price_per_bed))}</Text>
             </View>
-            <View style={{ marginTop: 15 }}>
-              <Image resizeMode="cover" source={require('./../../../../assets/test_image.jpeg')} style={{ borderRadius: 10, height: 200, width: null, flex: 1 }} />
-              <View style={{ position: 'absolute', bottom: 8, left: 10 }}>
-                <AirbnbRating showRating={false} size={15} />
-              </View>
-            </View>
-            <ScrollView horizontal={true} style={{ paddingTop: 15, paddingBottom: 15 }}>
-              <Image resizeMode="cover" source={require('./../../../../assets/test_image.jpeg')} style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
-              <Image resizeMode="cover" source={require('./../../../../assets/test_image.jpeg')} style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
-              <Image resizeMode="cover" source={require('./../../../../assets/test_image.jpeg')} style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
-              <Image resizeMode="cover" source={require('./../../../../assets/test_image.jpeg')} style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
-            </ScrollView>
+            {this.state.tabIndex === 0 ?
+              <View>
+                <View style={{ marginTop: 15 }}>
+                  {
+                    nook.medias.map((m,index) => {
+                          if (index === 0) {
+                            return <Image  resizeMode="cover" key={index} resizeMode="contain" source={{
+                              uri: m.path
+                            }
+                            } style={{ borderRadius: 10, height: 200, width: null, flex: 1 }}/>
+
+                          }
+                        }
+                    )
+                  }
+                  <View style={{ position: 'absolute', bottom: 8, left: 10 }}>
+                    <AirbnbRating showRating={false} size={15} />
+                  </View>
+                </View>
+                <ScrollView horizontal={true} style={{ paddingTop: 15, paddingBottom: 15 }}>
+                  {
+                    nook.medias.map((m,index) => {
+                          return <Image  resizeMode="cover" key={index} resizeMode="contain" source={{
+                            uri: m.path
+                          }
+                          } style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
+                        }
+                    )
+                  }
+                </ScrollView>
+              </View>:
+                <View style={{marginTop:15,paddingBottom:15,borderRadius: 10,backgroundColor: Colors.white}}>
+                  <WebView
+                      style={{  height: 200, width: null, flex: 1 }}
+                      javaScriptEnabled={true}
+                      domStorageEnabled={true}
+                      source={{uri: nook.video_url }}
+                  />
+                </View>
+            }
             <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity onPress={() => {
@@ -140,7 +185,7 @@ class NookDetailScreen extends React.Component {
                   <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >
                     Description
                     </TitleText>
-                  <Text>Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
+                  <Text>{nook.description}</Text>
                 </View>
               </View>
             </View>
@@ -149,43 +194,29 @@ class NookDetailScreen extends React.Component {
             </TitleText>
 
             <View style={{ flexWrap: 'wrap', flexDirection: 'row', }}>
-              <View style={{ width: "25%" }}>
-                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
-                  <Text>Wifi</Text>
-                </Card>
-              </View>
-              <View style={{ width: "25%" }}>
-                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
-                  <Text>Card</Text>
-                </Card>
-              </View>
-              <View style={{ width: "25%" }}>
-                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
-                  <Text>TV</Text>
-                </Card>
-              </View>
-              <View style={{ width: "25%" }}>
-                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
-                  <Text>Intenet</Text>
-                </Card>
-              </View>
-              <View style={{ width: "25%" }}>
-                <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
-                  <Text>Iron</Text>
-                </Card>
-              </View>
+              {nook.facilities.map((fac,facI)=>
+                <View key={facI} style={{ width: "25%" }}>
+                  <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
+                    <Text>fac</Text>
+                  </Card>
+                </View>
+              )}
 
             </View>
+            {nook.location &&
+                <View>
+              <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
+                Location
+              </TitleText>
+              <View style={{ height: 400 }}>
+                { view}
+              </View>
+                </View>
+                }
 
-            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
-              Location
-            </TitleText>
-            <View style={{ height: 400 }}>
-              {view}
-            </View>
             <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
-              <Text style={{ margin: 15, fontSize: 16, }}>+89222120240</Text>
+              <Text style={{ margin: 15, fontSize: 16, }}>{nook.number}</Text>
             </View>
             <Button onPress={() => { this.setState({ isDialogVisible: true }); }}>Book Now</Button>
             <Button onPress={() => { }}>Schedule List</Button>

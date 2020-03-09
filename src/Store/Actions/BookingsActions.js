@@ -9,7 +9,7 @@ const getBookings = options => async dispatch => {
     let queryString = '';
     Object.keys(filter).forEach(key => {
         queryString=`${queryString}${key}=${filter[key]}&`;
-    })
+    });
     try {
 
         const res = await axios.get(`${APIModel.HOST}/auth/user/bookings?${queryString}`, {
