@@ -29,6 +29,13 @@ const NookReducer = (state = initSate, action) => {
           nooks: [...action.payload],
         };
       }
+      case actions.ADD_NOOK_ROOM: {
+        return {
+          ...state,
+          // bookings: state.bookings.append(action.payload.booking),
+          bookings: state.bookings.concat([action.payload.booking]),
+        };
+      }
     default: {
       return state;
     }
