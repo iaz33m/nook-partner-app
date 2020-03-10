@@ -14,7 +14,7 @@ const GooglePlacesInput = () => {
             <GooglePlacesAutocomplete
                 placeholder='Search'
                 minLength={2} // minimum length of text to search
-                autoFocus={false}
+                autoFocus={true}
                 returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
                 keyboardAppearance={'light'} // Can be left out for default keyboardAppearance https://facebook.github.io/react-native/docs/textinput.html#keyboardappearance
                 listViewDisplayed='auto'    // true/false/undefined
@@ -30,12 +30,18 @@ const GooglePlacesInput = () => {
                     // available options: https://developers.google.com/places/web-service/autocomplete
                     key: 'AIzaSyBNBrWGhiL26l5t76_vdLlTf-Y1ReGC3Oo',
                     language: 'en', // language of the results
-                    types: '(cities)' // default: 'geocode'
+                    types: 'geocode' // default: 'geocode'
                 }}
 
                 styles={{
+                    container:{
+                        marginTop:25,
+                    },
                     textInputContainer: {
-                        width: '100%'
+                        width: '100%',
+                        paddingStart: 10,
+                        paddingEnd: 10,
+                        height:45,
                     },
                     description: {
                         fontWeight: 'bold'
@@ -66,7 +72,7 @@ const GooglePlacesInput = () => {
                 predefinedPlaces={[homePlace, workPlace]}
 
                 debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-                renderLeftButton={()  => <Image style={{ height: 20, width: 20, alignSelf:'center' }} source={require('./../../../assets/search.png')} />}
+                renderLeftButton={()  => <Image style={{ marginStart:5, height: 20, width: 20, alignSelf:'center' }} source={require('./../../../assets/search.png')} />}
                 // renderRightButton={() => <Text>Custom text after the input</Text>}
             />
     );

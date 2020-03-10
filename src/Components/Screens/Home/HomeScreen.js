@@ -55,7 +55,7 @@ class HomeScreen extends React.Component {
           }}
         />
       </MapView>
-      <TouchableOpacity onPress={()=>NavigationService.navigate("GooglePlacesInput")}
+      <TouchableOpacity onPress={()=> NavigationService.navigate("GooglePlacesInput")}
           style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
         <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', paddingStart: 20 }]}>
           <Image resizeMode="contain" source={require('./../../../../assets/search.png')} style={{ height: 20, width: 20, }} />
