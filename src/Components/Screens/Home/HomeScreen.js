@@ -31,8 +31,8 @@ class HomeScreen extends React.Component {
       isDialogVisible: false,
       markers: {
         latlng: {
-          latitude: 31.435076,
-          longitude: 74.3000764,
+          latitude: 31.5204,
+          longitude: 74.3587,
         },
         title: "",
         description: ""
@@ -66,7 +66,15 @@ class HomeScreen extends React.Component {
     });
   }
 
+
   mapView = () => {
+
+    const { nooks } = this.props;
+    const { loading, selectedNook } = this.state;
+    if (loading) {
+      return <Spinner color='black' />;
+    }
+
     return (<View style={{ flex: 1 }}>
 
       <MapView initialRegion={{
@@ -74,15 +82,19 @@ class HomeScreen extends React.Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       }} style={styles.mapStyle}>
-        <Marker onPress={(coordinate, points) => {
-          this.setState({ isDialogVisible: true });
-        }}
-          image={require('./../../../../assets/marker.png')}
-          coordinate={{
-            latitude: 31.435076,
-            longitude: 74.3000764,
-          }}
-        />
+        {nooks.filter(nook => nook.location).map((nook) => {
+          return (
+            <Marker key={nook.id} onPress={(coordinate, points) => {
+              this.setState({ isDialogVisible: true, selectedNook: nook });
+            }}
+              image={require('./../../../../assets/marker.png')}
+              coordinate={{
+                latitude: nook.location.lat,
+                longitude: nook.location.lng,
+              }}
+            />
+          );
+        })}
       </MapView>
       <TouchableOpacity onPress={() => NavigationService.navigate("GooglePlacesInput")}
         style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
@@ -97,8 +109,8 @@ class HomeScreen extends React.Component {
           <Text style={{ margin: 15, }}>Enter desired location</Text>
         </View>
       </TouchableOpacity>
-      <PopupDialog
-        width={0.9} height={0.8}
+      {selectedNook && <PopupDialog
+        width={0.9} height={0.6}
         ref={"popupDialog"}
         visible={this.state.isDialogVisible}
         onTouchOutside={() => {
@@ -111,30 +123,31 @@ class HomeScreen extends React.Component {
             <Image resizeMode="contain" source={require('./../../../../assets/close.png')}
               style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
           </TouchableOpacity>
-          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }}>NK-123</TitleText>
-          <Image resizeMode="contain" source={require('./../../../../assets/test_image.jpeg')}
+          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.nookCode}</TitleText>
+          <Image resizeMode="contain" source={{uri:selectedNook.medias[0].path}}
             style={{ borderRadius: 5, height: 200, width: null, marginTop: 15 }} />
           <View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
             <View style={{ flex: 1, alignItems: 'flex-start' }}>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Price</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Distance</TitleText>
+        <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Price</TitleText>
+              {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Distance</TitleText> */}
               <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Gender</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Partner
-                                time</TitleText>
+              {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Partner time</TitleText> */}
             </View>
             <View style={{ flex: 1, alignItems: 'flex-end' }}>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>8000</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>9/1 km</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Male</TitleText>
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Pak Arab</TitleText>
+              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>PKR {selectedNook.rooms[0].price_per_bed}</TitleText>
+              {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>9/1 km</TitleText> */}
+        <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.gender_type}</TitleText>
+              {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Pak Arab</TitleText> */}
             </View>
           </View>
-          <Button onPress={() => {
+          {/* <Button onPress={() => {
             this.setState({ isDialogVisible: false });
             NavigationService.navigate("NookDetailScreen")
-          }}>See More</Button>
+          }}>See More</Button> */}
         </View>
       </PopupDialog>
+      }
+
     </View>)
   }
   listView = () => {
@@ -168,7 +181,7 @@ class HomeScreen extends React.Component {
             }}>
               <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text>{item.type} </Text>
-                <Text>{item.price ? item.price : Math.min(...item.rooms.map(r => r.price_per_bed))}</Text>
+                <Text>PKR {item.price ? item.price : Math.min(...item.rooms.map(r => r.price_per_bed))}</Text>
               </View>
               <CardItem cardBody>
                 {
@@ -182,9 +195,6 @@ class HomeScreen extends React.Component {
                   }
                   )
                 }
-                <View style={{ position: 'absolute', bottom: 8, left: 10 }}>
-                  <AirbnbRating showRating={false} size={15} />
-                </View>
               </CardItem>
               <TitleText
                 style={{ marginTop: 10, marginBottom: 10, fontSize: 20, }}>{item.nookCode}</TitleText>
