@@ -1,25 +1,18 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
-import { Icon, Drawer, Card, CardItem, Spinner } from "native-base";
-import { DrawerItems } from 'react-navigation';
+import { Text, View, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { CardItem, Spinner } from "native-base";
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
 import * as NavigationService from '../../../NavigationService';
 import Colors from '../../../helper/Colors';
-import { AirbnbRating } from 'react-native-ratings';
 import styles from './styles';
-import InputField from '../../SeperateComponents/InputField';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 
 import PopupDialog from 'react-native-popup-dialog';
-import Button from '../../SeperateComponents/Button';
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { connect } from "react-redux";
 import * as actions from "../../../Store/Actions/NookActions";
-
-const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
-const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
+import {calculateDistance} from '../../../helper/locationHelper';
 
 class HomeScreen extends React.Component {
 
@@ -69,11 +62,24 @@ class HomeScreen extends React.Component {
 
   mapView = () => {
 
-    const { nooks } = this.props;
+    const { nooks, desiredLocation } = this.props;
+    let locationAddress = 'Enter desired location';
+
+    if(desiredLocation){
+      locationAddress = desiredLocation.address || locationAddress;
+    }
+
+    console.log('Render desiredLocation',desiredLocation);
+    
     const { loading, selectedNook } = this.state;
     if (loading) {
       return <Spinner color='black' />;
     }
+
+    let distance = '';
+    if(desiredLocation && selectedNook){
+      distance = calculateDistance(desiredLocation,selectedNook.location)
+    } 
 
     return (<View style={{ flex: 1 }}>
 
@@ -106,7 +112,7 @@ class HomeScreen extends React.Component {
         }]}>
           <Image resizeMode="contain" source={require('./../../../../assets/search.png')}
             style={{ height: 20, width: 20, }} />
-          <Text style={{ margin: 15, }}>Enter desired location</Text>
+          <Text style={{ margin: 15, }}>{locationAddress}</Text>
         </View>
       </TouchableOpacity>
       {selectedNook && <PopupDialog
@@ -129,21 +135,17 @@ class HomeScreen extends React.Component {
           <View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
             <View style={{ flex: 1, alignItems: 'flex-start' }}>
         <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Price</TitleText>
-              {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Distance</TitleText> */}
+              {distance && <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Distance</TitleText>}
               <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Gender</TitleText>
               {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Partner time</TitleText> */}
             </View>
             <View style={{ flex: 1, alignItems: 'flex-end' }}>
               <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>PKR {selectedNook.rooms[0].price_per_bed}</TitleText>
-              {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>9/1 km</TitleText> */}
-        <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.gender_type}</TitleText>
+              {distance && <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{distance} km</TitleText>}
+              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.gender_type}</TitleText>
               {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Pak Arab</TitleText> */}
             </View>
           </View>
-          {/* <Button onPress={() => {
-            this.setState({ isDialogVisible: false });
-            NavigationService.navigate("NookDetailScreen")
-          }}>See More</Button> */}
         </View>
       </PopupDialog>
       }
@@ -151,7 +153,15 @@ class HomeScreen extends React.Component {
     </View>)
   }
   listView = () => {
-    const { nooks } = this.props;
+    const { nooks, desiredLocation } = this.props;
+    let locationAddress = 'Enter desired location';
+
+    if(desiredLocation){
+      locationAddress = desiredLocation.address || locationAddress;
+    }
+
+    console.log('Render desiredLocation',desiredLocation);
+
     const { loading } = this.state;
     if (loading) {
       return <Spinner color='black' />;
@@ -159,7 +169,7 @@ class HomeScreen extends React.Component {
 
     return (<View style={{ flex: 1, flexDirection: "column" }}>
 
-      <TouchableOpacity style={[styles.container, { flex: 0, marginTop: 10 }]}>
+      <TouchableOpacity style={[styles.container, { flex: 0, marginTop: 10 }]} onPress={() => NavigationService.navigate("GooglePlacesInput")}>
         <View style={[styles.child, {
           borderRadius: 30,
           flexDirection: 'row',
@@ -168,7 +178,7 @@ class HomeScreen extends React.Component {
         }]}>
           <Image resizeMode="contain" source={require('./../../../../assets/search.png')}
             style={{ height: 20, width: 20, }} />
-          <Text style={{ margin: 15, }}>Enter desired location</Text>
+          <Text style={{ margin: 15, }}>{locationAddress}</Text>
         </View>
       </TouchableOpacity>
 
@@ -382,11 +392,11 @@ const mapStateToProps = state => {
   return {
     nooks: state.NookReducer.nooks,
     user: state.AuthReducer.user,
+    desiredLocation: state.NookReducer.desiredLocation,
   };
 };
 export default connect(
-  mapStateToProps,
-  {
+  mapStateToProps,{
     getPublicNooks: actions.getPublicNooks,
   },
 )(HomeScreen)

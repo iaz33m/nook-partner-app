@@ -4,6 +4,7 @@ const initSate = {
     nook:null,
     review:null,
     nooks:[],
+    desiredLocation:null,
 };
 
 const NookReducer = (state = initSate, action) => {
@@ -21,6 +22,14 @@ const NookReducer = (state = initSate, action) => {
       return {
         ...state,
         review,
+      };
+    }
+    case actions.SET_DESIRED_LOCATION: {
+      const desiredLocation = action.payload;
+      console.log({desiredLocation});
+      return {
+        ...state,
+        desiredLocation,
       };
     }
     case actions.SET_NOOKS: {
