@@ -15,6 +15,8 @@ import Button from '../../SeperateComponents/Button';
 import WebView from "react-native-webview/lib/WebView.android";
 import {connect} from "react-redux";
 import * as actions from "../../../Store/Actions/NookActions";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 class NookDetailScreen extends React.Component {
 
@@ -37,7 +39,11 @@ class NookDetailScreen extends React.Component {
       },
       roomId: 0,
       isBookNow: false,
-      isSchedule: false
+      isSchedule: false,
+      date: new Date(),
+      show: false,
+      mode: 'date',
+      nook: null
     }
   }
 
@@ -69,32 +75,52 @@ class NookDetailScreen extends React.Component {
   }
 
   componentDidMount() {
-    const nook = this.props.navigation.state.params;
 
-    if (nook.location){
+    if (this.state.nook.location){
       this.setState({
         markers: {
           latlng: {
-            latitude: nook.location.lat,
-            longitude: nook.location.lng
+            latitude: this.state.nook.location.lat,
+            longitude: this.state.nook.location.lng
           }
         }
       });
     }
   }
+
+
   handleRoomChange = value => this.setState({
     roomId: value
   });
+
+
+  handleConfirm = date => {
+    console.warn("A date has been picked: ", date);
+  };
   render() {
     const nook = this.props.navigation.state.params;
+    this.setState({
+      nook: this.props.navigation.state.params
+    });
     const {rooms} = nook;
-    var options ={
-      "1": "Home",
-      "2": "Food",
-      "3": "Car",
-      "4": "Bank",
-    };
     const { filter } = this.state;
+
+    const onChange = (event, selectedDate) => {
+      const currentDate = selectedDate || date;
+      setDate(currentDate);
+      this.setState({
+        data: currentDate,
+        show: Platform.OS === 'ios'
+      })
+    };
+
+    const showMode = currentMode => {
+      this.setState({
+        show: true,
+        mode: currentMode
+      })
+    };
+
 
     let view = this.Map();
     let tab1Color;
@@ -132,10 +158,14 @@ class NookDetailScreen extends React.Component {
             </View>
           </View>
           <View style={{ borderRadius: 30, marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
+            <TouchableOpacity onPress={() => {
+              showMode('time');
+            }}>
             <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>{nook.type}</Text>
               <Text style={{ margin: 15, fontSize: 16, }}>Rs{nook.price ? nook.price : Math.min(...nook.rooms.map(r=>r.price_per_bed))}</Text>
             </View>
+            </TouchableOpacity>
             {this.state.tabIndex === 0 ?
               <View>
                 <View style={{ marginTop: 15 }}>
@@ -248,14 +278,16 @@ class NookDetailScreen extends React.Component {
                     }}>
                   <View style={{ flex: 1, padding: 25, }}>
                     <TouchableOpacity onPress={() => {
-                      this.setState({ isDialogVisible: false });
+                      showMode('date');
                     }}>
                       <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
                     </TouchableOpacity>
                     <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
                       Date
                     </TitleText>
-                    <TouchableOpacity style={[styles.container, { width: "100%", flex: 0, padding: 0 }]}>
+                    <TouchableOpacity onPress={() => {
+                      showMode('time');
+                    }} style={[styles.container, { width: "100%", flex: 0, padding: 0 }]}>
                       <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15 }]}>
                         <Text style={{ margin: 15, }}>01/01/2020</Text>
                         <Image resizeMode="contain" source={require('./../../../../assets/date.png')} style={{ height: 20, width: 20, }} />
@@ -277,6 +309,28 @@ class NookDetailScreen extends React.Component {
                   </View>
                 </PopupDialog>
           }
+
+              <View>
+                <Text>dsfsdfsdfsdf sdfsdbf dshfs</Text>
+                {/*<DateTimePicker*/}
+                {/*    testID="dateTimePicker"*/}
+                {/*    timeZoneOffsetInMinutes={0}*/}
+                {/*    value={this.state.date}*/}
+                {/*    mode={this.state.mode}*/}
+                {/*    is24Hour={true}*/}
+                {/*    display="default"*/}
+                {/*    // onChange={onChange}*/}
+                {/*    onChange={d => {*/}
+                {/*      this.setState({ date: moment(d) });*/}
+                {/*    }}*/}
+                {/*/>*/}
+                <DateTimePickerModal
+                    isVisible={this.state.show}
+                    mode="date"
+                    onConfirm={this.handleConfirm}
+                    onCancel={this.handleConfirm}
+                />
+              </View>
           {
             this.state.isBookNow &&
                 <PopupDialog
