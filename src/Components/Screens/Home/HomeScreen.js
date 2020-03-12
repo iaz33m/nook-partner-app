@@ -134,14 +134,22 @@ class HomeScreen extends React.Component {
             style={{ borderRadius: 5, height: 200, width: null, marginTop: 15 }} />
           <View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
             <View style={{ flex: 1, alignItems: 'flex-start' }}>
-        <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Price</TitleText>
-              {distance && <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Distance</TitleText>}
-              <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Gender</TitleText>
-              {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Partner time</TitleText> */}
+              
+            <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Price</TitleText>
+              {(() => {
+                if(distance){
+                  return <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Distance</TitleText>;
+                }
+              })()}
+               <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Gender</TitleText>
             </View>
             <View style={{ flex: 1, alignItems: 'flex-end' }}>
               <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>PKR {selectedNook.rooms[0].price_per_bed}</TitleText>
-              {distance && <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{distance} km</TitleText>}
+              {(() => {
+                if(distance){
+                  return <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{distance} km</TitleText>
+                }
+              })()}
               <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.gender_type}</TitleText>
               {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Pak Arab</TitleText> */}
             </View>
