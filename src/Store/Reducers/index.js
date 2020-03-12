@@ -5,6 +5,7 @@ import NookReducer from './NookReducer';
 import BookingsReducer from './BookingsReducer';
 import NoticesReducer from './NoticesReducer';
 import ShiftsReducer from './ShiftsReducer';
+import VisitsReducer from "./VisitsReducer";
 
 const rootReducers = combineReducers({
   AuthReducer,
@@ -12,7 +13,8 @@ const rootReducers = combineReducers({
   NookReducer,
   BookingsReducer,
   NoticesReducer,
-  ShiftsReducer
+  ShiftsReducer,
+  VisitsReducer
 });
 
 export default rootReducers;

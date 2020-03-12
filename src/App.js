@@ -153,9 +153,9 @@ const TabScreens = createBottomTabNavigator(
     Shifts: {
       screen: ShiftsScreen
     },
-    // Visits: {
-    //   screen: VisitsScreen
-    // },
+    Visits: {
+      screen: VisitsScreen
+    },
     // Payment: {
     //   screen: PaymentScreen
     // },
