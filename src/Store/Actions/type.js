@@ -12,4 +12,5 @@ export const SET_SHIFTS = 'SET_SHIFTS';
 export const SET_NOTICES = 'SET_NOTICES';
 export const ADD_NOOK_ROOM = 'ADD_NOOK_ROOM';
 export const SET_VISITS = 'SET_VISITS';
+export const SET_DESIRED_LOCATION  = 'SET_DESIRED_LOCATION';
 

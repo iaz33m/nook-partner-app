@@ -131,4 +131,13 @@ const addNookRoom = options => async dispatch => {
     }
 };
 
-export { getMyNookDetails,addReivew ,getPublicNooks,addNookRoom};
+
+const setDesiredLocation = options => async dispatch => {
+    const {location} =  options.data;
+    dispatch({
+        type: actions.SET_DESIRED_LOCATION,
+        payload:location
+    });
+};
+
+export { getMyNookDetails,addReivew ,getPublicNooks,addNookRoom,setDesiredLocation};

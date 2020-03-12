@@ -1,14 +1,11 @@
 import React from 'react';
-import { Image, Text } from 'react-native';
+import { connect } from "react-redux";
+import { Image } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import {connect} from "react-redux";
-import * as actions from "../../Store/Actions/AuthActions";
-import View from "../../theme/components/View";
+import * as NavigationService from './../../NavigationService';
+import * as actions from "../../Store/Actions/NookActions";
 
-const homePlace = { description: 'Home', geometry: { location: { lat: 33.711409, lng: 73.043140 } }};
-const workPlace = { description: 'Work', geometry: { location: { lat: 33.645076, lng: 72.965527 } }};
-
-const GooglePlacesInput = () => {
+const GooglePlacesInput = ({setDesiredLocation}) => {
     return (
 
             <GooglePlacesAutocomplete
@@ -21,7 +18,18 @@ const GooglePlacesInput = () => {
                 fetchDetails={true}
                 renderDescription={row => row.description} // custom description render
                 onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                    console.log(data, details);
+                    const location = {
+                        address: data.description,
+                        ...details.geometry.location
+                    };
+
+                    setDesiredLocation({
+                        data:{
+                            location
+                        }
+                    });
+                    
+                    NavigationService.goBack();
                 }}
 
                 getDefaultValue={() => ''}
@@ -69,7 +77,6 @@ const GooglePlacesInput = () => {
                 }}
 
                 filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-                predefinedPlaces={[homePlace, workPlace]}
 
                 debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
                 renderLeftButton={()  => <Image style={{ marginStart:5, height: 20, width: 20, alignSelf:'center' }} source={require('./../../../assets/search.png')} />}
@@ -78,4 +85,15 @@ const GooglePlacesInput = () => {
     );
 }
 
-export default GooglePlacesInput;
+const mapStateToProps = state => {
+    return {
+        desiredLocation: state.NookReducer.desiredLocation,
+    };
+  };
+  
+  export default connect(
+    mapStateToProps,
+    {
+        setDesiredLocation: actions.setDesiredLocation,
+    },
+  )(GooglePlacesInput)

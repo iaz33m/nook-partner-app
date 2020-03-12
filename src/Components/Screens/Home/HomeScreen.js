@@ -1,25 +1,22 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, TextInput} from 'react-native';
-import {Icon, Drawer, Card, CardItem, Spinner, Item, Picker} from "native-base";
-import {DrawerItems} from 'react-navigation';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
+import { Icon, Drawer, Card, CardItem, Spinner, Item, Picker } from "native-base";
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
 import * as NavigationService from '../../../NavigationService';
 import Colors from '../../../helper/Colors';
-import {AirbnbRating} from 'react-native-ratings';
 import styles from './styles';
-import InputField from '../../SeperateComponents/InputField';
 import MapView from 'react-native-maps';
-import {Marker} from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 
 import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
-import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
-import {connect} from "react-redux";
 import * as actions from "../../../Store/Actions/NookActions";
+import { connect } from "react-redux";
+import { calculateDistance } from '../../../helper/locationHelper';
 
-const homePlace = {description: 'Home', geometry: {location: {lat: 48.8152937, lng: 2.4597668}}};
-const workPlace = {description: 'Work', geometry: {location: {lat: 48.8496818, lng: 2.2940881}}};
+const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
+const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
 
 class HomeScreen extends React.Component {
 
@@ -39,8 +36,8 @@ class HomeScreen extends React.Component {
             },
             filter: {
                 space_type: '',
-              type: '',
-              gender: ''
+                type: '',
+                gender: ''
             },
             loading: true,
             modalVisible: false,
@@ -71,17 +68,17 @@ class HomeScreen extends React.Component {
     }
 
     applyFilter = () => {
-        const {user: {access_token}, getPublicNooks} = this.props;
-        const {filter} = this.state;
+        const { user: { access_token }, getPublicNooks } = this.props;
+        const { filter } = this.state;
         console.log('filter', filter);
-        this.setState({loading: true, modalVisible: false});
+        this.setState({ loading: true, modalVisible: false });
         getPublicNooks({
             onError: (error) => {
                 alert(error);
-                this.setState({loading: false});
+                this.setState({ loading: false });
             },
             onSuccess: () => {
-                this.setState({loading: false});
+                this.setState({ loading: false });
             },
             filter,
             token: access_token
@@ -91,13 +88,25 @@ class HomeScreen extends React.Component {
 
     mapView = () => {
 
-        const {nooks} = this.props;
-        const {loading, selectedNook} = this.state;
-        if (loading) {
-            return <Spinner color='black'/>;
+        const { nooks, desiredLocation } = this.props;
+        const { loading, selectedNook } = this.state;
+
+        let locationAddress = 'Enter desired location';
+
+        if (desiredLocation) {
+            locationAddress = desiredLocation.address || locationAddress;
         }
 
-        return (<View style={{flex: 1}}>
+        if (loading) {
+            return <Spinner color='black' />;
+        }
+
+        let distance = '';
+        if (desiredLocation && selectedNook) {
+            distance = calculateDistance(desiredLocation, selectedNook.location)
+        }
+
+        return (<View style={{ flex: 1 }}>
 
             <MapView initialRegion={{
                 ...this.state.markers.latlng,
@@ -107,19 +116,19 @@ class HomeScreen extends React.Component {
                 {nooks.filter(nook => nook.location).map((nook) => {
                     return (
                         <Marker key={nook.id} onPress={(coordinate, points) => {
-                            this.setState({isDialogVisible: true, selectedNook: nook});
+                            this.setState({ isDialogVisible: true, selectedNook: nook });
                         }}
-                                image={require('./../../../../assets/marker.png')}
-                                coordinate={{
-                                    latitude: nook.location.lat,
-                                    longitude: nook.location.lng,
-                                }}
+                            image={require('./../../../../assets/marker.png')}
+                            coordinate={{
+                                latitude: nook.location.lat,
+                                longitude: nook.location.lng,
+                            }}
                         />
                     );
                 })}
             </MapView>
             <TouchableOpacity onPress={() => NavigationService.navigate("GooglePlacesInput")}
-                              style={[styles.container, {width: "100%", flex: 0, marginTop: 10, position: 'absolute'}]}>
+                style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
                 <View style={[styles.child, {
                     borderRadius: 30,
                     flexDirection: 'row',
@@ -127,8 +136,8 @@ class HomeScreen extends React.Component {
                     paddingStart: 20
                 }]}>
                     <Image resizeMode="contain" source={require('./../../../../assets/search.png')}
-                           style={{height: 20, width: 20,}}/>
-                    <Text style={{margin: 15,}}>Enter desired location</Text>
+                        style={{ height: 20, width: 20, }} />
+                    <Text style={{ margin: 15, }}>{locationAddress}</Text>
                 </View>
             </TouchableOpacity>
             {selectedNook && <PopupDialog
@@ -136,39 +145,47 @@ class HomeScreen extends React.Component {
                 ref={"popupDialog"}
                 visible={this.state.isDialogVisible}
                 onTouchOutside={() => {
-                    this.setState({isDialogVisible: false});
+                    this.setState({ isDialogVisible: false });
                 }}>
-                <View style={{flex: 1, padding: 15,}}>
+                <View style={{ flex: 1, padding: 15, }}>
                     <TouchableOpacity onPress={() => {
-                        this.setState({isDialogVisible: false});
+                        this.setState({ isDialogVisible: false });
                     }}>
                         <Image resizeMode="contain" source={require('./../../../../assets/close.png')}
-                               style={{height: 25, width: 25, alignSelf: 'flex-end'}}/>
+                            style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
                     </TouchableOpacity>
                     <TitleText
-                        style={{marginTop: 10, fontWeight: 'bold', fontSize: 16,}}>{selectedNook.nookCode}</TitleText>
-                    <Image resizeMode="contain" source={{uri: selectedNook.medias[0].path}}
-                           style={{borderRadius: 5, height: 200, width: null, marginTop: 15}}/>
-                    <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
-                        <View style={{flex: 1, alignItems: 'flex-start'}}>
-                            <TitleText style={{marginTop: 15, fontWeight: 'bold', fontSize: 16,}}>Price</TitleText>
-                            {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Distance</TitleText> */}
-                            <TitleText style={{marginTop: 15, fontWeight: 'bold', fontSize: 16,}}>Gender</TitleText>
+                        style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.nookCode}</TitleText>
+                    <Image resizeMode="contain" source={{ uri: selectedNook.medias[0].path }}
+                        style={{ borderRadius: 5, height: 200, width: null, marginTop: 15 }} />
+                    <View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
+                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                            <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Price</TitleText>
+                            {(() => {
+                                if (distance) {
+                                    return <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Distance</TitleText>;
+                                }
+                            })()}
+                            <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Gender</TitleText>
                             {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Partner time</TitleText> */}
                         </View>
-                        <View style={{flex: 1, alignItems: 'flex-end'}}>
+                        <View style={{ flex: 1, alignItems: 'flex-end' }}>
                             <TitleText style={{
                                 marginTop: 15,
                                 fontWeight: 'bold',
                                 fontSize: 16,
                             }}>PKR {selectedNook.rooms[0].price_per_bed}</TitleText>
-                            {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>9/1 km</TitleText> */}
+                            {(() => {
+                                if (distance) {
+                                    return <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{distance} km</TitleText>
+                                }
+                            })()}
                             <TitleText style={{
                                 marginTop: 15,
                                 fontWeight: 'bold',
                                 fontSize: 16,
                             }}>{selectedNook.gender_type}</TitleText>
-                            {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Pak Arab</TitleText> */}
+                            <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.gender_type}</TitleText>
                         </View>
                     </View>
                     {/* <Button onPress={() => {
@@ -182,17 +199,24 @@ class HomeScreen extends React.Component {
         </View>)
     }
     listView = () => {
-        const {nooks} = this.props;
-        const {loading} = this.state;
+
+        const { nooks, desiredLocation } = this.props;
+        let locationAddress = 'Enter desired location';
+
+        if (desiredLocation) {
+            locationAddress = desiredLocation.address || locationAddress;
+        }
+
+        const { loading } = this.state;
         if (loading) {
-            return <Spinner color='black'/>;
+            return <Spinner color='black' />;
         }
 
         return (
-            <View style={{flex: 1, flexDirection: "column"}}>
+            <View style={{ flex: 1, flexDirection: "column" }}>
 
 
-                <TouchableOpacity style={[styles.container, {flex: 0, marginTop: 10}]}>
+                <TouchableOpacity style={[styles.container, { flex: 0, marginTop: 10 }]} onPress={() => NavigationService.navigate("GooglePlacesInput")}>
                     <View style={[styles.child, {
                         borderRadius: 30,
                         flexDirection: 'row',
@@ -200,50 +224,50 @@ class HomeScreen extends React.Component {
                         paddingStart: 20
                     }]}>
                         <Image resizeMode="contain" source={require('./../../../../assets/search.png')}
-                               style={{height: 20, width: 20,}}/>
-                        <Text style={{margin: 15,}}>Enter desired location</Text>
+                            style={{ height: 20, width: 20, }} />
+                        <Text style={{ margin: 15, }}>{locationAddress}</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => {
-                    this.setState({modalVisible: true})
-                }} style={{marginRight: 20}}>
+                    this.setState({ modalVisible: true })
+                }} style={{ marginRight: 20 }}>
                     <Image style={{
                         width: 30,
                         height: 30,
                         marginBottom: 5,
                         alignSelf: 'flex-end'
                     }}
-                           resizeMode="contain"
-                           source={require('./../../../../assets/filter.png')}
+                        resizeMode="contain"
+                        source={require('./../../../../assets/filter.png')}
                     />
                 </TouchableOpacity>
 
-                <ScrollView style={{flex: 1, marginTop: 10}}>
+                <ScrollView style={{ flex: 1, marginTop: 10 }}>
                     {nooks.map((item, i) =>
                         <View style={styles.container} key={i}>
                             <TouchableOpacity style={styles.child} onPress={() => {
-                                this.setState({isDialogVisible: false});
+                                this.setState({ isDialogVisible: false });
                                 NavigationService.navigate("NookDetailScreen", item)
                             }}>
-                                <View style={{padding: 15, flexDirection: 'row', justifyContent: 'space-between'}}>
+                                <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text>{item.type} </Text>
                                     <Text>PKR {item.price ? item.price : Math.min(...item.rooms.map(r => r.price_per_bed))}</Text>
                                 </View>
                                 <CardItem cardBody>
                                     {
                                         item.medias.map((m, index) => {
-                                                if (index === 0) {
-                                                    return <Image key={index} resizeMode="contain" source={{
-                                                        uri: m.path
-                                                    }
-                                                    } style={{height: 200, width: null, flex: 1}}/>
+                                            if (index === 0) {
+                                                return <Image key={index} resizeMode="contain" source={{
+                                                    uri: m.path
                                                 }
+                                                } style={{ height: 200, width: null, flex: 1 }} />
                                             }
+                                        }
                                         )
                                     }
                                 </CardItem>
                                 <TitleText
-                                    style={{marginTop: 10, marginBottom: 10, fontSize: 20,}}>{item.nookCode}</TitleText>
+                                    style={{ marginTop: 10, marginBottom: 10, fontSize: 20, }}>{item.nookCode}</TitleText>
                             </TouchableOpacity>
                         </View>
                     )}
@@ -253,7 +277,7 @@ class HomeScreen extends React.Component {
     };
 
     renderFilterView = () => {
-        const {modalVisible, filters, filter} = this.state;
+        const { modalVisible, filters, filter } = this.state;
 
         if (!modalVisible) {
             return;
@@ -269,7 +293,7 @@ class HomeScreen extends React.Component {
                 backgroundColor: "white"
             }}>
                 <TouchableOpacity onPress={() => {
-                    this.setState({modalVisible: false})
+                    this.setState({ modalVisible: false })
                 }}>
                     <Image style={{
                         width: 20,
@@ -278,74 +302,74 @@ class HomeScreen extends React.Component {
                         height: 20,
                         alignSelf: 'flex-end'
                     }}
-                           resizeMode="contain"
-                           source={require('./../../../../assets/close.png')}
+                        resizeMode="contain"
+                        source={require('./../../../../assets/close.png')}
                     />
                 </TouchableOpacity>
                 <TitleText
-                    style={{alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5}}>Filter</TitleText>
+                    style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Filter</TitleText>
 
 
                 <Item picker style={styles.pickerStyle}>
                     <Picker
                         mode="dropdown"
-                        iosIcon={<Icon name="arrow-down"/>}
-                        style={{width: "100%"}}
+                        iosIcon={<Icon name="arrow-down" />}
+                        style={{ width: "100%" }}
                         placeholder="Room Catagories"
-                        placeholderStyle={{color: "#bfc6ea"}}
+                        placeholderStyle={{ color: "#bfc6ea" }}
                         placeholderIconColor="#007aff"
                         selectedValue={filter.type}
                         onValueChange={type => this.setState({
-                          filter: {...filter, type}
-                        },()=>{
-                          console.log('filter',this.state.filter);
+                            filter: { ...filter, type }
+                        }, () => {
+                            console.log('filter', this.state.filter);
                         })}>
-                        <Picker.Item label="All Types" value=""/>
+                        <Picker.Item label="All Types" value="" />
                         {Object.keys(filters.type)
                             .filter(k => k)
-                            .map(k => <Picker.Item key={k} label={filters.type[k]} value={k}/>)}
+                            .map(k => <Picker.Item key={k} label={filters.type[k]} value={k} />)}
                     </Picker>
                 </Item>
-              <Item picker style={styles.pickerStyle}>
-                <Picker
-                    mode="dropdown"
-                    iosIcon={<Icon name="arrow-down"/>}
-                    style={{width: "100%"}}
-                    placeholder="Room Catagories"
-                    placeholderStyle={{color: "#bfc6ea"}}
-                    placeholderIconColor="#007aff"
-                    selectedValue={filter.gender}
-                    onValueChange={gender => this.setState({
-                      filter: {...filter, gender}
-                    },()=>{
-                      console.log('filter',this.state.filter);
-                    })}>
-                  {Object.keys(filters.gender)
-                      .filter(k => k)
-                      .map(k => <Picker.Item key={k} label={filters.gender[k]} value={k}/>)}
-                </Picker>
-              </Item>
-              <Item picker style={styles.pickerStyle}>
-                <Picker
-                    mode="dropdown"
-                    iosIcon={<Icon name="arrow-down"/>}
-                    style={{width: "100%"}}
-                    placeholder="Room Catagories"
-                    placeholderStyle={{color: "#bfc6ea"}}
-                    placeholderIconColor="#007aff"
-                    selectedValue={filter.space_type}
-                    onValueChange={space_type => this.setState({
-                      filter: {...filter, space_type}
-                    },()=>{
-                      console.log('filter',this.state.filter);
-                    })}>
-                  {Object.keys(filters.space_type)
-                      .filter(k => k)
-                      .map(k => <Picker.Item key={k} label={filters.space_type[k]} value={k}/>)}
-                </Picker>
-              </Item>
+                <Item picker style={styles.pickerStyle}>
+                    <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name="arrow-down" />}
+                        style={{ width: "100%" }}
+                        placeholder="Room Catagories"
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                        selectedValue={filter.gender}
+                        onValueChange={gender => this.setState({
+                            filter: { ...filter, gender }
+                        }, () => {
+                            console.log('filter', this.state.filter);
+                        })}>
+                        {Object.keys(filters.gender)
+                            .filter(k => k)
+                            .map(k => <Picker.Item key={k} label={filters.gender[k]} value={k} />)}
+                    </Picker>
+                </Item>
+                <Item picker style={styles.pickerStyle}>
+                    <Picker
+                        mode="dropdown"
+                        iosIcon={<Icon name="arrow-down" />}
+                        style={{ width: "100%" }}
+                        placeholder="Room Catagories"
+                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholderIconColor="#007aff"
+                        selectedValue={filter.space_type}
+                        onValueChange={space_type => this.setState({
+                            filter: { ...filter, space_type }
+                        }, () => {
+                            console.log('filter', this.state.filter);
+                        })}>
+                        {Object.keys(filters.space_type)
+                            .filter(k => k)
+                            .map(k => <Picker.Item key={k} label={filters.space_type[k]} value={k} />)}
+                    </Picker>
+                </Item>
 
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <Button onPress={this.applyFilter}>Apply Filter</Button>
                 </View>
 
@@ -404,38 +428,38 @@ class HomeScreen extends React.Component {
             tab4Icon = require('./../../../../assets/icons8-shared-mailbox-100.png');
         }
         return (
-            <View style={{flex: 1, backgroundColor: Colors.backgroundColor}}>
-                <Header backButton={false} optionButton={true}/>
+            <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
+                <Header backButton={false} optionButton={true} />
 
-                <View style={{flexDirection: 'row', display: 'flex', width: '100%'}}>
+                <View style={{ flexDirection: 'row', display: 'flex', width: '100%' }}>
                     <TitleText
-                        style={{fontWeight: 'bold', fontSize: 20, marginTop: 10, marginStart: '50%'}}>Nook
+                        style={{ fontWeight: 'bold', fontSize: 20, marginTop: 10, marginStart: '50%' }}>Nook
                     </TitleText>
                     <View style={{
                         backgroundColor: Colors.white, flexDirection: "row", display: 'flex', marginLeft: 'auto',
                         borderRadius: 30, width: '30%', marginTop: 10
                     }}>
-                        <View style={{flex: 1}}>
+                        <View style={{ flex: 1 }}>
                             <TouchableOpacity onPress={() => {
-                                this.setState({isMap: true, tabIndex: 3});
-                            }} style={[styles.tabButton, {backgroundColor: tab1Color}]}>
+                                this.setState({ isMap: true, tabIndex: 3 });
+                            }} style={[styles.tabButton, { backgroundColor: tab1Color }]}>
                                 <Image resizeMode="contain" style={{
                                     width: 25,
                                     height: 25,
                                 }}
-                                       source={tab1Icon}
+                                    source={tab1Icon}
                                 />
                             </TouchableOpacity>
                         </View>
-                        <View style={{flex: 1}}>
+                        <View style={{ flex: 1 }}>
                             <TouchableOpacity onPress={() => {
-                                this.setState({isMap: false, tabIndex: 5})
-                            }} style={[styles.tabButton, {backgroundColor: tab2Color}]}>
+                                this.setState({ isMap: false, tabIndex: 5 })
+                            }} style={[styles.tabButton, { backgroundColor: tab2Color }]}>
                                 <Image resizeMode="contain" style={{
                                     width: 25,
                                     height: 25,
                                 }}
-                                       source={tab2Icon}
+                                    source={tab2Icon}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -450,10 +474,10 @@ class HomeScreen extends React.Component {
                     marginStart: 15,
                     marginEnd: 15
                 }}>
-                    <View style={{flex: 1}}>
+                    <View style={{ flex: 1 }}>
                         <TouchableOpacity onPress={() => {
                             if (this.state.isMap) {
-                                this.setState({tabIndex: 3});
+                                this.setState({ tabIndex: 3 });
                                 console.log('map View independant');
                                 this.setState({
                                     filter: {
@@ -463,7 +487,7 @@ class HomeScreen extends React.Component {
                                     this.applyFilter();
                                 });
                             } else {
-                                this.setState(({tabIndex: 5}));
+                                this.setState(({ tabIndex: 5 }));
                                 console.log('list View independent');
                                 this.setState({
                                     filter: {
@@ -473,20 +497,20 @@ class HomeScreen extends React.Component {
                                     this.applyFilter();
                                 });
                             }
-                        }} style={[styles.tabButton, {backgroundColor: tab3Color}]}>
+                        }} style={[styles.tabButton, { backgroundColor: tab3Color }]}>
                             <Image resizeMode="contain" style={{
                                 width: 25,
                                 height: 25,
                             }}
-                                   source={tab3Icon}
+                                source={tab3Icon}
                             />
                         </TouchableOpacity>
                     </View>
-                    <View style={{flex: 1}}>
+                    <View style={{ flex: 1 }}>
                         <TouchableOpacity onPress={() => {
                             // this.setState({ tabIndex: 1 })
                             if (this.state.isMap) {
-                                this.setState({tabIndex: 4});
+                                this.setState({ tabIndex: 4 });
                                 this.setState({
                                     filter: {
                                         space_type: 'shared'
@@ -496,7 +520,7 @@ class HomeScreen extends React.Component {
                                 });
                             } else {
                                 console.log('list View shared');
-                                this.setState({tabIndex: 6});
+                                this.setState({ tabIndex: 6 });
                                 this.setState({
                                     filter: {
                                         space_type: 'shared'
@@ -505,12 +529,12 @@ class HomeScreen extends React.Component {
                                     this.applyFilter();
                                 });
                             }
-                        }} style={[styles.tabButton, {backgroundColor: tab4Color}]}>
+                        }} style={[styles.tabButton, { backgroundColor: tab4Color }]}>
                             <Image resizeMode="contain" style={{
                                 width: 25,
                                 height: 25,
                             }}
-                                   source={tab4Icon}
+                                source={tab4Icon}
                             />
                         </TouchableOpacity>
                     </View>
@@ -519,7 +543,7 @@ class HomeScreen extends React.Component {
                 <View style={styles.tabContainer}>
                     {view}
                 </View>
-              {this.renderFilterView()}
+                {this.renderFilterView()}
             </View>
         );
 
@@ -530,11 +554,12 @@ const mapStateToProps = state => {
     return {
         nooks: state.NookReducer.nooks,
         user: state.AuthReducer.user,
+        desiredLocation: state.NookReducer.desiredLocation,
     };
 };
+
 export default connect(
-    mapStateToProps,
-    {
-        getPublicNooks: actions.getPublicNooks,
-    },
+    mapStateToProps, {
+    getPublicNooks: actions.getPublicNooks,
+},
 )(HomeScreen)
