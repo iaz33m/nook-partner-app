@@ -4,18 +4,17 @@ import { Icon, Drawer, Card, CardItem, Textarea, Picker, Item } from "native-bas
 import { DrawerItems } from 'react-navigation';
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
-import * as NavigationService from '../../../NavigationService';
 import Colors from '../../../helper/Colors';
 import styles from './styles';
-import InputField from '../../SeperateComponents/InputField';
 import MapView, { Marker } from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
 import WebView from "react-native-webview/lib/WebView.android";
 import { connect } from "react-redux";
+import DatePicker from 'react-native-datepicker'
+
 import * as actions from "../../../Store/Actions/NookActions";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import moment from 'moment';
 
 class NookDetailScreen extends React.Component {
 
@@ -25,6 +24,7 @@ class NookDetailScreen extends React.Component {
     this.state = {
       tabIndex: 0,
       isDialogVisible: false,
+      date: moment(),
       markers: {
         latlng: {
           latitude: 31.435076,
@@ -39,9 +39,7 @@ class NookDetailScreen extends React.Component {
       roomId: 0,
       isBookNow: false,
       isSchedule: false,
-      date: new Date(),
       show: false,
-      mode: 'date',
       nook: null
     }
   }
@@ -81,9 +79,9 @@ class NookDetailScreen extends React.Component {
 
     let featuredImage = null;
     const nook = this.props.navigation.state.params;
-      if (nook.location.medias && nook.location.medias.length > 0) {
-        featuredImage = nook.location.medias[0].path;
-      }
+    if (nook.medias && nook.medias.length > 0) {
+      featuredImage = nook.medias[0].path;
+    }
 
     this.setState({
       featuredImage,
@@ -96,27 +94,72 @@ class NookDetailScreen extends React.Component {
   handleConfirm = date => {
     console.warn("A date has been picked: ", date);
   };
+
+
+  togglePopup = () => {
+    const { isSchedule, isDialogVisible } = this.state;
+    this.setState({
+      isDialogVisible:!isDialogVisible
+    });
+  }
+
+  renderScheduleVisitPopup = () => {
+    const { isSchedule, isDialogVisible,date } = this.state;
+
+    if (isSchedule) {
+      return (
+        <PopupDialog
+          width={0.9} height={0.35}
+          visible={isDialogVisible}
+          onTouchOutside={this.togglePopup}>
+          <View style={{ flex: 1, padding: 25, }}>
+            <TouchableOpacity onPress={this.togglePopup}>
+              <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+            </TouchableOpacity>
+            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
+              Date & Time
+            </TitleText>
+
+            <DatePicker
+              style={{
+                ...styles.container,
+                width: "100%", flex: 0, padding: 0
+              }}
+              mode="datetime"
+              placeholder="Select Date & Time"
+              format="X"
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              iconSource={require('./../../../../assets/date.png')}
+              customStyles={{
+                dateText: {
+                  margin: 15,
+                  color: 'black'
+                },
+                dateIcon: {
+                  height: 20, width: 20,
+                },
+                dateInput: {
+                  ...styles.child,
+                  borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15,
+
+                }
+              }}
+              onDateChange={(date) => console.log({ date })}
+            />
+
+            <Button onPress={() => this.setState({ isDialogVisible: false })}>Schedule</Button>
+          </View>
+        </PopupDialog>
+      );
+    }
+
+  }
+
   render() {
     const nook = this.props.navigation.state.params;
     const { rooms } = nook;
     const { filter, featuredImage } = this.state;
-
-    const onChange = (event, selectedDate) => {
-      const currentDate = selectedDate || date;
-      setDate(currentDate);
-      this.setState({
-        data: currentDate,
-        show: Platform.OS === 'ios'
-      })
-    };
-
-    const showMode = currentMode => {
-      this.setState({
-        show: true,
-        mode: currentMode
-      })
-    };
-
 
     let view = this.Map();
     let tab1Color;
@@ -156,10 +199,10 @@ class NookDetailScreen extends React.Component {
             <TouchableOpacity onPress={() => {
               showMode('time');
             }}>
-            <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
-              <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>{nook.type}</Text>
-              <Text style={{ margin: 15, fontSize: 16, }}>PKR {nook.price ? nook.price : Math.min(...nook.rooms.map(r => r.price_per_bed))}</Text>
-            </View>
+              <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
+                <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>{nook.type}</Text>
+                <Text style={{ margin: 15, fontSize: 16, }}>PKR {nook.price ? nook.price : Math.min(...nook.rooms.map(r => r.price_per_bed))}</Text>
+              </View>
             </TouchableOpacity>
             {this.state.tabIndex === 0 ?
               <View>
@@ -174,8 +217,8 @@ class NookDetailScreen extends React.Component {
                 <ScrollView horizontal={true} style={{ paddingTop: 15, paddingBottom: 15 }}>
                   {
                     nook.medias.map((m, index) => (
-                      <TouchableOpacity key={index} onPress={() => this.setState({featuredImage:m.path})}>
-                        <Image resizeMode="cover"  resizeMode="contain" source={{
+                      <TouchableOpacity key={index} onPress={() => this.setState({ featuredImage: m.path })}>
+                        <Image resizeMode="cover" resizeMode="contain" source={{
                           uri: m.path
                         }
                         } style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
@@ -252,71 +295,9 @@ class NookDetailScreen extends React.Component {
               <Text style={{ margin: 15, fontSize: 16, }}>{nook.number}</Text>
             </View>
             <Button onPress={() => { this.setState({ isDialogVisible: true, isBookNow: true, isSchedule: false }); }}>Book Now</Button>
-             <Button onPress={() => { this.setState({ isDialogVisible: true,isSchedule: true,isBookNow: false }); }}>Schedule List</Button>
+            <Button onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, isBookNow: false }); }}>Schedule List</Button>
           </View>
-          {
-            this.state.isSchedule &&
-                <PopupDialog
-                    width={0.9} height={0.55}
-                    ref={"popupDialog"}
-                    visible={this.state.isDialogVisible}
-                    onTouchOutside={() => {
-                      this.setState({ isDialogVisible: false });
-                    }}>
-                  <View style={{ flex: 1, padding: 25, }}>
-                    <TouchableOpacity onPress={() => {
-                      showMode('date');
-                    }}>
-                      <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
-                    </TouchableOpacity>
-                    <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
-                      Date
-                    </TitleText>
-                    <TouchableOpacity onPress={() => {
-                      showMode('time');
-                    }} style={[styles.container, { width: "100%", flex: 0, padding: 0 }]}>
-                      <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15 }]}>
-                        <Text style={{ margin: 15, }}>01/01/2020</Text>
-                        <Image resizeMode="contain" source={require('./../../../../assets/date.png')} style={{ height: 20, width: 20, }} />
-                      </View>
-                    </TouchableOpacity>
-                    <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 15 }} >
-                      Time
-                    </TitleText>
-                <TouchableOpacity style={[styles.container, { width: "100%", flex: 0, padding: 0 }]}>
-                  <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15 }]}>
-                    <Text style={{ margin: 15, }}>10:30Pm</Text>
-                    <Image resizeMode="contain" source={require('./../../../../assets/time.png')} style={{ height: 20, width: 20, }} />
-                  </View>
-                </TouchableOpacity>
-                <Button onPress={() => {
-                  this.setState({ isDialogVisible: false });
-
-                }}>Schedule</Button>
-              </View>
-            </PopupDialog>
-          }
-
-              <View>
-                {/*<DateTimePicker*/}
-                {/*    testID="dateTimePicker"*/}
-                {/*    timeZoneOffsetInMinutes={0}*/}
-                {/*    value={this.state.date}*/}
-                {/*    mode={this.state.mode}*/}
-                {/*    is24Hour={true}*/}
-                {/*    display="default"*/}
-                {/*    // onChange={onChange}*/}
-                {/*    onChange={d => {*/}
-                {/*      this.setState({ date: moment(d) });*/}
-                {/*    }}*/}
-                {/*/>*/}
-                <DateTimePickerModal
-                    isVisible={this.state.show}
-                    mode="date"
-                    onConfirm={this.handleConfirm}
-                    onCancel={this.handleConfirm}
-                />
-              </View>
+          {this.renderScheduleVisitPopup()}
           {
             this.state.isBookNow &&
             <PopupDialog

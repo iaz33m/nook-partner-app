@@ -141,7 +141,7 @@ class HomeScreen extends React.Component {
                 </View>
             </TouchableOpacity>
             {selectedNook && <PopupDialog
-                width={0.9} height={0.6}
+                width={0.9} height={0.7}
                 ref={"popupDialog"}
                 visible={this.state.isDialogVisible}
                 onTouchOutside={() => {
@@ -167,7 +167,6 @@ class HomeScreen extends React.Component {
                                 }
                             })()}
                             <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Gender</TitleText>
-                            {/* <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Partner time</TitleText> */}
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end' }}>
                             <TitleText style={{
@@ -185,7 +184,6 @@ class HomeScreen extends React.Component {
                                 fontWeight: 'bold',
                                 fontSize: 16,
                             }}>{selectedNook.gender_type}</TitleText>
-                            <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.gender_type}</TitleText>
                         </View>
                     </View>
                     {/* <Button onPress={() => {

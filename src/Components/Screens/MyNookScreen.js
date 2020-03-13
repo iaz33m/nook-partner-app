@@ -6,7 +6,7 @@ import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
-import { AirbnbRating,Rating } from 'react-native-ratings';
+import { AirbnbRating, Rating } from 'react-native-ratings';
 import * as actions from '../../Store/Actions/NookActions';
 import * as NavigationService from '../../NavigationService';
 import PopupDialog from 'react-native-popup-dialog';
@@ -149,8 +149,20 @@ class MyNookScreen extends React.Component {
 
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
         <Header backButton={false} optionButton={true} />
-        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >My Nook</TitleText>
-        {this.renderNookDetails()}
+
+        <ScrollView contentContainerStyle={{paddingVertical: 20}}>
+          <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >My Nook</TitleText>
+          {this.renderNookDetails()}
+          <View style={styles.container}>
+            <View style={styles.child}>
+
+              <Button onPress={() => NavigationService.navigate('ComplaintsScreen')} >Complains</Button>
+              <Button onPress={() => NavigationService.navigate('NoticesScreen')} >Notices</Button>
+              <Button onPress={() => NavigationService.navigate('ShiftsScreen')} >Shifts</Button>
+
+            </View>
+          </View>
+        </ScrollView>
       </View >
     );
   }

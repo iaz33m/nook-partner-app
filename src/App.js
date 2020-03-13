@@ -115,10 +115,7 @@ const customTabs = ({ navigation }) => ({
         />
       </View>;
     }
-
-
-
-
+    
     if (routeName === 'Payment') {
       return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
@@ -138,27 +135,15 @@ const TabScreens = createBottomTabNavigator(
     MyNook: {
       screen: MyNookScreen,
     },
-    Bookings: {
-      screen: BookingsScreen
-    },
     Home: {
       screen: HomeScreen
     },
-    Complaints: {
-      screen: ComplaintsScreen
-    },
-    Notices: {
-      screen: NoticesScreen
-    },
-    Shifts: {
-      screen: ShiftsScreen
+    Bookings: {
+      screen: BookingsScreen
     },
     Visits: {
       screen: VisitsScreen
     },
-    // Payment: {
-    //   screen: PaymentScreen
-    // },
   },
   {
     defaultNavigationOptions: customTabs,
@@ -196,6 +181,10 @@ const AppNavigator = createStackNavigator(
     SplashScreen,
     LoginScreen,
     TabScreens,
+    ComplaintsScreen,
+    NoticesScreen,
+    ShiftsScreen,
+    PaymentScreen,
     AddNookScreen,
     GuideScreen,
     NookDetailScreen,

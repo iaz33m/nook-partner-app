@@ -120,7 +120,7 @@ class BookingsScreen extends React.Component {
         }
 
         return (
-            <ScrollView>
+            <ScrollView contentContainerStyle={{paddingVertical:30}}>
                 {bookings.map(c => (
                     <View key={c.id} style={[styles.container, {
                         marginBottom: 10,
@@ -139,7 +139,6 @@ class BookingsScreen extends React.Component {
                                 </View>
                                 <View style={{padding: 15, flexDirection: 'row', justifyContent: 'space-between'}}>
                                     <Text style={{fontSize: 18, fontWeight: 'bold'}}>Rent: {c.rent} Rs</Text>
-                                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>Security: {c.security} Rs</Text>
                                 </View>
                             </View>
                         </View>

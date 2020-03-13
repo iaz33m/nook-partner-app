@@ -110,7 +110,7 @@ class ShiftsScreen extends React.Component {
     }
 
     return (
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingVertical: 20}}>
         {shifts.map(c => (
             <View key={c.id} style={[styles.container, {
               marginBottom: 10,

@@ -26,8 +26,6 @@ class VisitsScreen extends React.Component {
       filter: {
         status: '',
       },
-
-
     };
   }
   componentDidMount() {
@@ -56,9 +54,6 @@ class VisitsScreen extends React.Component {
   }
 
   openGps = (lat,lng,address) => {
-    // const label = 'Nook Directions';
-    // const lat = '31.6031794000000019195795175619423389434814453125';
-    // const lng = '74.2418090999999975565515342168509960174560546875';
     const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
     const latLng = `${lat},${lng}`;
     const url = Platform.select({
@@ -190,7 +185,7 @@ class VisitsScreen extends React.Component {
     return (
         <View style={{flex: 1, backgroundColor: Colors.backgroundColor}}>
           <Header backButton={false} optionButton={true}/>
-          <TitleText style={{marginTop: 25, fontWeight: 'bold', fontSize: 20,}}>Visists</TitleText>
+          <TitleText style={{marginTop: 25, fontWeight: 'bold', fontSize: 20,}}>Visits</TitleText>
           <View style={{padding: 20}}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
               <TitleText style={{alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16,}}>
