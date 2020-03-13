@@ -111,7 +111,7 @@ class ComplaintsScreen extends React.Component {
     }
 
     return (
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingVertical:30}}>
         {complains.map(c => (
             <View key={c.id} style={[styles.container, {
               marginBottom: 10,
