@@ -24,9 +24,11 @@ class MyNookScreen extends React.Component {
 
   componentDidMount() {
     const { user, getMyNookDetails } = this.props;
+    
     if (!user) {
-      NavigationService.navigateAndResetStack('LoginScreen');
+      return NavigationService.navigateAndResetStack('LoginScreen');
     }
+
     this.setState({ loading: true });
     getMyNookDetails({
       onError: (error) => {

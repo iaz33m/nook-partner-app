@@ -68,9 +68,8 @@ class HomeScreen extends React.Component {
     }
 
     applyFilter = () => {
-        const { user: { access_token }, getPublicNooks } = this.props;
+        const { getPublicNooks } = this.props;
         const { filter } = this.state;
-        console.log('filter', filter);
         this.setState({ loading: true, modalVisible: false });
         getPublicNooks({
             onError: (error) => {
@@ -80,8 +79,7 @@ class HomeScreen extends React.Component {
             onSuccess: () => {
                 this.setState({ loading: false });
             },
-            filter,
-            token: access_token
+            filter
         });
     }
 
