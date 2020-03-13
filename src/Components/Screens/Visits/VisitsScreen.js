@@ -91,41 +91,40 @@ class VisitsScreen extends React.Component {
     if (loading) {
       return <Spinner color='black'/>;
     }
-    if (visits){
-      return <ScrollView >
-        {visits.map((visit,visitI)=><View key={visitI} style={styles.container}>
-          <View style={styles.child}>
-            <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
-                   source={require('./../../../../assets/feature.png')}
-            />
-            <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{visit.status}</Text>
-            <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
-              <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
-                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Date</TitleText>
-                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Time</TitleText>
-                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Partner Name</TitleText>
-              </View>
-              <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{visit.nook.nookCode}</TitleText>
-                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{visit.date}</TitleText>
-                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{visit.time}</TitleText>
-                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{visit.partner.name}</TitleText>
-              </View>
-            </View>
+    return (
+        <View>
+          {visits.length>0&&
+              <ScrollView style={{paddingBottom: "60%"}}>
+            {visits.map((visit,visitI)=><View key={visitI} style={[styles.container]}>
+              <View style={styles.child}>
+                <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
+                       source={require('./../../../../assets/feature.png')}
+                />
+                <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{visit.status}</Text>
+                <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
+                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Date</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Time</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Partner Name</TitleText>
+                  </View>
+                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{visit.nook.nookCode}</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{visit.date}</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{visit.time}</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{visit.partner.name}</TitleText>
+                  </View>
+                </View>
 
-            <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-              <Button  onPress={()=>this.openGps(visit.nook.location.lat,visit.nook.location.lng,visit.nook.address)}>Get Direction</Button>
-            </View>
-          </View>
-        </View>)}
-      </ScrollView>
-    }
-    return <View style={styles.container}>
-      <View style={styles.child}>
-        <TitleText>No Visits Exist at this moment</TitleText>
-      </View>
-    </View>
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                  <Button  onPress={()=>this.openGps(visit.nook.location.lat,visit.nook.location.lng,visit.nook.address)}>Get Direction</Button>
+                </View>
+              </View>
+            </View>)}
+          </ScrollView>
+              }
+        </View>
+    );
   };
   renderFilterView = () => {
     const {modalVisible, statses, filter} = this.state;
@@ -186,8 +185,6 @@ class VisitsScreen extends React.Component {
     );
   }
   render() {
-
-
     const {filter: {status}, statses} = this.state;
 
     return (
@@ -264,13 +261,14 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 25,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingStart:5,
+    paddingEnd:5,
+    paddingTop:5,
+    paddingBottom: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 1, height: 1 },
+    shadowOffset: { width: 10, height: 10 },
     shadowOpacity: 0.8,
-    shadowRadius: 15
+    shadowRadius: 5
   },
   child: {
     borderRadius: 15,
