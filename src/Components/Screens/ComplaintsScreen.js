@@ -7,6 +7,9 @@ import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
 import * as actions from '../../Store/Actions/ComplainsActions';
+import PopupDialog from "react-native-popup-dialog";
+import InputField from "../SeperateComponents/InputField";
+import DatePicker from "react-native-datepicker";
 
 class ComplaintsScreen extends React.Component {
 
@@ -24,6 +27,20 @@ class ComplaintsScreen extends React.Component {
       modalVisible: false,
       filter: {
         status: '',
+      },
+      description:'',
+      type:'',
+      types:{
+        'internet':'Internet',
+        'cleaning':'Cleaning',
+        'entertainment':'Entertainment',
+        'security':'Security',
+        'food':'Food',
+        'maintenance':'Maintenance',
+        'discipline' : 'Discipline',
+        'staff_related' : 'Staff Related',
+        'privacy' : 'Privacy',
+        'other' : 'Other'
       }
     };
   }
@@ -132,7 +149,53 @@ class ComplaintsScreen extends React.Component {
       </ScrollView>
     );
   }
+  renderComplainsPopup = () => {
+    const { isSchedule, isDialogVisible,date } = this.state;
 
+    if (isSchedule) {
+      return (
+          <PopupDialog
+              width={0.9} height={0.40}
+              visible={isDialogVisible}
+              onTouchOutside={this.togglePopup}>
+            <View style={{ flex: 1, padding: 25, }}>
+              <TouchableOpacity onPress={()=>this.setState({
+                isDialogVisible: false
+              })}>
+                <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+              </TouchableOpacity>
+              <InputField
+                  value={this.state.details}
+                  textContentType="text"
+                  onChangeText={description => this.setState({ description })}
+              >Description</InputField>
+              <Item picker style={styles.pickerStyle}>
+                <Picker
+                    mode="dropdown"
+                    iosIcon={<Icon name="arrow-down" />}
+                    style={{ width: "100%" }}
+                    placeholder="Select Type"
+                    placeholderStyle={{ color: "#bfc6ea" }}
+                    placeholderIconColor="#007aff"
+                    selectedValue={this.state.type}
+                    onValueChange={type => this.setState({ type })}>
+                  <Picker.Item label="All Types" value="" />
+                  {Object.keys(this.state.types)
+                      .filter(k => k)
+                      .map(k => <Picker.Item key={k} label={this.state.types[k]} value={k} />)}
+                </Picker>
+              </Item>
+
+
+              <Button onPress={() => {
+                this.sendComplains()
+              }}>Add Complain</Button>
+            </View>
+          </PopupDialog>
+      );
+    }
+
+  }
   render() {
 
 
@@ -141,12 +204,26 @@ class ComplaintsScreen extends React.Component {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
         <Header />
-        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Complains</TitleText>
+        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >{statses[status]} Complains</TitleText>
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }} >
-              {statses[status]} Complains
-            </TitleText>
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true }); }}
+            >
+              <Text style={{
+                color:'white',fontWeight:'bold'
+              }}>Add </Text>
+              <Image style={{
+                width: 30,
+                height: 30,
+                alignSelf: 'center',
+                alignItems: 'center'
+              }}
+                     resizeMode="contain"
+                     source={require('./../../../assets/add.png')}
+              />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => {
               this.setState({ modalVisible: true })
             }}>
@@ -163,9 +240,32 @@ class ComplaintsScreen extends React.Component {
           </View>
           {this.renderComplains()}
         </View>
+        {this.renderComplainsPopup()}
         {this.renderFilterView()}
       </View >
     );
+  }
+
+  sendComplains() {
+    this.setState({ isDialogVisible: false });
+    const { filter } = this.state;
+    const { user: { access_token }, addComplain } = this.props;
+    this.setState({ loading: true, modalVisible: false });
+    const data = { "description": this.state.description, "type": this.state.type };
+    console.log('data',data);
+    addComplain({
+      data: data,
+      onError: (error) => {
+        alert(error);
+        this.setState({ loading: false });
+      },
+      onSuccess: () => {
+        this.setState({ loading: false });
+        alert('Complain has been sent successfully');
+      },
+      filter,
+      token: access_token
+    })
   }
 }
 
@@ -226,6 +326,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 5
   },
+  addButton: {
+    alignItems: 'center',
+    backgroundColor: '#E59413',
+    padding: 10,
+    display: 'flex',
+    flexDirection:'row',
+    borderRadius: 5,
+    marginStart: 5,
+    marginEnd: 5,height: 40
+  },
   child: {
     flex: 1,
     borderRadius: 10,
@@ -251,5 +361,6 @@ export default connect(
   mapStateToProps,
   {
     getComplains: actions.getComplains,
+    addComplain: actions.addComplain
   },
 )(ComplaintsScreen);
