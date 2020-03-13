@@ -208,9 +208,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     shadowColor: '#000',
-    shadowOffset: { width: 10, height: 10 },
-    shadowOpacity: 0.8,
-    shadowRadius: 15
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.10,
+    shadowRadius: 5,
   },
   child: {
     flex: 1,
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: '#FFF',
     // Android shadow
-    elevation: 4
+    elevation: 3
   }
 });
 

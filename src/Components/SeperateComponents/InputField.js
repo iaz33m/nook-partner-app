@@ -16,7 +16,7 @@ const InputField = (props) => {
         <Item regular style={{ ...styles.container, ...inputStyleMain }}>
             <View style={styles.child}>
                 <Input  {...inputProps} value={value} onChangeText={onChangeText} placeholder={children} />
-                <Icon name={iconName} />
+                {/* <Icon name={iconName} /> */}
             </View>
             {(() => {
                 if (errorMessage) {
@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.8,
-        shadowRadius: 30,
+        shadowOpacity: 0.10,
+        shadowRadius: 5,
         flexDirection: 'column',
     },
     child: {
@@ -54,8 +54,10 @@ const styles = StyleSheet.create({
         borderColor: '#999',
         borderWidth: 0,
         backgroundColor: '#FFF',
-        // Android shadow
-        elevation: 4
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.10,
+        shadowRadius: 5,
+        elevation: 3
     },
     errorMessage: {
         fontSize: 12,

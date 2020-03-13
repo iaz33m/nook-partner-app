@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import { StyleSheet, View, Image, ScrollView, Alert, TouchableWithoutFeedback } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
-import { Text, Icon, Button as NativeButton, CheckBox, Textarea } from 'native-base';
+import { Text, Icon, Button as NativeButton, CheckBox, Textarea, Thumbnail } from 'native-base';
 import Button from '../SeperateComponents/Button';
 import InputField from '../SeperateComponents/InputField';
 import Header from '../SeperateComponents/Header'
@@ -13,6 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import * as actions from '../../Store/Actions/UserActions';
+import { colors } from 'react-native-elements';
 
 class ProfileScreen extends React.Component {
 
@@ -136,11 +137,14 @@ class ProfileScreen extends React.Component {
 
           <TouchableWithoutFeedback onPress={this.selectImageSrc}>
             <View style={styles.imageContainer} onPress={this.selectImageSrc}>
-              <Image
+              {/* <Image
                 style={styles.imageView}
                 source={{ uri: profile }}
                 onPress={this.selectImageSrc}
-              />
+              /> */}
+
+              <Thumbnail style={styles.imageView} source={{ uri: profile }} large/>
+
               <Image style={styles.imageButton}
                 source={require('./../../../assets/camera_icon.png')}
                 onPress={this.selectImageSrc}
@@ -168,23 +172,23 @@ class ProfileScreen extends React.Component {
               <View style={styles.checkbox}>
                 <View style={styles.checkboxItem}>
                   <Image style={{
-                    width: 40,
-                    height: 40,
+                    width: 25,
+                    height: 25,
                   }}
                     source={require('./../../../assets/male.png')}
                   />
                   <Text>Male</Text>
-                  <CheckBox checked={gender === 'Male'} onPress={() => { this.setState({ gender: 'Male' }) }} />
+                  <CheckBox style={{borderColor: Colors.orange }} checked={gender === 'Male'} onPress={() => { this.setState({ gender: 'Male' }) }} />
                 </View>
                 <View style={styles.checkboxItem}>
                   <Image style={{
-                    width: 40,
-                    height: 40,
+                    width: 25,
+                    height: 25,
                   }}
                     source={require('./../../../assets/female.png')}
                   />
                   <Text>Female</Text>
-                  <CheckBox checked={gender === 'Female'} onPress={() => { this.setState({ gender: 'Female' }) }} />
+                  <CheckBox style={{borderColor: Colors.orange }} checked={gender === 'Female'} onPress={() => { this.setState({ gender: 'Female' }) }} />
                 </View>
               </View>
               <Textarea
@@ -234,7 +238,7 @@ const styles = StyleSheet.create({
     height: 160,
     width: 160,
     marginBottom: 20,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   imageButton: {
     width: 40,
@@ -244,18 +248,17 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end"
   },
   imageView: {
-    height: "100%",
-    width: "100%",
+    height: 160,
+    width: 160,
     position: 'relative',
     marginTop: 20,
     borderWidth: 2,
     borderColor: Colors.primaryColor,
     backgroundColor: Colors.white,
-    alignSelf: 'center',
-    borderRadius: 100
+    borderRadius: 160/2,
   },
   textArea: {
-    margin: 20,
+    margin: 10,
     paddingTop: 10
   },
   checkbox: {
@@ -267,7 +270,7 @@ const styles = StyleSheet.create({
   },
   checkboxItem: {
     flex: 1,
-    marginStart: 20,
+    marginStart: 10,
     marginEnd: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -277,8 +280,8 @@ const styles = StyleSheet.create({
     flex: 1, padding: 25,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 15
+    shadowOpacity: 0.10,
+    shadowRadius: 5,
   },
   child: {
     padding: 15,
@@ -289,7 +292,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: '#FFF',
     // Android shadow
-    elevation: 4
+    elevation: 3
   }
 })
 
