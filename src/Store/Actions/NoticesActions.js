@@ -38,4 +38,33 @@ const getNotices = options => async dispatch => {
     }
 };
 
-export { getNotices };
+const addNotice = options => async dispatch => {
+    const { data, token, onError,onSuccess } = options;
+    try {
+
+        const {data:{review,message}} = await axios.post(`${APIModel.HOST}/auth/user/notices`,data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        // dispatch({
+        //     type: actions.ADD_NOOK_ROOM,
+        // });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
+export { getNotices,addNotice };

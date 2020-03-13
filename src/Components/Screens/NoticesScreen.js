@@ -6,7 +6,12 @@ import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
+import { Button as AddButton} from 'react-native-elements';
 import * as actions from '../../Store/Actions/NoticesActions';
+import PopupDialog from "react-native-popup-dialog";
+import DatePicker from "react-native-datepicker";
+import InputField from "../SeperateComponents/InputField";
+import moment from "moment";
 
 class NoticesScreen extends React.Component {
 
@@ -24,7 +29,11 @@ class NoticesScreen extends React.Component {
       modalVisible: false,
       filter: {
         status: '',
-      }
+      },
+      isDialogVisible: false,
+      isSchedule: false,
+      details: '',
+      date: moment(),
     };
   }
 
@@ -51,7 +60,7 @@ class NoticesScreen extends React.Component {
 
 
   renderFilterView = () => {
-    const { modalVisible, statses,filter } = this.state;
+    const { modalVisible,statses,filter } = this.state;
 
     if (!modalVisible) {
       return;
@@ -132,6 +141,67 @@ class NoticesScreen extends React.Component {
     );
   }
 
+  renderNoticePopup = () => {
+    const { isSchedule, isDialogVisible,date } = this.state;
+
+    if (isSchedule) {
+      return (
+          <PopupDialog
+              width={0.9} height={0.40}
+              visible={isDialogVisible}
+              onTouchOutside={this.togglePopup}>
+            <View style={{ flex: 1, padding: 25, }}>
+              <TouchableOpacity onPress={()=>this.setState({
+                isDialogVisible: false
+              })}>
+                <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+              </TouchableOpacity>
+                <InputField
+                    value={this.state.details}
+                    textContentType="text"
+                    onChangeText={details => this.setState({ details })}
+                >Details</InputField>
+              <DatePicker
+                  style={{
+                    ...styles.container,
+                    width: "100%", flex: 0, padding: 0
+                  }}
+                  mode="datetime"
+                  placeholder="Select Date & Time"
+                  format="X"
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  iconSource={require('./../../../assets/date.png')}
+                  customStyles={{
+                    dateText: {
+                      margin: 15,
+                      color: 'black'
+                    },
+                    dateIcon: {
+                      height: 20, width: 20,
+                    },
+                    dateInput: {
+                      ...styles.child,
+                      borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15,
+
+                    }
+                  }}
+                  onDateChange={(date) => {
+                    this.setState({
+                      date: date
+                    })
+                  }}
+              />
+
+              <Button onPress={() => {
+                this.sendNotice()
+              }}>Add Notice</Button>
+            </View>
+          </PopupDialog>
+      );
+    }
+
+  }
   render() {
 
 
@@ -140,12 +210,26 @@ class NoticesScreen extends React.Component {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
         <Header />
-        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Notices</TitleText>
+        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >{statses[status]} Notices</TitleText>
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }} >
-              {statses[status]} Notices
-            </TitleText>
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true }); }}
+            >
+              <Text style={{
+                color:'white',fontWeight:'bold'
+              }}>Add </Text>
+              <Image style={{
+                width: 30,
+                height: 30,
+                alignSelf: 'center',
+                alignItems: 'center'
+              }}
+                     resizeMode="contain"
+                     source={require('./../../../assets/add.png')}
+              />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => {
               this.setState({ modalVisible: true })
             }}>
@@ -162,9 +246,30 @@ class NoticesScreen extends React.Component {
           </View>
           {this.renderNotices()}
         </View>
+        {this.renderNoticePopup()}
         {this.renderFilterView()}
       </View >
     );
+  }
+
+  sendNotice() {
+    this.setState({ isDialogVisible: false });
+    const { filter } = this.state;
+    const { user: { access_token }, addNotice } = this.props;
+    this.setState({ loading: true, modalVisible: false });
+    addNotice({
+      data: { "details": this.state.details, "checkout": this.state.date },
+      onError: (error) => {
+        alert(error);
+        this.setState({ loading: false });
+      },
+      onSuccess: () => {
+        this.setState({ loading: false });
+        alert('Notice has been sent successfully');
+      },
+      filter,
+      token: access_token
+    })
   }
 }
 
@@ -174,6 +279,16 @@ const styles = StyleSheet.create({
     width: 160,
     marginBottom: 20,
     alignSelf: 'center'
+  },
+  addButton: {
+    alignItems: 'center',
+    backgroundColor: '#E59413',
+    padding: 10,
+    display: 'flex',
+    flexDirection:'row',
+    borderRadius: 5,
+    marginStart: 5,
+    marginEnd: 5,height: 40
   },
   pickerStyle: {
     marginBottom: 10,
@@ -250,5 +365,6 @@ export default connect(
   mapStateToProps,
   {
     getNotices: actions.getNotices,
+    addNotice: actions.addNotice
   },
 )(NoticesScreen);

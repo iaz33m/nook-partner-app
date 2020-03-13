@@ -10,6 +10,7 @@ import MapView, { Marker } from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
 import WebView from "react-native-webview/lib/WebView.android";
+// import YouTube from 'react-native-youtube';
 import { connect } from "react-redux";
 import DatePicker from 'react-native-datepicker'
 
@@ -40,7 +41,8 @@ class NookDetailScreen extends React.Component {
       isBookNow: false,
       isSchedule: false,
       show: false,
-      nook: null
+      nook: null,
+      dateText:''
     }
   }
 
@@ -91,11 +93,6 @@ class NookDetailScreen extends React.Component {
     roomId: value
   });
 
-  handleConfirm = date => {
-    console.warn("A date has been picked: ", date);
-  };
-
-
   togglePopup = () => {
     const { isSchedule, isDialogVisible } = this.state;
     this.setState({
@@ -103,7 +100,7 @@ class NookDetailScreen extends React.Component {
     });
   }
 
-  renderScheduleVisitPopup = () => {
+  renderScheduleVisitPopup = (nook_id) => {
     const { isSchedule, isDialogVisible,date } = this.state;
 
     if (isSchedule) {
@@ -145,10 +142,17 @@ class NookDetailScreen extends React.Component {
 
                 }
               }}
-              onDateChange={(date) => console.log({ date })}
+              onDateChange={(date) => {
+                console.log({ date })
+                this.setState({
+                  date: date
+                })
+              }}
             />
 
-            <Button onPress={() => this.setState({ isDialogVisible: false })}>Schedule</Button>
+            <Button onPress={() => {
+              this.setSchedule(nook_id)
+            }}>Schedule</Button>
           </View>
         </PopupDialog>
       );
@@ -189,7 +193,7 @@ class NookDetailScreen extends React.Component {
         <ScrollView style={{ top: -7 }}>
           <View style={{ flexDirection: "row", }}>
             <View >
-              <Image resizeMode="contain" source={require('./../../../../assets/feature.png')} style={{ height: 100, width: 100, }} />
+              <Image resizeMode="contain"  style={{ height: 100, width: 100, }} />
             </View>
             <View style={{ flex: 1, width: '100%', marginTop: 10, position: 'absolute', }}>
               <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 22, }} >{nook.nookCode}</TitleText>
@@ -234,6 +238,19 @@ class NookDetailScreen extends React.Component {
                   domStorageEnabled={true}
                   source={{ uri: nook.video_url }}
                 />
+                {/*<YouTube*/}
+                {/*    videoId={this.getYoutubeIDFromURL(nook.video_url)}*/}
+                {/*    apiKey="120026002261-btgnkfcls2bqgntq7pfe9jhk0r8pr0k2.apps.googleusercontent.com"*/}
+                {/*    play // control playback of video with true/false*/}
+                {/*    fullscreen // control whether the video should play in fullscreen or inline*/}
+                {/*    loop // control whether the video should loop when ended*/}
+                {/*    onReady={e => this.setState({ isReady: true })}*/}
+                {/*    onChangeState={e => this.setState({ status: e.state })}*/}
+                {/*    onChangeQuality={e => this.setState({ quality: e.quality })}*/}
+                {/*    controls={2}*/}
+                {/*    onError={e => this.setState({ error: e.error })}*/}
+                {/*    style={{ alignSelf: 'stretch', height: 300, width: null, flex: 1 }}*/}
+                {/*/>*/}
               </View>
             }
             <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
@@ -297,7 +314,7 @@ class NookDetailScreen extends React.Component {
             <Button onPress={() => { this.setState({ isDialogVisible: true, isBookNow: true, isSchedule: false }); }}>Book Now</Button>
             <Button onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, isBookNow: false }); }}>Schedule List</Button>
           </View>
-          {this.renderScheduleVisitPopup()}
+          {this.renderScheduleVisitPopup(nook.id)}
           {
             this.state.isBookNow &&
             <PopupDialog
@@ -358,16 +375,45 @@ class NookDetailScreen extends React.Component {
       </View >
     );
   }
+
+  setSchedule(nook_id) {
+    this.setState({ isDialogVisible: false });
+    const { filter } = this.state;
+    const { user: { access_token }, addNookSchedule } = this.props;
+    this.setState({ loading: true, modalVisible: false });
+    addNookSchedule({
+      data: { "nook_id": nook_id, "time": this.state.date },
+      onError: (error) => {
+        alert(error);
+        this.setState({ loading: false });
+      },
+      onSuccess: () => {
+        this.setState({ loading: false });
+        alert('Vist has been scheduled successfully');
+      },
+      filter,
+      token: access_token
+    })
+  }
+
+  getYoutubeIDFromURL(url) {
+    var video_id = url.split('v=')[1];
+    var ampersandPosition = video_id.indexOf('&');
+    if(ampersandPosition != -1) {
+      return video_id = video_id.substring(0, ampersandPosition);
+    }
+    return '';
+  }
 }
 const mapStateToProps = state => {
   return {
     user: state.AuthReducer.user,
   };
 };
-
 export default connect(
   mapStateToProps,
   {
     addNookRoom: actions.addNookRoom,
+    addNookSchedule: actions.addNookSchedule
   },
 )(NookDetailScreen)
