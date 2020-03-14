@@ -1,16 +1,14 @@
 import React from 'react';
-import { connect } from "react-redux";
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { Icon, Item, Picker, Spinner } from "native-base";
+import {connect} from "react-redux";
+import {Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Icon, Item, Picker, Spinner} from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
-import { Button as AddButton} from 'react-native-elements';
 import * as actions from '../../Store/Actions/NoticesActions';
 import PopupDialog from "react-native-popup-dialog";
 import DatePicker from "react-native-datepicker";
-import InputField from "../SeperateComponents/InputField";
 import moment from "moment";
 
 class NoticesScreen extends React.Component {
@@ -147,7 +145,7 @@ class NoticesScreen extends React.Component {
     if (isSchedule) {
       return (
           <PopupDialog
-              width={0.9} height={0.40}
+              width={0.9} height={0.45}
               visible={isDialogVisible}
               onTouchOutside={this.togglePopup}>
             <View style={{ flex: 1, padding: 25, }}>
@@ -156,25 +154,24 @@ class NoticesScreen extends React.Component {
               })}>
                 <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
               </TouchableOpacity>
-                <InputField
-                    value={this.state.details}
-                    textContentType="text"
-                    onChangeText={details => this.setState({ details })}
-                >Details</InputField>
+
               <DatePicker
                   style={{
                     ...styles.container,
-                    width: "100%", flex: 0, padding: 0
+                    width: "100%", flex: 0, padding: 0, marginTop: 10
                   }}
                   mode="datetime"
-                  placeholder="Select Date & Time"
-                  format="X"
+                  date={this.state.date}
+                  placeholder='Select a date'
+                  format="MMMM Do YYYY, h:mm a"
+                  // format="X"
                   confirmBtnText="Confirm"
                   cancelBtnText="Cancel"
                   iconSource={require('./../../../assets/date.png')}
                   customStyles={{
                     dateText: {
                       margin: 15,
+                      marginTop:15,
                       color: 'black'
                     },
                     dateIcon: {
@@ -193,6 +190,17 @@ class NoticesScreen extends React.Component {
                   }}
               />
 
+              <View style={styles.textAreaContainer} >
+                <TextInput
+                    style={styles.textArea1}
+                    underlineColorAndroid="transparent"
+                    placeholder="Details"
+                    placeholderTextColor="grey"
+                    numberOfLines={4}
+                    multiline={true}
+                    onChangeText={details => this.setState({ details })}
+                />
+              </View>
               <Button onPress={() => {
                 this.sendNotice()
               }}>Add Notice</Button>
@@ -258,7 +266,7 @@ class NoticesScreen extends React.Component {
     const { user: { access_token }, addNotice } = this.props;
     this.setState({ loading: true, modalVisible: false });
     addNotice({
-      data: { "details": this.state.details, "checkout": this.state.date },
+      data: { "details": this.state.details, "checkout": moment(this.state.date, 'MMMM Do YYYY, h:mm a').unix() },
       onError: (error) => {
         alert(error);
         this.setState({ loading: false });
@@ -328,6 +336,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  textAreaContainer: {
+    borderColor: Colors.textGray,
+    borderWidth: 1,
+    padding: 5,
+    marginStart: 10,
+    marginEnd: 10
+  },
+  textArea1: {
+    height: 70,
+    justifyContent: "flex-start"
   },
   container: {
     flex: 1,

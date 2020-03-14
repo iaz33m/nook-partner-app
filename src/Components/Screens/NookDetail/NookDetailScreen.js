@@ -123,8 +123,9 @@ class NookDetailScreen extends React.Component {
                 width: "100%", flex: 0, padding: 0
               }}
               mode="datetime"
+              date={this.state.date}
               placeholder="Select Date & Time"
-              format="X"
+              format="MMMM Do YYYY, h:mm a"
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               iconSource={require('./../../../../assets/date.png')}
@@ -143,7 +144,6 @@ class NookDetailScreen extends React.Component {
                 }
               }}
               onDateChange={(date) => {
-                console.log({ date })
                 this.setState({
                   date: date
                 })
@@ -382,7 +382,7 @@ class NookDetailScreen extends React.Component {
     const { user: { access_token }, addNookSchedule } = this.props;
     this.setState({ loading: true, modalVisible: false });
     addNookSchedule({
-      data: { "nook_id": nook_id, "time": this.state.date },
+      data: { "nook_id": nook_id, "time": moment(this.state.date, 'MMMM Do YYYY, h:mm a').unix() },
       onError: (error) => {
         alert(error);
         this.setState({ loading: false });

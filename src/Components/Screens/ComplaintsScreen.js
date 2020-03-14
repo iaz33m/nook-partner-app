@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TextInput} from 'react-native';
 import { Icon, Item, Picker, Spinner } from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
@@ -155,7 +155,7 @@ class ComplaintsScreen extends React.Component {
     if (isSchedule) {
       return (
           <PopupDialog
-              width={0.9} height={0.40}
+              width={0.9} height={0.42}
               visible={isDialogVisible}
               onTouchOutside={this.togglePopup}>
             <View style={{ flex: 1, padding: 25, }}>
@@ -164,11 +164,6 @@ class ComplaintsScreen extends React.Component {
               })}>
                 <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
               </TouchableOpacity>
-              <InputField
-                  value={this.state.details}
-                  textContentType="text"
-                  onChangeText={description => this.setState({ description })}
-              >Description</InputField>
               <Item picker style={styles.pickerStyle}>
                 <Picker
                     mode="dropdown"
@@ -185,7 +180,17 @@ class ComplaintsScreen extends React.Component {
                       .map(k => <Picker.Item key={k} label={this.state.types[k]} value={k} />)}
                 </Picker>
               </Item>
-
+              <View style={styles.textAreaContainer} >
+                <TextInput
+                    style={styles.textArea1}
+                    underlineColorAndroid="transparent"
+                    placeholder="Description"
+                    placeholderTextColor="grey"
+                    numberOfLines={4}
+                    multiline={true}
+                    onChangeText={description => this.setState({ description })}
+                />
+              </View>
 
               <Button onPress={() => {
                 this.sendComplains()
@@ -325,6 +330,17 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 10, height: 10 },
     shadowOpacity: 0.8,
     shadowRadius: 5
+  },
+  textAreaContainer: {
+    borderColor: Colors.textGray,
+    borderWidth: 1,
+    padding: 5,
+    marginStart: 10,
+    marginEnd: 10
+  },
+  textArea1: {
+    height: 70,
+    justifyContent: "flex-start"
   },
   addButton: {
     alignItems: 'center',
