@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 15
+    shadowOpacity: 0.10,
+    shadowRadius: 5,
   },
   child: {
     borderRadius: 15,
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: '#FFF',
     // Android shadow
-    elevation: 4
+    elevation: 3
   }
 });
 
