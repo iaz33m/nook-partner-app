@@ -119,7 +119,7 @@ class MyNookScreen extends React.Component {
       return (
         <View style={styles.container}>
           <View style={styles.child}>
-            <TitleText>You are registered in any nook.</TitleText>
+            <TitleText>You are not registered in any nook</TitleText>
           </View>
         </View>
       );
@@ -158,10 +158,14 @@ class MyNookScreen extends React.Component {
           <View style={styles.container}>
             <View style={styles.child}>
 
+            <ScrollView contentContainerStyle={{paddingVertical: 20}} >
               <Button onPress={() => NavigationService.navigate('ComplaintsScreen')} >Complains</Button>
               <Button onPress={() => NavigationService.navigate('NoticesScreen')} >Notices</Button>
               <Button onPress={() => NavigationService.navigate('ShiftsScreen')} >Shifts</Button>
-
+              <Button onPress={() => NavigationService.navigate('ReceiptsScreen')} >Receipts</Button>
+              <Button onPress={() => NavigationService.navigate('PaymentsScreen')} >Payments</Button>
+            </ScrollView>
+            
             </View>
           </View>
         </ScrollView>

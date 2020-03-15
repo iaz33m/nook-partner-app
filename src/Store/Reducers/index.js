@@ -6,6 +6,8 @@ import BookingsReducer from './BookingsReducer';
 import NoticesReducer from './NoticesReducer';
 import ShiftsReducer from './ShiftsReducer';
 import VisitsReducer from "./VisitsReducer";
+import ReceiptReducer from "./ReceiptReducer";
+import PaymentReducer from "./PaymentReducer";
 
 const rootReducers = combineReducers({
   AuthReducer,
@@ -14,7 +16,9 @@ const rootReducers = combineReducers({
   BookingsReducer,
   NoticesReducer,
   ShiftsReducer,
-  VisitsReducer
+  VisitsReducer,
+  ReceiptReducer,
+  PaymentReducer,
 });
 
 export default rootReducers;

@@ -14,5 +14,8 @@ export const SET_NOTICES = 'SET_NOTICES';
 export const ADD_NOOK_ROOM = 'ADD_NOOK_ROOM';
 export const ADD_NOOK_SCHEDULE = 'ADD_NOOK_SCHEDULE';
 export const SET_VISITS = 'SET_VISITS';
+export const SET_RECEIPTS = 'SET_RECEIPTS';
+export const SET_PAYMENTS = 'SET_PAYMENTS';
+export const ADD_PAYMENT = 'ADD_PAYMENT';
 export const SET_DESIRED_LOCATION  = 'SET_DESIRED_LOCATION';
 
