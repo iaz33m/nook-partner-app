@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
-import { Icon, Drawer, Card, CardItem, Textarea, Picker, Item } from "native-base";
-import { DrawerItems } from 'react-navigation';
+import { Icon, Card, Textarea, Picker, Item } from "native-base";
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
 import Colors from '../../../helper/Colors';
@@ -14,6 +13,7 @@ import { connect } from "react-redux";
 import DatePicker from 'react-native-datepicker'
 
 import * as actions from "../../../Store/Actions/NookActions";
+import * as shiftsActions from "../../../Store/Actions/ShiftsActions";
 import moment from 'moment';
 
 class NookDetailScreen extends React.Component {
@@ -41,6 +41,8 @@ class NookDetailScreen extends React.Component {
       isSchedule: false,
       show: false,
       nook: null,
+      addShiftModal:false,
+      details:'',
       dateText:''
     }
   }
@@ -157,6 +159,129 @@ class NookDetailScreen extends React.Component {
       );
     }
 
+  }
+
+  submitShift = () => {
+    const { user: { access_token }, addShift } = this.props;
+    const nook = this.props.navigation.state.params;
+    const {roomId, details} = this.state;
+    addShift({
+      data: { 
+        nook_id: nook.id,
+        room_id: roomId,
+        details,
+      },
+      onError: alert,
+      onSuccess: alert,
+      token: access_token
+    });
+  }
+
+  toggleShiftNookModal = () => {
+    const {addShiftModal} = this.state;
+    this.setState({
+      addShiftModal:!addShiftModal
+    });
+  }
+
+  renderAddShiftPopup = () => {
+
+    const {addShiftModal, details, roomId} = this.state; 
+    const nook = this.props.navigation.state.params;
+    const { rooms, space_type } = nook;
+    const height = (space_type === 'Shared') ? 0.5 : 0.45
+    return (
+      <PopupDialog
+        width={0.9} height={height}
+        ref={"popupDialog"}
+        visible={addShiftModal}
+        onTouchOutside={this.toggleShiftNookModal}>
+        <View style={{ flex: 1, padding: 25, }}>
+          <TouchableOpacity onPress={this.toggleShiftNookModal}>
+            <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+          </TouchableOpacity>
+          
+          {(space_type === 'Shared') && (
+            <>
+              <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
+                Room
+              </TitleText>
+
+              <Item picker style={styles.pickerStyle}>
+                <Picker
+                  mode="dropdown"
+                  iosIcon={<Icon name="arrow-down" />}
+                  style={{ width: "100%" }}
+                  placeholder="Room Catagories"
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff"
+                  selectedValue={roomId}
+                  onValueChange={this.handleRoomChange
+                  }>
+                  <Picker.Item key={-1} value={0} label="Select Room" />
+                  {rooms.map((room, roomi) => {
+                    return <Picker.Item key={roomi} value={room.id} label={`${room.capacity} Persons Sharing - ${room.price_per_bed} PKR`} />
+                  })}
+                </Picker>
+              </Item>
+            </>
+          )}
+
+          <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
+            Shift Details
+          </TitleText>
+
+          <Textarea
+              rowSpan={4}
+              bordered
+              placeholder="Details"
+              value={details}
+              onChangeText={details => this.setState({ details })}
+            />
+
+          <Button onPress={this.submitShift}>Shift Nook</Button>
+        </View>
+      </PopupDialog>
+    );
+  }
+
+
+  sendBookingRequest = () => {
+
+    const nook = this.props.navigation.state.params;
+      
+    this.setState({ isDialogVisible: false });
+    const { user: { access_token }, addNookRoom } = this.props;
+
+    this.setState({ loading: true, modalVisible: false });
+    addNookRoom({
+        data: { "nook_id": nook.id, "room_id": this.state.roomId },
+        onError: (error) => {
+          alert(error);
+          this.setState({ loading: false });
+        },
+        onSuccess: () => {
+          this.setState({ loading: false });
+          alert('Booking of room has been created successfully');
+        },
+        token: access_token
+    });
+
+  }
+
+  submitNookBooking = () => {
+
+    const nook = this.props.navigation.state.params;
+    const { space_type } = nook;
+
+    if(space_type === 'Shared'){
+      console.log('in...........');
+      return this.setState({ isDialogVisible: true, isBookNow: true, isSchedule: false });
+    }
+
+    console.log('out...........'); 
+
+    this.sendBookingRequest();
   }
 
   render() {
@@ -301,14 +426,16 @@ class NookDetailScreen extends React.Component {
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
               <Text style={{ margin: 15, fontSize: 16, }}>{nook.number}</Text>
             </View>
-            <Button onPress={() => { this.setState({ isDialogVisible: true, isBookNow: true, isSchedule: false }); }}>Book Now</Button>
-            <Button onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, isBookNow: false }); }}>Schedule List</Button>
+            <Button onPress={this.toggleShiftNookModal}>Shift To This Nook</Button>
+            <Button onPress={this.submitNookBooking}>Book Now</Button>
+            <Button onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, isBookNow: false }); }}>Schedule Visit</Button>
           </View>
+          {this.renderAddShiftPopup()}
           {this.renderScheduleVisitPopup(nook.id)}
           {
             this.state.isBookNow &&
             <PopupDialog
-              width={0.9} height={0.4}
+              width={0.9} height={0.35}
               ref={"popupDialog"}
               visible={this.state.isDialogVisible}
               onTouchOutside={() => {
@@ -334,30 +461,13 @@ class NookDetailScreen extends React.Component {
                     selectedValue={this.state.roomId}
                     onValueChange={this.handleRoomChange
                     }>
+                    <Picker.Item key={-1} value={0} label="Select Room" />
                     {rooms.map((room, roomi) => {
                       return <Picker.Item key={roomi} value={room.id} label={`${room.capacity} Persons Sharing - ${room.price_per_bed} PKR`} />
                     })}
                   </Picker>
                 </Item>
-                <Button onPress={() => {
-                  this.setState({ isDialogVisible: false });
-                  const { user: { access_token }, addNookRoom } = this.props;
-
-                  this.setState({ loading: true, modalVisible: false });
-                  addNookRoom({
-                    data: { "nook_id": nook.id, "room_id": this.state.roomId },
-                    onError: (error) => {
-                      alert(error);
-                      this.setState({ loading: false });
-                    },
-                    onSuccess: () => {
-                      this.setState({ loading: false });
-                      alert('Booking of room has been created successfully');
-                    },
-                    filter,
-                    token: access_token
-                  });
-                }}>Book</Button>
+                <Button onPress={this.sendBookingRequest}>Book Nook</Button>
               </View>
             </PopupDialog>
           }
@@ -404,6 +514,7 @@ export default connect(
   mapStateToProps,
   {
     addNookRoom: actions.addNookRoom,
-    addNookSchedule: actions.addNookSchedule
+    addNookSchedule: actions.addNookSchedule,
+    addShift: shiftsActions.addShift
   },
 )(NookDetailScreen)

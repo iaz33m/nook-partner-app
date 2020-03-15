@@ -38,4 +38,35 @@ const getShifts = options => async dispatch => {
     }
 };
 
-export { getShifts };
+
+const addShift = options => async dispatch => {
+    const { data, token, onError,onSuccess } = options;
+    try {
+
+        const {data:{message, shift}} = await axios.post(`${APIModel.HOST}/auth/user/shifts`,data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        dispatch({
+            type: actions.ADD_SHIFT,
+            payload: shift
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
+export { getShifts, addShift };

@@ -155,7 +155,7 @@ class BookingsScreen extends React.Component {
 
         return (
             <View style={{flex: 1, backgroundColor: Colors.backgroundColor}}>
-                <Header backButton={false} optionButton={true}/>
+                <Header backButton={true} optionButton={true}/>
                 <TitleText style={{marginTop: 25, fontWeight: 'bold', fontSize: 20,}}>Bookings</TitleText>
                 <View style={{padding: 20}}>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>

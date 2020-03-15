@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from "react-redux";
 import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Icon, Item, Picker, Spinner} from "native-base";
+import {Icon, Item, Picker, Spinner, Textarea} from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
@@ -214,7 +214,7 @@ class NoticesScreen extends React.Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-        <Header />
+        <Header backButton={true} />
         <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >{statses[status]} Notices</TitleText>
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>

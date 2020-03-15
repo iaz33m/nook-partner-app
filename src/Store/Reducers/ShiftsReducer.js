@@ -1,6 +1,6 @@
 import * as actions from '../Actions/type';
 const initSate = {
-    shifts:[],
+  shifts: [],
 };
 
 const ShiftsReducer = (state = initSate, action) => {
@@ -11,6 +11,17 @@ const ShiftsReducer = (state = initSate, action) => {
         shifts: [...action.payload],
       };
     }
+
+    case actions.ADD_SHIFT: {
+      return {
+        ...state,
+        shifts: [
+          { ...action.payload },
+          ...state.shifts,
+        ],
+      };
+    }
+
     default: {
       return state;
     }

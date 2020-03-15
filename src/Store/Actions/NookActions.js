@@ -106,17 +106,13 @@ const addNookRoom = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     try {
 
-        const {data:{review,message}} = await axios.post(`${APIModel.HOST}/auth/user/bookings`,data, {
+        const {data:{message}} = await axios.post(`${APIModel.HOST}/auth/user/bookings`,data, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
         });
-
-        // dispatch({
-        //     type: actions.ADD_NOOK_ROOM,
-        // });
 
         if(onSuccess){
             onSuccess(message);

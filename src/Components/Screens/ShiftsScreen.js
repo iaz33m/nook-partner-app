@@ -139,7 +139,7 @@ class ShiftsScreen extends React.Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-        <Header />
+        <Header backButton={true} />
         <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Shifts</TitleText>
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
