@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
-import {Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Icon, Item, Picker, Spinner} from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
@@ -140,7 +140,7 @@ class NoticesScreen extends React.Component {
   }
 
   renderNoticePopup = () => {
-    const { isSchedule, isDialogVisible,date } = this.state;
+    const { isSchedule, isDialogVisible, date, description } = this.state;
 
     if (isSchedule) {
       return (
@@ -161,7 +161,7 @@ class NoticesScreen extends React.Component {
                     width: "100%", flex: 0, padding: 0, marginTop: 10
                   }}
                   mode="datetime"
-                  date={this.state.date}
+                  date={date}
                   placeholder='Select a date'
                   format="MMMM Do YYYY, h:mm a"
                   // format="X"
@@ -185,22 +185,19 @@ class NoticesScreen extends React.Component {
                   }}
                   onDateChange={(date) => {
                     this.setState({
-                      date: date
+                      date
                     })
                   }}
               />
 
-              <View style={styles.textAreaContainer} >
-                <TextInput
-                    style={styles.textArea1}
-                    underlineColorAndroid="transparent"
-                    placeholder="Details"
-                    placeholderTextColor="grey"
-                    numberOfLines={4}
-                    multiline={true}
-                    onChangeText={details => this.setState({ details })}
-                />
-              </View>
+              <Textarea
+                rowSpan={4}
+                bordered
+                placeholder="Description"
+                value={description}
+                onChangeText={description => this.setState({ description })}
+              />
+              
               <Button onPress={() => {
                 this.sendNotice()
               }}>Add Notice</Button>

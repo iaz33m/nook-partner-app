@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, TextInput} from 'react-native';
-import { Icon, Item, Picker, Spinner } from "native-base";
+import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
+import { Icon, Item, Picker, Spinner, Textarea } from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
 import * as actions from '../../Store/Actions/ComplainsActions';
 import PopupDialog from "react-native-popup-dialog";
-import InputField from "../SeperateComponents/InputField";
-import DatePicker from "react-native-datepicker";
 
 class ComplaintsScreen extends React.Component {
 
@@ -150,7 +148,7 @@ class ComplaintsScreen extends React.Component {
     );
   }
   renderComplainsPopup = () => {
-    const { isSchedule, isDialogVisible,date } = this.state;
+    const { isSchedule, isDialogVisible, date, description } = this.state;
 
     if (isSchedule) {
       return (
@@ -180,17 +178,14 @@ class ComplaintsScreen extends React.Component {
                       .map(k => <Picker.Item key={k} label={this.state.types[k]} value={k} />)}
                 </Picker>
               </Item>
-              <View style={styles.textAreaContainer} >
-                <TextInput
-                    style={styles.textArea1}
-                    underlineColorAndroid="transparent"
-                    placeholder="Description"
-                    placeholderTextColor="grey"
-                    numberOfLines={4}
-                    multiline={true}
-                    onChangeText={description => this.setState({ description })}
-                />
-              </View>
+
+              <Textarea
+                rowSpan={4}
+                bordered
+                placeholder="Description"
+                value={description}
+                onChangeText={description => this.setState({ description })}
+              />
 
               <Button onPress={() => {
                 this.sendComplains()
