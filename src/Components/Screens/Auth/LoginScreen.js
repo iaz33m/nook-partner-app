@@ -99,14 +99,14 @@ class LoginScreen extends React.Component {
             </View>
             <View style={{ flex: 1, alignContent: "center", alignItems: "center", marginBottom:70 }}>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                  <Button onPress={this.login}  >Sign In</Button>
+                <View style={{ flex: 1, justifyContent: 'center', alignSelf: 'stretch', alignItems: 'center', marginTop: 10, textAlign: 'center', width: '100%', }}>
+                  <Button onPress={this.login}>Sign In</Button>
                 </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>or continue with</Text>
                 </View>
               </View>
-              <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
+              <View style={{ flex: 1, alignContent: "center", alignItems: "center", marginTop: 10 }}>
                 <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
                   <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
@@ -138,8 +138,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1, margin: 25,
     shadowColor: '#000',
-    shadowOffset: { width: 10, height: 10 },
-    shadowOpacity: 0.8,
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 0.08,
     shadowRadius: 15
   },
   child: {
@@ -150,10 +150,19 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     borderWidth: 0,
     backgroundColor: '#FFF',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
     // Android shadow
-    elevation: 4
+    elevation: 3
   }
 })
+
+
 
 export default connect(
   null,

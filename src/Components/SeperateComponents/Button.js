@@ -23,10 +23,12 @@ const styles = StyleSheet.create({
 
   buttonStyle: {
     marginTop: 15,
-    width: "100%",
-    alignItems: 'center',
-    alignContent: 'center',
-    justifyContent: 'center',
+    paddingStart:40,
+    paddingEnd:40,
+    // flex: 1,
+    // alignItems: 'center',
+    // alignContent: 'center',
+    // justifyContent: 'center',
   },
   labelStyle: {
     color: 'white',

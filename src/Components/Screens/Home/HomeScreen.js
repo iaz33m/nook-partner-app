@@ -311,8 +311,8 @@ class HomeScreen extends React.Component {
                         mode="dropdown"
                         iosIcon={<Icon name="arrow-down" />}
                         style={{ width: "100%" }}
-                        placeholder="Room Catagories"
-                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholder="Select Nook Type"
+                        placeholderStyle={{ color: "black" }}
                         placeholderIconColor="#007aff"
                         selectedValue={filter.type}
                         onValueChange={type => this.setState({
@@ -331,8 +331,8 @@ class HomeScreen extends React.Component {
                         mode="dropdown"
                         iosIcon={<Icon name="arrow-down" />}
                         style={{ width: "100%" }}
-                        placeholder="Room Catagories"
-                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholder="Select Gender"
+                        placeholderStyle={{ color: "black" }}
                         placeholderIconColor="#007aff"
                         selectedValue={filter.gender}
                         onValueChange={gender => this.setState({
@@ -350,8 +350,8 @@ class HomeScreen extends React.Component {
                         mode="dropdown"
                         iosIcon={<Icon name="arrow-down" />}
                         style={{ width: "100%" }}
-                        placeholder="Room Catagories"
-                        placeholderStyle={{ color: "#bfc6ea" }}
+                        placeholder="Select Space Type"
+                        placeholderStyle={{ color: "black" }}
                         placeholderIconColor="#007aff"
                         selectedValue={filter.space_type}
                         onValueChange={space_type => this.setState({
@@ -429,7 +429,7 @@ class HomeScreen extends React.Component {
 
                 <View style={{ flexDirection: 'row', display: 'flex', width: '100%' }}>
                     <TitleText
-                        style={{ fontWeight: 'bold', fontSize: 20, marginTop: 10, marginStart: '50%' }}>Nook
+                        style={{ fontWeight: 'bold', fontSize: 20, marginTop: 10, marginStart: '53%' }}>Nook
                     </TitleText>
                     <View style={{
                         backgroundColor: Colors.white, flexDirection: "row", display: 'flex', marginLeft: 'auto',
@@ -441,7 +441,7 @@ class HomeScreen extends React.Component {
                             }} style={[styles.tabButton, { backgroundColor: tab1Color }]}>
                                 <Image resizeMode="contain" style={{
                                     width: 25,
-                                    height: 25,
+                                    height: 15,
                                 }}
                                     source={tab1Icon}
                                 />
@@ -453,7 +453,7 @@ class HomeScreen extends React.Component {
                             }} style={[styles.tabButton, { backgroundColor: tab2Color }]}>
                                 <Image resizeMode="contain" style={{
                                     width: 25,
-                                    height: 25,
+                                    height: 15,
                                 }}
                                     source={tab2Icon}
                                 />
