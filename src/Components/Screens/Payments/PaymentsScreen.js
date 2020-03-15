@@ -72,11 +72,13 @@ class PaymentsScreen extends React.Component {
                 <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{payment.status}</Text>
                 <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
                   <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} ></TitleText>
                     <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Receipt ID</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Payment Method</TitleText>
                   </View>
                   <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{payment.amount} PKR</TitleText>
                     <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{payment.id}</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{payment.receipt_id}</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{payment.payment_method}</TitleText>

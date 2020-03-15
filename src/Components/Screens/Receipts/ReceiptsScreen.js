@@ -1,13 +1,16 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {StyleSheet, View, ScrollView, Image, Linking, Alert, Platform, TouchableOpacity} from 'react-native';
-import {Icon, Item, Picker, Spinner, Text} from "native-base";
+import {StyleSheet, View, ScrollView, Image, TouchableOpacity} from 'react-native';
+import {Icon, Item, Picker, Spinner, Text, Textarea} from "native-base";
+import PopupDialog from "react-native-popup-dialog";
 import Colors from '../../../helper/Colors';
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
+import InputField from './../../SeperateComponents/InputField';
 import Button from '../../SeperateComponents/Button';
 import * as NavigationService from '../../../NavigationService';
 import * as actions from "../../../Store/Actions/ReceiptsActions";
+import * as paymentActions from "../../../Store/Actions/PaymentActions";
 
 class ReceiptsScreen extends React.Component {
 
@@ -21,6 +24,10 @@ class ReceiptsScreen extends React.Component {
         "approved": "Approved",
         "rejected": "Rejected",
       },
+      selectedReciept: null,
+      addPaymentModal:false,
+      details:'',
+      amount:"",
       modalVisible: false,
       loading: true,
       filter: {
@@ -54,6 +61,62 @@ class ReceiptsScreen extends React.Component {
   }
 
 
+  submitPayment = () => {
+    const { user: { access_token }, addPayment } = this.props;
+    const {selectedReciept, details, amount} = this.state;
+    addPayment({
+      data: { 
+        receipt_id: selectedReciept.id,
+        details,
+        amount
+      },
+      onError: alert,
+      onSuccess: alert,
+      token: access_token
+    });
+  }
+
+  togglePaymentModal = () => {
+    const {addPaymentModal} = this.state;
+    this.setState({
+      addPaymentModal:!addPaymentModal
+    });
+  }
+
+  renderAddPaymentModal = () => {
+
+    const {addPaymentModal, details, amount } = this.state; 
+    return (
+      <PopupDialog
+        width={0.9} height={0.50}
+        visible={addPaymentModal}
+        onTouchOutside={this.togglePaymentModal}>
+        <View style={{ flex: 1, padding: 25, }}>
+          <TouchableOpacity onPress={this.togglePaymentModal}>
+            <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+          </TouchableOpacity>
+
+          <InputField
+            value={amount}
+          
+            onChangeText={amount => this.setState({ amount })}
+          >Paymet Amount</InputField>
+
+          <Textarea
+              rowSpan={4}
+              bordered
+              placeholder="Payment Details"
+              value={details}
+              marginTop={10}
+              onChangeText={details => this.setState({ details })}
+            />
+          <Button onPress={this.submitPayment}>Submit</Button>
+        </View>
+      </PopupDialog>
+    );
+  }
+
+
   renderList = ()=>{
     const {receipts} = this.props;
     const { loading} = this.state;
@@ -62,7 +125,7 @@ class ReceiptsScreen extends React.Component {
     }
     return (
         <View>
-          {receipts.length>0&&
+          {(receipts.length > 0) &&
               <ScrollView style={{paddingBottom: "60%"}}>
             {receipts.map((receipt,index)=><View key={index} style={[styles.container]}>
               <View style={styles.child}>
@@ -83,13 +146,25 @@ class ReceiptsScreen extends React.Component {
                   </View>
                 </View>
 
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                {/* <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
                   <Button  onPress={() => alert('todo')}>Get Direction</Button>
+                </View> */}
+                
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                  <Button  onPress={() => {
+                    this.setState({
+                      selectedReciept:receipt,
+                      amount: `${receipt.total_amount}`
+                    },() => {
+                      this.togglePaymentModal();
+                    });
+                  }}>Pay Now</Button>
                 </View>
+
               </View>
             </View>)}
           </ScrollView>
-              }
+        }
         </View>
     );
   };
@@ -179,6 +254,7 @@ class ReceiptsScreen extends React.Component {
               </TouchableOpacity>
             </View>
             {this.renderList()}
+            {this.renderAddPaymentModal()}
           </View>
           {this.renderFilterView()}
         </View>
@@ -262,5 +338,6 @@ export default connect(
   mapStateToProps,
     {
         getReceipts: actions.getReceipts,
+        addPayment: paymentActions.addPayment,
     },
 )(ReceiptsScreen);
