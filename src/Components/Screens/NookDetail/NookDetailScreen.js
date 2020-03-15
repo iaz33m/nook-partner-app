@@ -9,8 +9,7 @@ import styles from './styles';
 import MapView, { Marker } from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
-import WebView from "react-native-webview/lib/WebView.android";
-// import YouTube from 'react-native-youtube';
+import { WebView } from 'react-native';
 import { connect } from "react-redux";
 import DatePicker from 'react-native-datepicker'
 
@@ -51,7 +50,7 @@ class NookDetailScreen extends React.Component {
 
     const nook = this.props.navigation.state.params;
 
-    return (<View style={{ flex: 1 }}>
+    return (<View pointerEvents="none" style={{ flex: 1 }}>
 
       <MapView initialRegion={{
         latitude: nook.location.lat,
@@ -236,21 +235,12 @@ class NookDetailScreen extends React.Component {
                   style={{ height: 200, width: null, flex: 1 }}
                   javaScriptEnabled={true}
                   domStorageEnabled={true}
-                  source={{ uri: nook.video_url }}
+                  source={{ uri: `https://www.youtube.com/embed/${this.getYoutubeIDFromURL(nook.video_url)}?autoplay=1&theme=light&color=white&disablekb=1` }}
+                  scalesPageToFit={true}
+                  bounces={false}
+                  javaScriptEnabled
+                  automaticallyAdjustContentInsets={false}
                 />
-                {/*<YouTube*/}
-                {/*    videoId={this.getYoutubeIDFromURL(nook.video_url)}*/}
-                {/*    apiKey="120026002261-btgnkfcls2bqgntq7pfe9jhk0r8pr0k2.apps.googleusercontent.com"*/}
-                {/*    play // control playback of video with true/false*/}
-                {/*    fullscreen // control whether the video should play in fullscreen or inline*/}
-                {/*    loop // control whether the video should loop when ended*/}
-                {/*    onReady={e => this.setState({ isReady: true })}*/}
-                {/*    onChangeState={e => this.setState({ status: e.state })}*/}
-                {/*    onChangeQuality={e => this.setState({ quality: e.quality })}*/}
-                {/*    controls={2}*/}
-                {/*    onError={e => this.setState({ error: e.error })}*/}
-                {/*    style={{ alignSelf: 'stretch', height: 300, width: null, flex: 1 }}*/}
-                {/*/>*/}
               </View>
             }
             <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
@@ -402,7 +392,7 @@ class NookDetailScreen extends React.Component {
     if(ampersandPosition != -1) {
       return video_id = video_id.substring(0, ampersandPosition);
     }
-    return '';
+    return video_id;
   }
 }
 const mapStateToProps = state => {
