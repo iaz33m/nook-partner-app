@@ -100,7 +100,6 @@ class HomeScreen extends React.Component {
         if (desiredLocation && selectedNook) {
             distance = calculateDistance(desiredLocation, selectedNook.location)
         }
-        const latlng = this.state.markers.latlng;
         return (<View style={{ flex: 1 }}>
 
             <MapView initialRegion={{
