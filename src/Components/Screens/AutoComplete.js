@@ -4,15 +4,18 @@ import { Image } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import * as NavigationService from './../../NavigationService';
 import * as actions from "../../Store/Actions/NookActions";
+import {_google_maps_key} from "./../../helper/Constants"
 
-const GooglePlacesInput = ({setDesiredLocation}) => {
+const GooglePlacesInput = (props) => {
+    const params = props.navigation.state.params;
+
     return (
 
             <GooglePlacesAutocomplete
                 placeholder='Search'
                 minLength={2} // minimum length of text to search
                 autoFocus={true}
-                returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
+                returnKeyType={'default'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
                 keyboardAppearance={'light'} // Can be left out for default keyboardAppearance https://facebook.github.io/react-native/docs/textinput.html#keyboardappearance
                 listViewDisplayed='auto'    // true/false/undefined
                 fetchDetails={true}
@@ -23,12 +26,12 @@ const GooglePlacesInput = ({setDesiredLocation}) => {
                         ...details.geometry.location
                     };
 
-                    setDesiredLocation({
+                    props.setDesiredLocation({
                         data:{
                             location
                         }
                     });
-                    
+
                     NavigationService.goBack();
                 }}
 
@@ -36,9 +39,14 @@ const GooglePlacesInput = ({setDesiredLocation}) => {
 
                 query={{
                     // available options: https://developers.google.com/places/web-service/autocomplete
-                    key: 'AIzaSyBNBrWGhiL26l5t76_vdLlTf-Y1ReGC3Oo',
+                    key: _google_maps_key,
                     language: 'en', // language of the results
-                    types: 'geocode' // default: 'geocode'
+                    types: 'geocode', // default: 'geocode'
+                    region: 'Pakistan',
+                    radius:50000,
+                    location: params.latitude+', '+params.longitude,
+                    components:'country:pk',
+                    strictbounds: true,
                 }}
 
                 styles={{
@@ -90,7 +98,7 @@ const mapStateToProps = state => {
         desiredLocation: state.NookReducer.desiredLocation,
     };
   };
-  
+
   export default connect(
     mapStateToProps,
     {

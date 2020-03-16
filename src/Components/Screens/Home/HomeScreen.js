@@ -15,9 +15,6 @@ import * as actions from "../../../Store/Actions/NookActions";
 import { connect } from "react-redux";
 import { calculateDistance } from '../../../helper/locationHelper';
 
-const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
-const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
-
 class HomeScreen extends React.Component {
 
     constructor(props) {
@@ -103,7 +100,7 @@ class HomeScreen extends React.Component {
         if (desiredLocation && selectedNook) {
             distance = calculateDistance(desiredLocation, selectedNook.location)
         }
-
+        const latlng = this.state.markers.latlng;
         return (<View style={{ flex: 1 }}>
 
             <MapView initialRegion={{
@@ -125,7 +122,7 @@ class HomeScreen extends React.Component {
                     );
                 })}
             </MapView>
-            <TouchableOpacity onPress={() => NavigationService.navigate("GooglePlacesInput")}
+            <TouchableOpacity onPress={() => NavigationService.navigate("GooglePlacesInput",this.state.markers.latlng)} // todo update this.state.markers.latlng with current location for better results
                 style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
                 <View style={[styles.child, {
                     borderRadius: 30,
@@ -374,7 +371,6 @@ class HomeScreen extends React.Component {
     }
 
     render() {
-        console.log("state chenage", this.state.tabIndex);
 
         let view;
         let tab1Color;
