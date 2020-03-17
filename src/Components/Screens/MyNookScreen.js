@@ -313,16 +313,18 @@ const styles = StyleSheet.create({
         height: 65, width: '45%'
     },
   shiftButton: {
-    alignItems: 'center',
-    alignSelf: 'center',
+      flex: 1,
+      justifyContent: 'center',
     backgroundColor: '#E59413',
+      alignSelf: 'stretch',
+      alignItems: 'center',
     paddingTop: 10,
     paddingBottom: 10,
     flexDirection: 'column',
     borderRadius: 5,
     marginStart: 5,
     marginEnd: 5,
-    height: 65, width: 300,marginTop:10,marginBottom:10
+    height: 65,marginTop:10,marginBottom:10
   },
 })
 
