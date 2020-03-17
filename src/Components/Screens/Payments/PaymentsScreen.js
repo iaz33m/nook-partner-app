@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {StyleSheet, View, ScrollView, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, ScrollView, Image, TouchableOpacity, RefreshControl, FlatList} from 'react-native';
 import {Icon, Item, Picker, Spinner, Text} from "native-base";
 import Colors from '../../../helper/Colors';
 import Header from '../../SeperateComponents/Header';
@@ -26,6 +26,7 @@ class PaymentsScreen extends React.Component {
       filter: {
         status: '',
       },
+      payments:[]
     };
   }
   componentDidMount() {
@@ -35,7 +36,17 @@ class PaymentsScreen extends React.Component {
     }
     this.applyFilter();
   }
-
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (nextProps.payments !== this.state.payments) {
+      this.setState({ payments: nextProps.payments });
+    }
+  }
+  onRefresh() {
+    //Clear old data of the list
+    this.setState({ payments: [] });
+    //Call the Service to get the latest data
+    this.applyFilter();
+  }
   applyFilter = () => {
     const {user: {access_token}, getPayments} = this.props;
     const {filter} = this.state;
@@ -55,38 +66,49 @@ class PaymentsScreen extends React.Component {
 
 
   renderList = ()=>{
-    const {payments} = this.props;
-    const { loading} = this.state;
-    if (loading) {
+    if (this.state.loading) {
       return <Spinner color='black'/>;
     }
     return (
         <View>
-          {payments.length>0&&
-              <ScrollView style={{paddingBottom: "60%"}}>
-            {payments.map((payment,index)=><View key={index} style={[styles.container]}>
-              <View style={styles.child}>
-                <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
-                       source={require('./../../../../assets/feature.png')}
+          {this.state.payments.length>0&&
+                <FlatList
+                    data={this.state.payments}
+                    enableEmptySections={true}
+                    keyExtractor={(item, index) => index.toString()}
+                    contentContainerStyle={{ paddingBottom: "60%"}}
+                    renderItem={({ item }) => (
+                        <View key={item.id} style={[styles.container]}>
+                          <View style={styles.child}>
+                            <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
+                                   source={require('./../../../../assets/feature.png')}
+                            />
+                            <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
+                            <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
+                              <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                <TitleText style={{color: Colors.orange, fontWeight: 'bold', fontSize: 16,}} />
+                                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Receipt ID</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Payment Method</TitleText>
+                              </View>
+                              <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.amount} PKR</TitleText>
+                                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.receipt_id}</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.payment_method}</TitleText>
+                              </View>
+                            </View>
+                          </View>
+                        </View>
+                    )}
+                    refreshControl={
+                      <RefreshControl
+                          //refresh control used for the Pull to Refresh
+                          refreshing={this.state.loading}
+                          onRefresh={this.onRefresh.bind(this)}
+                      />
+                    }
                 />
-                <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{payment.status}</Text>
-                <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
-                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} ></TitleText>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Receipt ID</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Payment Method</TitleText>
-                  </View>
-                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{payment.amount} PKR</TitleText>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{payment.id}</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{payment.receipt_id}</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{payment.payment_method}</TitleText>
-                  </View>
-                </View>
-              </View>
-            </View>)}
-          </ScrollView>
               }
         </View>
     );

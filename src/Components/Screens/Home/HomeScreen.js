@@ -1,5 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    ScrollView,
+    Image,
+    TextInput,
+    RefreshControl,
+    FlatList
+} from 'react-native';
 import { Icon, Drawer, Card, CardItem, Spinner, Item, Picker } from "native-base";
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
@@ -38,6 +48,7 @@ class HomeScreen extends React.Component {
             },
             loading: true,
             modalVisible: false,
+            nooks:[],
             filters: {
                 type: {
                     'house': 'House',
@@ -63,7 +74,17 @@ class HomeScreen extends React.Component {
     componentDidMount() {
         this.applyFilter();
     }
-
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextProps.nooks !== this.state.nooks) {
+            this.setState({ nooks: nextProps.nooks });
+        }
+    }
+    onRefresh() {
+        //Clear old data of the list
+        this.setState({ nooks: [] });
+        //Call the Service to get the latest data
+        this.applyFilter();
+    }
     applyFilter = () => {
         const { getPublicNooks } = this.props;
         const { filter } = this.state;
@@ -192,15 +213,14 @@ class HomeScreen extends React.Component {
     }
     listView = () => {
 
-        const { nooks, desiredLocation } = this.props;
+        const {  desiredLocation } = this.props;
         let locationAddress = 'Enter desired location';
 
         if (desiredLocation) {
             locationAddress = desiredLocation.address || locationAddress;
         }
 
-        const { loading } = this.state;
-        if (loading) {
+        if (this.state.loading) {
             return <Spinner color='black' />;
         }
 
@@ -234,9 +254,13 @@ class HomeScreen extends React.Component {
                     />
                 </TouchableOpacity>
 
-                <ScrollView style={{ flex: 1, marginTop: 10 }}>
-                    {nooks.map((item, i) =>
-                        <View style={styles.container} key={i}>
+                <FlatList
+                    data={this.state.nooks}
+                    enableEmptySections={true}
+                    keyExtractor={(item, index) => index.toString()}
+                    contentContainerStyle={{ paddingBottom: "5%", marginTop: 10 }}
+                    renderItem={({ item,index }) => (
+                        <View style={styles.container} key={index}>
                             <TouchableOpacity style={styles.child} onPress={() => {
                                 this.setState({ isDialogVisible: false });
                                 NavigationService.navigate("NookDetailScreen", item)
@@ -248,13 +272,13 @@ class HomeScreen extends React.Component {
                                 <CardItem cardBody>
                                     {
                                         item.medias.map((m, index) => {
-                                            if (index === 0) {
-                                                return <Image key={index} resizeMode="contain" source={{
-                                                    uri: m.path
+                                                if (index === 0) {
+                                                    return <Image key={index} resizeMode="contain" source={{
+                                                        uri: m.path
+                                                    }
+                                                    } style={{ height: 200, width: null, flex: 1 }} />
                                                 }
-                                                } style={{ height: 200, width: null, flex: 1 }} />
                                             }
-                                        }
                                         )
                                     }
                                 </CardItem>
@@ -263,7 +287,14 @@ class HomeScreen extends React.Component {
                             </TouchableOpacity>
                         </View>
                     )}
-                </ScrollView>
+                    refreshControl={
+                        <RefreshControl
+                            //refresh control used for the Pull to Refresh
+                            refreshing={this.state.loading}
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
+                    }
+                />
             </View>
         )
     };

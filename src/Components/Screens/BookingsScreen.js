@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
-import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, RefreshControl, FlatList} from 'react-native';
 import {Icon, Item, Picker, Spinner} from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
@@ -25,15 +25,24 @@ class BookingsScreen extends React.Component {
             filter: {
                 status: '',
             },
-
-
+            bookings:[]
         };
     }
 
     componentDidMount() {
         this.applyFilter();
     }
-
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextProps.bookings !== this.state.bookings) {
+            this.setState({ bookings: nextProps.bookings });
+        }
+    }
+    onRefresh() {
+        //Clear old data of the list
+        this.setState({ bookings: [] });
+        //Call the Service to get the latest data
+        this.applyFilter();
+    }
     applyFilter = () => {
         const {user: {access_token}, getBookings} = this.props;
         const {filter} = this.state;
@@ -112,39 +121,46 @@ class BookingsScreen extends React.Component {
     }
 
     renderBookings = () => {
-        const {bookings} = this.props;
-        const {statses, loading} = this.state;
 
-        if (loading) {
+        if (this.state.loading) {
             return <Spinner color='black'/>;
         }
 
         return (
-            <ScrollView contentContainerStyle={{paddingVertical:30}}>
-                {bookings.map(c => (
-                    <View key={c.id} style={[styles.container, {
-                        marginBottom: 10,
-                    }]}>
-                        <View style={styles.child}>
-                            <View>
-                                <View style={{
-                                    padding: 15,
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    borderBottomWidth: 1,
-                                    borderBottomColor: 'gray'
-                                }}>
-                                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>ID: {c.id}</Text>
-                                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>{statses[c.status]}</Text>
-                                </View>
-                                <View style={{padding: 15, flexDirection: 'row', justifyContent: 'space-between'}}>
-                                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>Rent: {c.rent} Rs</Text>
+                <FlatList
+                    data={this.state.bookings}
+                    enableEmptySections={true}
+                    keyExtractor={(item, index) => index.toString()}
+                    contentContainerStyle={{ paddingBottom: "45%"}}
+                    renderItem={({ item,index }) => (
+                        <View key={index} style={[styles.container]}>
+                            <View style={styles.child}>
+                                <View>
+                                    <View style={{
+                                        padding: 15,
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: 'gray'
+                                    }}>
+                                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>ID: {item.id}</Text>
+                                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>{this.state.statses[item.status]}</Text>
+                                    </View>
+                                    <View style={{padding: 15, flexDirection: 'row', justifyContent: 'space-between'}}>
+                                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>Rent: {item.rent} Rs</Text>
+                                    </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
-                ))}
-            </ScrollView>
+                    )}
+                    refreshControl={
+                        <RefreshControl
+                            //refresh control used for the Pull to Refresh
+                            refreshing={this.state.loading}
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
+                    }
+                />
         );
     }
 

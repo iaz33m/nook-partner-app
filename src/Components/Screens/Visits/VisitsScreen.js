@@ -1,6 +1,16 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {StyleSheet, View, ScrollView, Image, Linking, Alert, Platform, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Image,
+  Linking,
+  Alert,
+  Platform,
+  TouchableOpacity,
+  RefreshControl, FlatList
+} from 'react-native';
 import {Icon, Item, Picker, Spinner, Text} from "native-base";
 import Colors from '../../../helper/Colors';
 import Header from '../../SeperateComponents/Header';
@@ -26,6 +36,7 @@ class VisitsScreen extends React.Component {
       filter: {
         status: '',
       },
+      visits:[]
     };
   }
   componentDidMount() {
@@ -36,6 +47,17 @@ class VisitsScreen extends React.Component {
     this.applyFilter();
   }
 
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (nextProps.visits !== this.state.visits) {
+      this.setState({ visits: nextProps.visits });
+    }
+  }
+  onRefresh() {
+    //Clear old data of the list
+    this.setState({ visits: [] });
+    //Call the Service to get the latest data
+    this.applyFilter();
+  }
   applyFilter = () => {
     const {user: {access_token}, getVisits} = this.props;
     const {filter} = this.state;
@@ -81,42 +103,53 @@ class VisitsScreen extends React.Component {
   }
 
   renderList = ()=>{
-    const {visits} = this.props;
-    const { loading} = this.state;
-    if (loading) {
+    if (this.state.loading) {
       return <Spinner color='black'/>;
     }
     return (
         <View>
-          {visits.length>0&&
-              <ScrollView style={{paddingBottom: "60%"}}>
-            {visits.map((visit,visitI)=><View key={visitI} style={[styles.container]}>
-              <View style={styles.child}>
-                <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
-                       source={require('./../../../../assets/feature.png')}
-                />
-                <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{visit.status}</Text>
-                <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
-                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Date</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Time</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Partner Name</TitleText>
-                  </View>
-                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{visit.nook.nookCode}</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{visit.date}</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{visit.time}</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{visit.partner.name}</TitleText>
-                  </View>
-                </View>
+          {this.state.visits.length>0&&
+          <FlatList
+              data={this.state.visits}
+              enableEmptySections={true}
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={{ paddingBottom: "60%"}}
+              renderItem={({ item,index }) => (
+                  <View key={index} style={[styles.container]}>
+                    <View style={styles.child}>
+                      <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
+                             source={require('./../../../../assets/feature.png')}
+                      />
+                      <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
+                      <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
+                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                          <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
+                          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Date</TitleText>
+                          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Time</TitleText>
+                          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Partner Name</TitleText>
+                        </View>
+                        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                          <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.date}</TitleText>
+                          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.time}</TitleText>
+                          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.partner.name}</TitleText>
+                        </View>
+                      </View>
 
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-                  <Button  onPress={()=>this.openGps(visit.nook.location.lat,visit.nook.location.lng,visit.nook.address)}>Get Direction</Button>
-                </View>
-              </View>
-            </View>)}
-          </ScrollView>
+                      <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                        <Button  onPress={()=>this.openGps(item.nook.location.lat,item.nook.location.lng,item.nook.address)}>Get Direction</Button>
+                      </View>
+                    </View>
+                  </View>
+              )}
+              refreshControl={
+                <RefreshControl
+                    //refresh control used for the Pull to Refresh
+                    refreshing={this.state.loading}
+                    onRefresh={this.onRefresh.bind(this)}
+                />
+              }
+          />
               }
         </View>
     );
@@ -178,7 +211,7 @@ class VisitsScreen extends React.Component {
 
         </View>
     );
-  }
+  };
   render() {
     const {filter: {status}, statses} = this.state;
 

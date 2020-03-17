@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Icon, Item, Picker, Spinner, Textarea} from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
@@ -32,11 +32,18 @@ class NoticesScreen extends React.Component {
       isSchedule: false,
       details: '',
       date: moment(),
+      notices: []
+
     };
   }
 
   componentDidMount() {
     this.applyFilter();
+  }
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (nextProps.notices !== this.state.notices) {
+      this.setState({ notices: nextProps.notices });
+    }
   }
 
   applyFilter = () => {
@@ -109,38 +116,45 @@ class NoticesScreen extends React.Component {
   }
 
   renderNotices = () => {
-    const { notices } = this.props;
-    const { statses, loading } = this.state;
 
-    if (loading) {
+    if (this.state.loading) {
       return <Spinner color='black' />;
     }
 
     return (
-      <ScrollView contentContainerStyle={{paddingVertical:30}}>
-        {notices.map(c => (
-            <View key={c.id} style={[styles.container, {
-              marginBottom: 10,
-            }]}>
-              <View style={styles.child}>
-                <View>
-                  <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID: {c.id}</Text>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{statses[c.status]}</Text>
+          <FlatList
+              data={this.state.notices}
+              enableEmptySections={true}
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={{ paddingBottom: "45%"}}
+              renderItem={({ item }) => (
+                  <View key={item.id} style={[styles.container]}>
+                    <View style={styles.child}>
+                      <View>
+                        <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
+                          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID: {item.id}</Text>
+                          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.statses[item.status]}</Text>
+                        </View>
+                        <View style={{ padding: 10 }}>
+                          <Text>{item.details}</Text>
+                        </View>
+                      </View>
+                    </View>
                   </View>
-                  <View style={{ padding: 10 }}>
-                    <Text>{c.details}</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          ))}
-      </ScrollView>
+              )}
+              refreshControl={
+                <RefreshControl
+                    //refresh control used for the Pull to Refresh
+                    refreshing={this.state.loading}
+                    onRefresh={this.onRefresh.bind(this)}
+                />
+              }
+          />
     );
-  }
+  };
 
   renderNoticePopup = () => {
-    const { isSchedule, isDialogVisible, date, description } = this.state;
+    const { isSchedule, isDialogVisible, date, details } = this.state;
 
     if (isSchedule) {
       return (
@@ -194,10 +208,12 @@ class NoticesScreen extends React.Component {
                 rowSpan={4}
                 bordered
                 placeholder="Description"
-                value={description}
-                onChangeText={description => this.setState({ description })}
+                value={details}
+                onChangeText={details => {
+                  this.setState({ details })
+                }}
               />
-              
+
               <Button onPress={() => {
                 this.sendNotice()
               }}>Add Notice</Button>
@@ -207,6 +223,14 @@ class NoticesScreen extends React.Component {
     }
 
   }
+
+  onRefresh() {
+    //Clear old data of the list
+    this.setState({ notices: [] });
+    //Call the Service to get the latest data
+    this.applyFilter();
+  }
+
   render() {
 
 

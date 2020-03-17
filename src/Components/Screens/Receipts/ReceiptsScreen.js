@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {StyleSheet, View, ScrollView, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, ScrollView, Image, TouchableOpacity, RefreshControl, FlatList} from 'react-native';
 import {Icon, Item, Picker, Spinner, Text, Textarea} from "native-base";
 import PopupDialog from "react-native-popup-dialog";
 import Colors from '../../../helper/Colors';
@@ -19,10 +19,9 @@ class ReceiptsScreen extends React.Component {
     this.state = {
       statses: {
         "": "All",
-        "pending": "Pending",
-        "in_progress": "In Progress",
-        "approved": "Approved",
-        "rejected": "Rejected",
+        "paid": "Paid",
+        "unpaid": "Unpaid",
+        "in_progress": "In Progress"
       },
       selectedReciept: null,
       addPaymentModal:false,
@@ -33,6 +32,7 @@ class ReceiptsScreen extends React.Component {
       filter: {
         status: '',
       },
+      receipts:[]
     };
   }
   componentDidMount() {
@@ -42,7 +42,17 @@ class ReceiptsScreen extends React.Component {
     }
     this.applyFilter();
   }
-
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (nextProps.receipts !== this.state.receipts) {
+      this.setState({ receipts: nextProps.receipts });
+    }
+  }
+  onRefresh() {
+    //Clear old data of the list
+    this.setState({ receipts: [] });
+    //Call the Service to get the latest data
+    this.applyFilter();
+  }
   applyFilter = () => {
     const {user: {access_token}, getReceipts} = this.props;
     const {filter} = this.state;
@@ -65,7 +75,7 @@ class ReceiptsScreen extends React.Component {
     const { user: { access_token }, addPayment } = this.props;
     const {selectedReciept, details, amount} = this.state;
     addPayment({
-      data: { 
+      data: {
         receipt_id: selectedReciept.id,
         details,
         amount
@@ -85,7 +95,7 @@ class ReceiptsScreen extends React.Component {
 
   renderAddPaymentModal = () => {
 
-    const {addPaymentModal, details, amount } = this.state; 
+    const {addPaymentModal, details, amount } = this.state;
     return (
       <PopupDialog
         width={0.9} height={0.50}
@@ -98,7 +108,7 @@ class ReceiptsScreen extends React.Component {
 
           <InputField
             value={amount}
-          
+
             onChangeText={amount => this.setState({ amount })}
           >Paymet Amount</InputField>
 
@@ -118,52 +128,64 @@ class ReceiptsScreen extends React.Component {
 
 
   renderList = ()=>{
-    const {receipts} = this.props;
-    const { loading} = this.state;
-    if (loading) {
+
+    if (this.state.loading) {
       return <Spinner color='black'/>;
     }
     return (
         <View>
-          {(receipts.length > 0) &&
-              <ScrollView style={{paddingBottom: "60%"}}>
-            {receipts.map((receipt,index)=><View key={index} style={[styles.container]}>
-              <View style={styles.child}>
-                <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
-                       source={require('./../../../../assets/feature.png')}
-                />
-                <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{receipt.status}</Text>
-                <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
-                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} ></TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Late Date Charges</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Due Date</TitleText>
-                  </View>
-                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{receipt.total_amount} PKR</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{receipt.late_day_fine} PKR/Day</TitleText>
-                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{receipt.due_date}</TitleText>
-                  </View>
-                </View>
+          {(this.state.receipts.length > 0) &&
+                <FlatList
+                    data={this.state.receipts}
+                    enableEmptySections={true}
+                    keyExtractor={(item, index) => index.toString()}
+                    contentContainerStyle={{ paddingBottom: "60%"}}
+                    renderItem={({ item,index }) => (
+                        <View key={index} style={[styles.container]}>
+                          <View style={styles.child}>
+                            <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
+                                   source={require('./../../../../assets/feature.png')}
+                            />
+                            <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
+                            <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
+                              <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} ></TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Late Date Charges</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Due Date</TitleText>
+                              </View>
+                              <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.total_amount} PKR</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.late_day_fine} PKR/Day</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.due_date}</TitleText>
+                              </View>
+                            </View>
 
-                {/* <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                            {/* <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
                   <Button  onPress={() => alert('todo')}>Get Direction</Button>
                 </View> */}
-                
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-                  <Button  onPress={() => {
-                    this.setState({
-                      selectedReciept:receipt,
-                      amount: `${receipt.total_amount}`
-                    },() => {
-                      this.togglePaymentModal();
-                    });
-                  }}>Pay Now</Button>
-                </View>
 
-              </View>
-            </View>)}
-          </ScrollView>
+                            <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                              <Button  onPress={() => {
+                                this.setState({
+                                  selectedReciept:item,
+                                  amount: `${item.total_amount}`
+                                },() => {
+                                  this.togglePaymentModal();
+                                });
+                              }}>Pay Now</Button>
+                            </View>
+
+                          </View>
+                        </View>
+                    )}
+                    refreshControl={
+                      <RefreshControl
+                          //refresh control used for the Pull to Refresh
+                          refreshing={this.state.loading}
+                          onRefresh={this.onRefresh.bind(this)}
+                      />
+                    }
+                />
         }
         </View>
     );
