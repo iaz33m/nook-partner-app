@@ -18,7 +18,8 @@ class LoginScreen extends React.Component {
     super(props);
     this.state = {
       number: '',
-      password: ''
+      password: '',
+      submitting:false,
     };
   }
 
@@ -38,6 +39,13 @@ class LoginScreen extends React.Component {
     });
   };
 
+  toggleSubmitting = () => {
+    const {submitting} = this.state;
+    this.setState({
+      submitting:!submitting,
+    });
+  }
+
   login = () => {
     const { login } = this.props;
 
@@ -50,19 +58,24 @@ class LoginScreen extends React.Component {
       return alert('Password is required.');
     }
 
+    this.toggleSubmitting();
+
     login({
       data: { number, password },
       onSuccess: () => {
        this.moveToHome();
       },
-      onError: alert
+      onError: (message) => {
+        alert(message);
+        this.toggleSubmitting();
+      }
     });
 
   }
 //TODO add touchable opacity on partner app home screen icon
   render() {
 
-    const { number, password } = this.state;
+    const { number, password, submitting } = this.state;
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
@@ -100,7 +113,7 @@ class LoginScreen extends React.Component {
             <View style={{ flex: 1, alignContent: "center", alignItems: "center", marginBottom:70 }}>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
                 <View style={{ flex: 1, justifyContent: 'center', alignSelf: 'stretch', alignItems: 'center', marginTop: 10, textAlign: 'center', width: '100%', }}>
-                  <Button onPress={this.login}>Sign In</Button>
+                  <Button disabled={submitting} onPress={this.login} >{submitting ? 'Please wait...':'Sign In'}</Button>
                 </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>or continue with</Text>

@@ -156,7 +156,7 @@ class HomeScreen extends React.Component {
                 </View>
             </TouchableOpacity>
             {selectedNook && <PopupDialog
-                width={0.9} height={0.7}
+                width={0.9} height={0.8}
                 ref={"popupDialog"}
                 visible={this.state.isDialogVisible}
                 onTouchOutside={() => {
@@ -201,10 +201,10 @@ class HomeScreen extends React.Component {
                             }}>{selectedNook.gender_type}</TitleText>
                         </View>
                     </View>
-                    {/* <Button onPress={() => {
+                    <Button onPress={() => {
             this.setState({ isDialogVisible: false });
-            NavigationService.navigate("NookDetailScreen")
-          }}>See More</Button> */}
+            NavigationService.navigate("NookDetailScreen",selectedNook)
+          }}>See More</Button>
                 </View>
             </PopupDialog>
             }
