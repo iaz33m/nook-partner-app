@@ -64,7 +64,7 @@ const customTabs = ({ navigation }) => ({
 
     if (routeName === 'Home') {
       return <View style={tabStyle}>
-        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+        <Image style={{ width: 40, height: 45 }}
           source={require('./../assets/home.png')}
         />
       </View>;
@@ -73,7 +73,7 @@ const customTabs = ({ navigation }) => ({
     if (routeName === 'MyNook') {
       return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
-          source={require('./../assets/complaints.png')}
+          source={require('./../assets/N.png')}
         />
       </View>;
     }
