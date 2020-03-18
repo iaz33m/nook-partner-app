@@ -13,6 +13,7 @@ import MyNookScreen from "./Components/Screens/MyNookScreen";
 import AddNookScreen from "./Components/Screens/AddNookScreen";
 import PaymentsScreen from "./Components/Screens/Payments/PaymentsScreen";
 import ReceiptsScreen from "./Components/Screens/Receipts/ReceiptsScreen";
+import ReceiptDetailsScreen from "./Components/Screens/Receipts/ReceiptDetailsScreen";
 
 import ProfileScreen from "./Components/Screens/ProfileScreen";
 
@@ -117,7 +118,7 @@ const customTabs = ({ navigation }) => ({
         />
       </View>;
     }
-    
+
     if (routeName === 'Payment') {
       return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
@@ -196,6 +197,7 @@ const AppNavigator = createStackNavigator(
     NumberVerificationScreen,
     RegisterScreen,
     GooglePlacesInput,
+    ReceiptDetailsScreen
   }, {
   initialRouteName: "SplashScreen",
   headerMode: 'none'

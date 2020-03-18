@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     // Android shadow
     elevation: 3
   }
-})
+});
 
 
 const mapStateToProps = state => {

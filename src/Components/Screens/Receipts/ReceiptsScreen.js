@@ -142,7 +142,10 @@ class ReceiptsScreen extends React.Component {
                     contentContainerStyle={{ paddingBottom: "60%"}}
                     renderItem={({ item,index }) => (
                         <View key={index} style={[styles.container]}>
-                          <View style={styles.child}>
+                          <TouchableOpacity onPress={()=>{
+                            NavigationService.navigate("ReceiptDetailsScreen", item)
+                          }}>
+                            <View style={styles.child}>
                             <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
                                    source={require('./../../../../assets/feature.png')}
                             />
@@ -176,6 +179,7 @@ class ReceiptsScreen extends React.Component {
                             </View>
 
                           </View>
+                          </TouchableOpacity>
                         </View>
                     )}
                     refreshControl={
