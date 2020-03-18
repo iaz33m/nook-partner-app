@@ -72,7 +72,7 @@ const getMyNookDetails = options => async dispatch => {
 
 
 
-const addReivew = options => async dispatch => {
+const addReview = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     try {
 
@@ -167,7 +167,7 @@ const setDesiredLocation = options => async dispatch => {
 
 export {
     getMyNookDetails,
-    addReivew ,
+    addReview ,
     getPublicNooks,
     addNookRoom,
     setDesiredLocation,

@@ -43,17 +43,21 @@ class MyNookScreen extends React.Component {
     }
 
     addReview = () => {
-        const {user, addReivew} = this.props;
+        const {user, addReview} = this.props;
         const {rating} = this.state;
-        addReivew({
+        addReview({
             data: {rating},
-            onError: alert,
+            onError: (error) => {
+                alert(error);
+                this.setState({isDialogVisible: false});
+            },
             onSuccess: () => {
+                alert('Rating has been added successfully');
                 this.setState({isDialogVisible: false});
             },
             token: user.access_token
         });
-    }
+    };
 
     renderRattingView = () => {
 
@@ -104,7 +108,7 @@ class MyNookScreen extends React.Component {
                 />
             </View>
         )
-    }
+    };
 
 
     renderNookDetails = () => {
@@ -340,6 +344,6 @@ export default connect(
     mapStateToProps,
     {
         getMyNookDetails: actions.getMyNookDetails,
-        addReivew: actions.addReivew,
+        addReview: actions.addReview,
     },
 )(MyNookScreen);
