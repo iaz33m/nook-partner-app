@@ -167,12 +167,12 @@ class ComplaintsScreen extends React.Component {
     );
   };
   renderComplainsPopup = () => {
-    const { isSchedule, isDialogVisible, date, description } = this.state;
+    const { isSchedule, isDialogVisible, date, description ,submitting} = this.state;
 
     if (isSchedule) {
       return (
           <PopupDialog
-              width={0.9} height={0.42}
+              width={0.9} height={0.44}
               visible={isDialogVisible}
               onTouchOutside={this.togglePopup}>
             <View style={{ flex: 1, padding: 25, }}>
@@ -205,10 +205,7 @@ class ComplaintsScreen extends React.Component {
                 value={description}
                 onChangeText={description => this.setState({ description })}
               />
-
-              <Button onPress={() => {
-                this.sendComplains()
-              }}>Add Complain</Button>
+              <Button disabled={submitting} onPress={() => {this.sendComplains()}} >{submitting ? 'Please wait...':'Add Complain'}</Button>
             </View>
           </PopupDialog>
       );
@@ -264,21 +261,27 @@ class ComplaintsScreen extends React.Component {
       </View >
     );
   }
-
+  toggleSubmitting = () => {
+    const {submitting} = this.state;
+    this.setState({
+      submitting:!submitting,
+    });
+  };
   sendComplains() {
-    this.setState({ isDialogVisible: false });
+    this.toggleSubmitting();
     const { filter } = this.state;
     const { user: { access_token }, addComplain } = this.props;
     this.setState({ loading: true, modalVisible: false });
     const data = { "description": this.state.description, "type": this.state.type };
-    console.log('data',data);
     addComplain({
       data: data,
       onError: (error) => {
+        this.toggleSubmitting();
         alert(error);
         this.setState({ loading: false });
       },
       onSuccess: () => {
+        this.toggleSubmitting();
         this.setState({ loading: false });
         alert('Complain has been sent successfully');
       },

@@ -27,6 +27,12 @@ class RegisterScreen extends React.Component {
     };
   }
 
+  toggleSubmitting = () => {
+    const {submitting} = this.state;
+    this.setState({
+      submitting:!submitting,
+    });
+  };
   handleSignup = () => {
     this.setState({
       nameError: '',
@@ -62,7 +68,7 @@ class RegisterScreen extends React.Component {
         confirmPasswordError: "Please type same password in both fields."
       });
     }
-
+    this.toggleSubmitting();
     register({
       data: { name, number, password },
       onSuccess: () => {
@@ -70,6 +76,7 @@ class RegisterScreen extends React.Component {
       },
       onError: message => {
         alert(message);
+        this.toggleSubmitting();
       }
     });
 
@@ -91,8 +98,7 @@ class RegisterScreen extends React.Component {
     const {
       name,
       number,
-      password,
-      confirmPassword,
+      submitting,
       nameError,
       numberError,
       passwordError,
@@ -135,7 +141,7 @@ class RegisterScreen extends React.Component {
                 >Confirm Password</InputField>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                <Button onPress={this.handleSignup}>Sign Up</Button>
+                <Button disabled={submitting} onPress={this.handleSignup} >{submitting ? 'Please wait...':'Sign Up'}</Button>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, flexDirection: 'row' }}>
                 <Text>Already have an account? </Text><Text style={{

@@ -20,6 +20,12 @@ class ForgotPasswordScreen extends React.Component {
     code: '',
   };
 
+  toggleSubmitting = () => {
+    const {submitting} = this.state;
+    this.setState({
+      submitting:!submitting,
+    });
+  };
   sendCode = () => {
     const { sendPasswordsResetCode } = this.props;
     const { number } = this.state;
@@ -27,6 +33,7 @@ class ForgotPasswordScreen extends React.Component {
       return alert('Number is Required');
     }
 
+    this.toggleSubmitting();
     sendPasswordsResetCode({
       data: { number },
       onSuccess: (data) => {
@@ -35,9 +42,10 @@ class ForgotPasswordScreen extends React.Component {
       },
       onError: message => {
         alert(message);
+        this.toggleSubmitting();
       }
     });
-  }
+  };
 
   changePassword = () => {
     const { changePassword } = this.props;
@@ -49,7 +57,7 @@ class ForgotPasswordScreen extends React.Component {
     if (!password) {
       return alert('Password is Required');
     }
-
+    this.toggleSubmitting();
     changePassword({
       data: { token: code, password, number },
       onSuccess: () => {
@@ -58,13 +66,14 @@ class ForgotPasswordScreen extends React.Component {
       },
       onError: message => {
         alert(message);
+        this.toggleSubmitting();
       }
     });
-  }
+  };
 
 
   renderView = () => {
-    const { view, number, code, password } = this.state;
+    const { view, number, code, password, submitting } = this.state;
 
     if (view === 'sendCode') {
       return (
@@ -78,7 +87,7 @@ class ForgotPasswordScreen extends React.Component {
                 <InputField iconName="md-phone-portrait" value={number} onChangeText={number => this.setState({ number })}>Number</InputField>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
-                <Button onPress={this.sendCode}  >Send Code</Button>
+                <Button disabled={submitting} onPress={this.sendCode} >{submitting ? 'Please wait...':'Send Code'}</Button>
               </View>
             </View>
           </View>
@@ -103,7 +112,7 @@ class ForgotPasswordScreen extends React.Component {
                 >New Password</InputField>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
-                <Button onPress={this.changePassword}  >Change Password</Button>
+                <Button disabled={submitting} onPress={this.changePassword} >{submitting ? 'Please wait...':'Change Password'}</Button>
               </View>
             </View>
           </View>

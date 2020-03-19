@@ -154,7 +154,7 @@ class NoticesScreen extends React.Component {
   };
 
   renderNoticePopup = () => {
-    const { isSchedule, isDialogVisible, date, details } = this.state;
+    const { isSchedule, isDialogVisible, date, details,submitting } = this.state;
 
     if (isSchedule) {
       return (
@@ -213,10 +213,7 @@ class NoticesScreen extends React.Component {
                   this.setState({ details })
                 }}
               />
-
-              <Button onPress={() => {
-                this.sendNotice()
-              }}>Add Notice</Button>
+              <Button disabled={submitting} onPress={() => {this.sendNotice()}} >{submitting ? 'Please wait...':'Add Notice'}</Button>
             </View>
           </PopupDialog>
       );
@@ -280,19 +277,26 @@ class NoticesScreen extends React.Component {
       </View >
     );
   }
-
+  toggleSubmitting = () => {
+    const {submitting} = this.state;
+    this.setState({
+      submitting:!submitting,
+    });
+  };
   sendNotice() {
-    this.setState({ isDialogVisible: false });
+    this.toggleSubmitting();
     const { filter } = this.state;
     const { user: { access_token }, addNotice } = this.props;
     this.setState({ loading: true, modalVisible: false });
     addNotice({
       data: { "details": this.state.details, "checkout": moment(this.state.date, 'MMMM Do YYYY, h:mm a').unix() },
       onError: (error) => {
+        this.toggleSubmitting();
         alert(error);
         this.setState({ loading: false });
       },
       onSuccess: () => {
+        this.toggleSubmitting();
         this.setState({ loading: false });
         alert('Notice has been sent successfully');
       },

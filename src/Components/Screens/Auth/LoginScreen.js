@@ -44,7 +44,7 @@ class LoginScreen extends React.Component {
     this.setState({
       submitting:!submitting,
     });
-  }
+  };
 
   login = () => {
     const { login } = this.props;
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
 
 export default connect(
   null,
-  { 
+  {
     login: actions.login,
     socialLogin: actions.socialLogin,
   }

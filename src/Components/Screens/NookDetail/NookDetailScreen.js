@@ -102,7 +102,7 @@ class NookDetailScreen extends React.Component {
   }
 
   renderScheduleVisitPopup = (nook_id) => {
-    const { isSchedule, isDialogVisible,date } = this.state;
+    const { isSchedule, isDialogVisible,date,submitting } = this.state;
 
     if (isSchedule) {
       return (
@@ -150,10 +150,7 @@ class NookDetailScreen extends React.Component {
                 })
               }}
             />
-
-            <Button onPress={() => {
-              this.setSchedule(nook_id)
-            }}>Schedule</Button>
+            <Button disabled={submitting} onPress={() => {this.setSchedule(nook_id)}} >{submitting ? 'Please wait...':'Schedule'}</Button>
           </View>
         </PopupDialog>
       );
@@ -162,31 +159,44 @@ class NookDetailScreen extends React.Component {
   }
 
   submitShift = () => {
+    this.toggleSubmitting();
     const { user: { access_token }, addShift } = this.props;
     const nook = this.props.navigation.state.params;
     const {roomId, details} = this.state;
     addShift({
-      data: { 
+      data: {
         nook_id: nook.id,
         room_id: roomId,
         details,
       },
-      onError: alert,
-      onSuccess: alert,
+      onError: message => {
+      alert(message);
+      this.toggleSubmitting();
+    },
+      onSuccess: message => {
+        alert(message);
+        this.toggleSubmitting();
+      },
       token: access_token
     });
-  }
+  };
 
   toggleShiftNookModal = () => {
     const {addShiftModal} = this.state;
     this.setState({
       addShiftModal:!addShiftModal
     });
-  }
+  };
+  toggleSubmitting = () => {
+    const {submitting} = this.state;
+    this.setState({
+      submitting:!submitting,
+    });
+  };
 
   renderAddShiftPopup = () => {
 
-    const {addShiftModal, details, roomId} = this.state; 
+    const {addShiftModal, details, roomId,submitting} = this.state;
     const nook = this.props.navigation.state.params;
     const { rooms, space_type } = nook;
     const height = (space_type === 'Shared') ? 0.5 : 0.45
@@ -200,7 +210,7 @@ class NookDetailScreen extends React.Component {
           <TouchableOpacity onPress={this.toggleShiftNookModal}>
             <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
           </TouchableOpacity>
-          
+
           {(space_type === 'Shared') && (
             <>
               <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
@@ -239,7 +249,7 @@ class NookDetailScreen extends React.Component {
               onChangeText={details => this.setState({ details })}
             />
 
-          <Button onPress={this.submitShift}>Shift Nook</Button>
+          <Button disabled={submitting} onPress={this.submitShift} >{submitting ? 'Please wait...':'Shift Nook'}</Button>
         </View>
       </PopupDialog>
     );
@@ -248,8 +258,9 @@ class NookDetailScreen extends React.Component {
 
   sendBookingRequest = () => {
 
+    this.toggleSubmitting();
     const nook = this.props.navigation.state.params;
-      
+
     this.setState({ isDialogVisible: false });
     const { user: { access_token }, addNookRoom } = this.props;
 
@@ -257,10 +268,12 @@ class NookDetailScreen extends React.Component {
     addNookRoom({
         data: { "nook_id": nook.id, "room_id": this.state.roomId },
         onError: (error) => {
+          this.toggleSubmitting();
           alert(error);
           this.setState({ loading: false });
         },
         onSuccess: () => {
+          this.toggleSubmitting();
           this.setState({ loading: false });
           alert('Booking of room has been created successfully');
         },
@@ -275,19 +288,15 @@ class NookDetailScreen extends React.Component {
     const { space_type } = nook;
 
     if(space_type === 'Shared'){
-      console.log('in...........');
       return this.setState({ isDialogVisible: true, isBookNow: true, isSchedule: false });
     }
-
-    console.log('out...........'); 
-
     this.sendBookingRequest();
-  }
+  };
 
   render() {
     const nook = this.props.navigation.state.params;
     const { rooms } = nook;
-    const { filter, featuredImage } = this.state;
+    const { filter, featuredImage ,submitting} = this.state;
 
     let view = this.Map();
     let tab1Color;
@@ -467,7 +476,7 @@ class NookDetailScreen extends React.Component {
                     })}
                   </Picker>
                 </Item>
-                <Button onPress={this.sendBookingRequest}>Book Nook</Button>
+                <Button disabled={submitting} onPress={this.sendBookingRequest} >{submitting ? 'Please wait...':'Book Nook'}</Button>
               </View>
             </PopupDialog>
           }
@@ -477,6 +486,7 @@ class NookDetailScreen extends React.Component {
   }
 
   setSchedule(nook_id) {
+    this.toggleSubmitting();
     this.setState({ isDialogVisible: false });
     const { filter } = this.state;
     const { user: { access_token }, addNookSchedule } = this.props;
@@ -484,12 +494,14 @@ class NookDetailScreen extends React.Component {
     addNookSchedule({
       data: { "nook_id": nook_id, "time": moment(this.state.date, 'MMMM Do YYYY, h:mm a').unix() },
       onError: (error) => {
+        this.toggleSubmitting();
         alert(error);
         this.setState({ loading: false });
       },
       onSuccess: () => {
+        this.toggleSubmitting();
         this.setState({ loading: false });
-        alert('Vist has been scheduled successfully');
+        alert('Visit has been scheduled successfully');
       },
       filter,
       token: access_token

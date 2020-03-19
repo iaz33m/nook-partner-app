@@ -69,9 +69,15 @@ class ReceiptsScreen extends React.Component {
       token: access_token
     });
   }
-
+  toggleSubmitting = () => {
+    const {submitting} = this.state;
+    this.setState({
+      submitting:!submitting,
+    });
+  };
 
   submitPayment = () => {
+    this.toggleSubmitting();
     const { user: { access_token }, addPayment } = this.props;
     const {selectedReciept, details, amount} = this.state;
     addPayment({
@@ -80,8 +86,14 @@ class ReceiptsScreen extends React.Component {
         details,
         amount
       },
-      onError: alert,
-      onSuccess: alert,
+      onError: message=>{
+        alert(message);
+        this.toggleSubmitting();
+        },
+      onSuccess:  message=>{
+        alert(message);
+        this.toggleSubmitting();
+      },
       token: access_token
     });
   }
@@ -95,7 +107,7 @@ class ReceiptsScreen extends React.Component {
 
   renderAddPaymentModal = () => {
 
-    const {addPaymentModal, details, amount } = this.state;
+    const {addPaymentModal, details, amount,submitting } = this.state;
     return (
       <PopupDialog
         width={0.9} height={0.50}
@@ -120,7 +132,7 @@ class ReceiptsScreen extends React.Component {
               marginTop={10}
               onChangeText={details => this.setState({ details })}
             />
-          <Button onPress={this.submitPayment}>Submit</Button>
+          <Button disabled={submitting} onPress={this.submitPayment} >{submitting ? 'Please wait...':'Submit'}</Button>
         </View>
       </PopupDialog>
     );

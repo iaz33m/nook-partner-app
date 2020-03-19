@@ -94,16 +94,29 @@ class ProfileScreen extends React.Component {
     return null;
   }
 
+  toggleSubmitting = () => {
+    const {submitting} = this.state;
+    this.setState({
+      submitting:!submitting,
+    });
+  };
   updateProfile = () => {
+    this.toggleSubmitting();
     const { name, number, gender, profile, address } = this.state;
     const { user: { access_token: token }, updateUser } = this.props;
     updateUser({
       token,
       data: { name, number, gender: gender.toLocaleLowerCase(), address, profile },
-      onSuccess: alert,
-      onError: alert
+      onSuccess: message=> {
+        alert(message);
+      this.toggleSubmitting();
+      },
+      onError: message=> {
+        alert(message);
+        this.toggleSubmitting();
+      }
     });
-  }
+  };
   updatePassword = () => {
     const { oldPassword, password, confirmPassword } = this.state;
     const { user: { access_token: token }, changePassword } = this.props;
@@ -111,17 +124,23 @@ class ProfileScreen extends React.Component {
     if (password !== confirmPassword) {
       return alert('The password and confirmation password do not match.');
     }
-
+    this.toggleSubmitting();
     changePassword({
       token,
       data: { old_password: oldPassword, password },
-      onSuccess: alert,
-      onError: alert
+      onSuccess: message=> {
+        alert(message);
+        this.toggleSubmitting();
+      },
+      onError: message=> {
+        alert(message);
+        this.toggleSubmitting();
+      }
     });
   }
 
   render() {
-    let { name, number, gender, profile, address, oldPassword, password, confirmPassword } = this.state;
+    let { name, number, gender, profile, address, oldPassword, password, confirmPassword,submitting } = this.state;
 
     // image is not coming from internet
     if (!profile.includes('http')) {
@@ -200,7 +219,7 @@ class ProfileScreen extends React.Component {
                 onChangeText={address => this.setState({ address })}
               />
               <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 20, }}>
-                <Button onPress={this.updateProfile}  >Update</Button>
+                <Button disabled={submitting} onPress={this.updateProfile} >{submitting ? 'Please wait...':'Update'}</Button>
               </View>
             </View>
           </View>
@@ -223,7 +242,7 @@ class ProfileScreen extends React.Component {
                 <InputField iconName="eye" secureTextEntry value={confirmPassword} onChangeText={(confirmPassword) => this.setState({ confirmPassword })} >Confrim New Password</InputField>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 20, }}>
-                <Button onPress={this.updatePassword}  >Update Password</Button>
+                <Button disabled={submitting} onPress={this.updatePassword} >{submitting ? 'Please wait...':'Update Password'}</Button>
               </View>
             </View>
           </View>

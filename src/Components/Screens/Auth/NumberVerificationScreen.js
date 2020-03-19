@@ -32,7 +32,12 @@ class NumberVerificationScreen extends React.Component {
       onError: alert
     });
   }
-
+  toggleSubmitting = () => {
+    const {submitting} = this.state;
+    this.setState({
+      submitting:!submitting,
+    });
+  };
   verifyNumber = () => {
 
     const {
@@ -48,18 +53,22 @@ class NumberVerificationScreen extends React.Component {
       return alert('Code is Required');
     }
 
+    this.toggleSubmitting();
     verifyNumber({
       data: { code },
       token,
       onSuccess: () => {
         NavigationService.navigateAndResetStack("TabScreens");
-      },
-      onError: alert
+      },onError: message => {
+      alert(message);
+      this.toggleSubmitting();
+    }
+
     });
-  }
+  };
 
   render() {
-    const { code } = this.state;
+    const { code,submitting } = this.state;
     const { user: { number } } = this.props;
 
     return (
@@ -73,7 +82,7 @@ class NumberVerificationScreen extends React.Component {
               <InputField iconName="md-phone-portrait" value={code} onChangeText={code => this.setState({ code })}>Code</InputField>
             </View>
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
-              <Button onPress={this.verifyNumber}  >Verify Number</Button>
+              <Button disabled={submitting} onPress={this.verifyNumber} >{submitting ? 'Please wait...':'Verify Number'}</Button>
             </View>
           </View>
         </View>
