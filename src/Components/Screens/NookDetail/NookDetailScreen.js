@@ -199,7 +199,7 @@ class NookDetailScreen extends React.Component {
     const {addShiftModal, details, roomId,submitting} = this.state;
     const nook = this.props.navigation.state.params;
     const { rooms, space_type } = nook;
-    const height = (space_type === 'Shared') ? 0.5 : 0.45
+    const height = (space_type === 'Shared') ? 0.55 : 0.55
     return (
       <PopupDialog
         width={0.9} height={height}

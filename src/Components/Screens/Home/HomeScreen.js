@@ -35,8 +35,8 @@ class HomeScreen extends React.Component {
             isDialogVisible: false,
             markers: {
                 latlng: {
-                    latitude: 31.5204,
-                    longitude: 74.3587,
+                    latitude: 31.4697,
+                    longitude: 74.2728,
                 },
                 title: "",
                 description: ""
@@ -171,8 +171,8 @@ class HomeScreen extends React.Component {
                     </TouchableOpacity>
                     <TitleText
                         style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.nookCode}</TitleText>
-                    <Image resizeMode="contain" source={{ uri: selectedNook.medias[0].path }}
-                        style={{ borderRadius: 5, height: 200, width: null, marginTop: 15 }} />
+                    {selectedNook.medias[0] && <Image resizeMode="contain" source={{ uri: selectedNook.medias[0].path }}
+                        style={{ borderRadius: 5, height: 200, width: null, marginTop: 15 }} />}
                     <View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
                         <View style={{ flex: 1, alignItems: 'flex-start' }}>
                             <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Price</TitleText>
@@ -526,6 +526,7 @@ class HomeScreen extends React.Component {
                             }}
                                 source={tab3Icon}
                             />
+                            {/* <Text>Independent</Text> */}
                         </TouchableOpacity>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -558,6 +559,8 @@ class HomeScreen extends React.Component {
                             }}
                                 source={tab4Icon}
                             />
+                            
+                            {/* <Text>Shared</Text> */}
                         </TouchableOpacity>
                     </View>
                 </View>

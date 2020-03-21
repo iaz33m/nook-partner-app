@@ -148,7 +148,7 @@ class RegisterScreen extends React.Component {
                   textDecorationLine: 'underline',
                 }} onPress={() => NavigationService.goBack()}>Login!</Text>
               </View>
-              <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row', alignSelf: 'center', marginBottom:140 }}>
+              {/* <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row', alignSelf: 'center', marginBottom:140 }}>
 
                 <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40, marginBottom: 20 }}
@@ -160,7 +160,7 @@ class RegisterScreen extends React.Component {
                     source={require('./../../../../assets/google.png')}
                   />
                 </TouchableOpacity>
-              </View>
+              </View> */}
             </KeyboardAwareScrollView>
           </View>
 

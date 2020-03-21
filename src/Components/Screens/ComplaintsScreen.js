@@ -172,7 +172,7 @@ class ComplaintsScreen extends React.Component {
     if (isSchedule) {
       return (
           <PopupDialog
-              width={0.9} height={0.44}
+              width={0.9} height={0.5}
               visible={isDialogVisible}
               onTouchOutside={this.togglePopup}>
             <View style={{ flex: 1, padding: 25, }}>

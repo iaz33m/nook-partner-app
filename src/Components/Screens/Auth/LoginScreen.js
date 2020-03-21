@@ -72,7 +72,7 @@ class LoginScreen extends React.Component {
     });
 
   }
-//TODO add touchable opacity on partner app home screen icon
+  //TODO add touchable opacity on partner app home screen icon
   render() {
 
     const { number, password, submitting } = this.state;
@@ -96,7 +96,7 @@ class LoginScreen extends React.Component {
                   value={number}
                   textContentType="telephoneNumber"
                   onChangeText={number => this.setState({ number })}
-                >Number</InputField>
+                >Number or Email</InputField>
                 <InputField
                   iconName="eye"
                   secureTextEntry
@@ -115,12 +115,12 @@ class LoginScreen extends React.Component {
                 <View style={{ flex: 1, justifyContent: 'center', alignSelf: 'stretch', alignItems: 'center', marginTop: 10, textAlign: 'center', width: '100%', }}>
                   <Button disabled={submitting} onPress={this.login} >{submitting ? 'Please wait...':'Sign In'}</Button>
                 </View>
-                <View style={{ marginTop: 10 }}>
+                {/* <View style={{ marginTop: 10 }}>
                   <Text>or continue with</Text>
-                </View>
+                </View> */}
               </View>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center", marginTop: 10 }}>
-                <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
+                {/* <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
                   <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                     source={require('./../../../../assets/facebook.png')}
@@ -131,7 +131,7 @@ class LoginScreen extends React.Component {
                     source={require('./../../../../assets/google.png')}
                   />
                   </TouchableOpacity>
-                </View>
+                </View> */}
                 <View style={{ marginTop: 20, flexDirection: 'row' }} >
                   <Text>Don't have an account? </Text><Text style={{
                     textDecorationLine: 'underline',
