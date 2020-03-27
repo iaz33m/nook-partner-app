@@ -33,6 +33,7 @@ class RegisterScreen extends React.Component {
       submitting:!submitting,
     });
   };
+
   handleSignup = () => {
     this.setState({
       nameError: '',
@@ -110,8 +111,7 @@ class RegisterScreen extends React.Component {
         <Header backButton={true} />
         <View style={styles.container}>
           <View style={styles.child}>
-
-            <KeyboardAwareScrollView>
+            <KeyboardAwareScrollView contentContainerStyle={{paddingBottom:200}} >
               <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Sign Up</TitleText>
               <TitleText style={{ margin: 15, marginBottom: 10, fontSize: 16, }}>Sign up to continue Nook </TitleText>
               <View style={{ marginStart: '5%', marginEnd: '5%' }}>
@@ -140,7 +140,7 @@ class RegisterScreen extends React.Component {
                   errorMessage={confirmPasswordError}
                 >Confirm Password</InputField>
               </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+              <View style={{ justifyContent: 'center', marginTop: 10 }}>
                 <Button disabled={submitting} onPress={this.handleSignup} >{submitting ? 'Please wait...':'Sign Up'}</Button>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, flexDirection: 'row' }}>
@@ -172,11 +172,12 @@ class RegisterScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, margin: 25,
+    flex: 1,
+    margin: 25,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.10,
-    shadowRadius: 5,
+    shadowRadius: 5
   },
   child: {
     flex: 1,

@@ -59,7 +59,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     container: {
-        flex: 1, padding: 25,
+        flex: 1, 
+        padding: 25,
         paddingTop: 10,
         paddingBottom: 10,
         shadowColor: '#000',

@@ -30,7 +30,7 @@ class HomeScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tabIndex: 3,
+            tabIndex: 4,
             isMap: true,
             isDialogVisible: false,
             markers: {
@@ -42,7 +42,7 @@ class HomeScreen extends React.Component {
                 description: ""
             },
             filter: {
-                space_type: '',
+                space_type: 'shared',
                 type: '',
                 gender: ''
             },
@@ -156,7 +156,7 @@ class HomeScreen extends React.Component {
                 </View>
             </TouchableOpacity>
             {selectedNook && <PopupDialog
-                width={0.9} height={0.8}
+                width={0.9} height={0.75}
                 ref={"popupDialog"}
                 visible={this.state.isDialogVisible}
                 onTouchOutside={() => {
@@ -170,12 +170,12 @@ class HomeScreen extends React.Component {
                             style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
                     </TouchableOpacity>
                     <TitleText
-                        style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.nookCode}</TitleText>
+                        style={{ marginTop: 5, fontWeight: 'bold', fontSize: 16, }}>{selectedNook.nookCode}</TitleText>
                     {selectedNook.medias[0] && <Image resizeMode="contain" source={{ uri: selectedNook.medias[0].path }}
-                        style={{ borderRadius: 5, height: 200, width: null, marginTop: 15 }} />}
-                    <View style={{ flex: 1, flexDirection: 'row', marginTop: 10 }}>
+                        style={{ borderRadius: 5, height: 200, width: null }} />}
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
                         <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                            <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Price</TitleText>
+                            <TitleText style={{ fontWeight: 'bold', fontSize: 16, }}>Price</TitleText>
                             {(() => {
                                 if (distance) {
                                     return <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>Distance</TitleText>;
@@ -185,7 +185,6 @@ class HomeScreen extends React.Component {
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end' }}>
                             <TitleText style={{
-                                marginTop: 15,
                                 fontWeight: 'bold',
                                 fontSize: 16,
                             }}>PKR {selectedNook.rooms[0].price_per_bed}</TitleText>
@@ -228,7 +227,7 @@ class HomeScreen extends React.Component {
             <View style={{ flex: 1, flexDirection: "column" }}>
 
 
-                <TouchableOpacity style={[styles.container, { flex: 0, marginTop: 10 }]} onPress={() => NavigationService.navigate("GooglePlacesInput")}>
+                <TouchableOpacity style={[styles.container, { flex: 0, marginTop: 10 }]} onPress={() => NavigationService.navigate("GooglePlacesInput",this.state.markers.latlng)}>
                     <View style={[styles.child, {
                         borderRadius: 30,
                         flexDirection: 'row',
@@ -520,13 +519,13 @@ class HomeScreen extends React.Component {
                                 });
                             }
                         }} style={[styles.tabButton, { backgroundColor: tab3Color }]}>
-                            <Image resizeMode="contain" style={{
+                            {/* <Image resizeMode="contain" style={{
                                 width: 25,
                                 height: 25,
                             }}
                                 source={tab3Icon}
-                            />
-                            {/* <Text>Independent</Text> */}
+                            /> */}
+                            <Text style={{color:tab4Color}}>Family Nook</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -553,14 +552,14 @@ class HomeScreen extends React.Component {
                                 });
                             }
                         }} style={[styles.tabButton, { backgroundColor: tab4Color }]}>
-                            <Image resizeMode="contain" style={{
+                            {/* <Image resizeMode="contain" style={{
                                 width: 25,
                                 height: 25,
                             }}
                                 source={tab4Icon}
-                            />
+                            /> */}
                             
-                            {/* <Text>Shared</Text> */}
+                            <Text style={{color:tab3Color}}>Shared</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

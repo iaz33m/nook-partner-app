@@ -6,6 +6,7 @@ import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
+import * as NavigationService from '../../NavigationService';
 import * as actions from '../../Store/Actions/BookingsActions';
 
 class BookingsScreen extends React.Component {
@@ -30,8 +31,13 @@ class BookingsScreen extends React.Component {
     }
 
     componentDidMount() {
+        const { user } = this.props;
+        if (!user) {
+          return NavigationService.navigateAndResetStack('LoginScreen');
+        }
         this.applyFilter();
     }
+
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.bookings !== this.state.bookings) {
             this.setState({ bookings: nextProps.bookings });

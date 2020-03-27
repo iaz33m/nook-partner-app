@@ -110,12 +110,12 @@ class LoginScreen extends React.Component {
               </Text>
 
             </View>
-            <View style={{ flex: 1, alignContent: "center", alignItems: "center", marginBottom:70 }}>
-              <View style={{ flex: 1, alignContent: "center", alignItems: "center" }}>
-                <View style={{ flex: 1, justifyContent: 'center', alignSelf: 'stretch', alignItems: 'center', marginTop: 10, textAlign: 'center', width: '100%', }}>
+            <View style={{ flex: 1, alignContent: "center", marginBottom:70 }}>
+              <View style={{ flex: 1, alignContent: "center" }}>
+                <View style={{ flex: 1, marginTop: 10, width: '100%', }}>
                   <Button disabled={submitting} onPress={this.login} >{submitting ? 'Please wait...':'Sign In'}</Button>
                 </View>
-                {/* <View style={{ marginTop: 10 }}>
+                {/* <View style={{ marginTop: 10, alignItems:'center' }}>
                   <Text>or continue with</Text>
                 </View> */}
               </View>

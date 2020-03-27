@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
 
   buttonStyle: {
     marginTop: 15,
-    paddingStart:40,
-    paddingEnd:40,
+    // paddingStart:40,
+    // paddingEnd:40,
     // flex: 1,
     // alignItems: 'center',
     // alignContent: 'center',

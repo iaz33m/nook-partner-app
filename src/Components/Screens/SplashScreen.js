@@ -10,16 +10,12 @@ class SplashScreen extends React.Component {
 
 
   componentDidMount() {
-
     const { syncWithAsyncStorage } = this.props;
-
     syncWithAsyncStorage({
       onSuccess: ({user, skiped}) => {
         if(user !== undefined){
           let screen = (user || skiped === 'true') ? "TabScreens" : "LoginScreen";
-          setTimeout(() => {
-            NavigationService.navigateAndResetStack(screen);
-          }, 1000);
+          NavigationService.navigateAndResetStack(screen);
         }
       }
     });
@@ -29,9 +25,6 @@ class SplashScreen extends React.Component {
     
     return (
       <View style={styles.container}>
-        <Image
-          source={require('./../../../assets/nookLogo.jpg')}
-        />
       </View>
     );
   }
