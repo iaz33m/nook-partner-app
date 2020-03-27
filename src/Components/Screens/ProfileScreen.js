@@ -218,7 +218,7 @@ class ProfileScreen extends React.Component {
                 value={address}
                 onChangeText={address => this.setState({ address })}
               />
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 20, }}>
+              <View style={{ justifyContent: 'center', marginBottom: 20, }}>
                 <Button disabled={submitting} onPress={this.updateProfile} >{submitting ? 'Please wait...':'Update'}</Button>
               </View>
             </View>
@@ -241,7 +241,7 @@ class ProfileScreen extends React.Component {
                 >New Password</InputField>
                 <InputField iconName="eye" secureTextEntry value={confirmPassword} onChangeText={(confirmPassword) => this.setState({ confirmPassword })} >Confrim New Password</InputField>
               </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 20, }}>
+              <View style={{ justifyContent: 'center' }}>
                 <Button disabled={submitting} onPress={this.updatePassword} >{submitting ? 'Please wait...':'Update Password'}</Button>
               </View>
             </View>

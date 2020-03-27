@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
 import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton } from 'native-base';
 import Button from '../../SeperateComponents/Button';
@@ -21,12 +21,13 @@ class ForgotPasswordScreen extends React.Component {
   };
 
   toggleSubmitting = () => {
-    const {submitting} = this.state;
+    const { submitting } = this.state;
     this.setState({
-      submitting:!submitting,
+      submitting: !submitting,
     });
   };
-  sendCode = () => {
+  
+  sendCode = (userAction = false) => {
     const { sendPasswordsResetCode } = this.props;
     const { number } = this.state;
     if (!number) {
@@ -34,11 +35,17 @@ class ForgotPasswordScreen extends React.Component {
     }
 
     this.toggleSubmitting();
+
     sendPasswordsResetCode({
       data: { number },
       onSuccess: (data) => {
         const { token } = data;
-        this.setState({ view: 'changePassword', code: JSON.stringify(token) });
+        this.setState({ view: 'changePassword', code: JSON.stringify(token), submitting: false, });
+        
+        if(userAction){
+          alert('Code was sent Successfully.');
+        }
+
       },
       onError: message => {
         alert(message);
@@ -71,59 +78,68 @@ class ForgotPasswordScreen extends React.Component {
     });
   };
 
+  renderRecendCodeButton = () => {
+    return (
+      <TouchableOpacity onPress={() => this.sendCode(true)}>
+        <TitleText containerStyle={{alignItems: 'flex-start',}} style={{ marginStart: 15, marginTop: 5, fontSize: 16, color:Colors.orange }}>
+          Resend Code
+        </TitleText>
+      </TouchableOpacity>
+    );
+  }
+
 
   renderView = () => {
     const { view, number, code, password, submitting } = this.state;
 
     if (view === 'sendCode') {
       return (
-        <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-          <Header />
-          <View style={styles.container}>
-            <View style={styles.child}>
-              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Forgot Password!</TitleText>
-              <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Enter your phone number (Required) </TitleText>
-              <View style={{ marginTop: 30, marginStart: '5%', marginEnd: '5%' }}>
-                <InputField iconName="md-phone-portrait" value={number} onChangeText={number => this.setState({ number })}>Number</InputField>
-              </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
-                <Button disabled={submitting} onPress={this.sendCode} >{submitting ? 'Please wait...':'Send Code'}</Button>
-              </View>
-            </View>
+        <>
+          <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Forgot Password!</TitleText>
+          <TitleText containerStyle={{alignItems: 'flex-start',}} style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Enter your phone number (Required) </TitleText>
+
+          <View style={{ marginTop: 30, marginStart: '5%', marginEnd: '5%' }}>
+            <InputField iconName="md-phone-portrait" value={number} onChangeText={number => this.setState({ number })}>Number</InputField>
           </View>
-        </View >
+          <View style={{ justifyContent: 'center', marginTop: 20, marginBottom: 20, }}>
+            <Button disabled={submitting} onPress={this.sendCode} >{submitting ? 'Please wait...' : 'Send Code'}</Button>
+          </View>
+        </>
       );
     }
     if (view === 'changePassword') {
       return (
-        <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-          <Header />
-          <View style={styles.container}>
-            <View style={styles.child}>
-              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Forgot Password!</TitleText>
-              <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Enter Verification Code to reset your Password ! </TitleText>
-              <View style={{ marginTop: 30, marginStart: '5%', marginEnd: '5%' }}>
-                <InputField iconName="md-phone-portrait" value={code} onChangeText={code => this.setState({ code })}>Code</InputField>
-                <InputField
-                  iconName="eye"
-                  secureTextEntry
-                  onChangeText={password => this.setState({ password })}
-                  value={password}
-                >New Password</InputField>
-              </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
-                <Button disabled={submitting} onPress={this.changePassword} >{submitting ? 'Please wait...':'Change Password'}</Button>
-              </View>
-            </View>
+        <>
+          <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Forgot Password!</TitleText>
+          <TitleText containerStyle={{alignItems: 'flex-start',}} style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Enter Verification Code to reset your Password ! </TitleText>
+          {this.renderRecendCodeButton()}
+          <View style={{ marginTop: 10, marginStart: '5%', marginEnd: '5%' }}>
+            <InputField iconName="md-phone-portrait" value={code} onChangeText={code => this.setState({ code })}>Code</InputField>
+            <InputField
+              iconName="eye"
+              secureTextEntry
+              onChangeText={password => this.setState({ password })}
+              value={password}
+            >New Password</InputField>
           </View>
-        </View >
+          <View style={{ justifyContent: 'center', marginTop: 20, marginBottom: 20, }}>
+            <Button disabled={submitting} onPress={this.changePassword} >{submitting ? 'Please wait...' : 'Change Password'}</Button>
+          </View>
+        </>
       );
     }
   }
 
   render() {
     return (
-      this.renderView()
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
+        <Header backButton={true} />
+        <View style={styles.container}>
+          <View style={styles.child}>
+            {this.renderView()}
+          </View>
+        </View>
+      </View>
     );
   }
 }

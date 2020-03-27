@@ -11,6 +11,7 @@ import Button from '../../SeperateComponents/Button';
 import { WebView } from 'react-native';
 import { connect } from "react-redux";
 import DatePicker from 'react-native-datepicker'
+import * as NavigationService from '../../../NavigationService';
 
 import * as actions from "../../../Store/Actions/NookActions";
 import * as shiftsActions from "../../../Store/Actions/ShiftsActions";
@@ -80,6 +81,13 @@ class NookDetailScreen extends React.Component {
 
   componentDidMount() {
 
+    const { user, getMyNookDetails } = this.props;
+    if(user){
+      getMyNookDetails({
+        token: user.access_token
+      });
+    }
+    
     let featuredImage = null;
     const nook = this.props.navigation.state.params;
     if (nook.medias && nook.medias.length > 0) {
@@ -90,6 +98,7 @@ class NookDetailScreen extends React.Component {
       featuredImage,
     });
   }
+
   handleRoomChange = value => this.setState({
     roomId: value
   });
@@ -107,7 +116,7 @@ class NookDetailScreen extends React.Component {
     if (isSchedule) {
       return (
         <PopupDialog
-          width={0.9} height={0.35}
+          width={0.9} height={0.40}
           visible={isDialogVisible}
           onTouchOutside={this.togglePopup}>
           <View style={{ flex: 1, padding: 25, }}>
@@ -121,7 +130,7 @@ class NookDetailScreen extends React.Component {
             <DatePicker
               style={{
                 ...styles.container,
-                width: "100%", flex: 0, padding: 0
+                width: "100%", flex: 0, padding: 0,
               }}
               mode="datetime"
               date={this.state.date}
@@ -132,7 +141,7 @@ class NookDetailScreen extends React.Component {
               iconSource={require('./../../../../assets/date.png')}
               customStyles={{
                 dateText: {
-                  margin: 15,
+                  margin: 0,
                   color: 'black'
                 },
                 dateIcon: {
@@ -183,10 +192,25 @@ class NookDetailScreen extends React.Component {
 
   toggleShiftNookModal = () => {
     const {addShiftModal} = this.state;
+    
+    const { user } = this.props;
+    if (!user) {
+      return NavigationService.navigateAndResetStack('LoginScreen');
+    }
+
     this.setState({
       addShiftModal:!addShiftModal
     });
   };
+
+  toggleScheduleVisitModal = () => {
+    const { user } = this.props;
+    if (!user) {
+      return NavigationService.navigateAndResetStack('LoginScreen');
+    }
+    this.setState({ isDialogVisible: true, isSchedule: true, isBookNow: false });
+  }
+
   toggleSubmitting = () => {
     const {submitting} = this.state;
     this.setState({
@@ -199,7 +223,7 @@ class NookDetailScreen extends React.Component {
     const {addShiftModal, details, roomId,submitting} = this.state;
     const nook = this.props.navigation.state.params;
     const { rooms, space_type } = nook;
-    const height = (space_type === 'Shared') ? 0.55 : 0.55
+    const height = (space_type === 'Shared') ? 0.6 : 0.6
     return (
       <PopupDialog
         width={0.9} height={height}
@@ -284,6 +308,11 @@ class NookDetailScreen extends React.Component {
 
   submitNookBooking = () => {
 
+    const { user } = this.props;
+    if (!user) {
+      return NavigationService.navigateAndResetStack('LoginScreen');
+    }
+
     const nook = this.props.navigation.state.params;
     const { space_type } = nook;
 
@@ -293,10 +322,13 @@ class NookDetailScreen extends React.Component {
     this.sendBookingRequest();
   };
 
+
+
   render() {
     const nook = this.props.navigation.state.params;
     const { rooms } = nook;
     const { filter, featuredImage ,submitting} = this.state;
+    const {usersNook} = this.props;
 
     let view = this.Map();
     let tab1Color;
@@ -435,9 +467,9 @@ class NookDetailScreen extends React.Component {
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
               <Text style={{ margin: 15, fontSize: 16, }}>{nook.number}</Text>
             </View>
-            <Button onPress={this.toggleShiftNookModal}>Shift To This Nook</Button>
-            <Button onPress={this.submitNookBooking}>Book Now</Button>
-            <Button onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, isBookNow: false }); }}>Schedule Visit</Button>
+            {usersNook && <Button onPress={this.toggleShiftNookModal}>Shift To This Nook</Button>}
+            {!usersNook && <Button onPress={this.submitNookBooking}>Book Now</Button>}
+            <Button onPress={this.toggleScheduleVisitModal}>Schedule Visit</Button>
           </View>
           {this.renderAddShiftPopup()}
           {this.renderScheduleVisitPopup(nook.id)}
@@ -520,6 +552,7 @@ class NookDetailScreen extends React.Component {
 const mapStateToProps = state => {
   return {
     user: state.AuthReducer.user,
+    usersNook: state.NookReducer.nook,
   };
 };
 export default connect(
@@ -527,6 +560,7 @@ export default connect(
   {
     addNookRoom: actions.addNookRoom,
     addNookSchedule: actions.addNookSchedule,
-    addShift: shiftsActions.addShift
+    addShift: shiftsActions.addShift,
+    getMyNookDetails: actions.getMyNookDetails,
   },
 )(NookDetailScreen)

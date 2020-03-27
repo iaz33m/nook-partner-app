@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "3.0.0",
+    "version": "3.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -25,14 +25,14 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.xovoltlab.nooks",
-      "buildNumber": "30",
+      "buildNumber": "31",
       "config": {
         "googleMapsApiKey":"AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw"
       }
     },
     "android": {
       "package": "xovoltlabs.nooks",
-      "versionCode":30,
+      "versionCode":31,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw"

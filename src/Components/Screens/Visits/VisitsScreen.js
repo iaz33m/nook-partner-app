@@ -42,7 +42,7 @@ class VisitsScreen extends React.Component {
   componentDidMount() {
     const { user } = this.props;
     if (!user) {
-      NavigationService.navigateAndResetStack('LoginScreen');
+      return NavigationService.navigateAndResetStack('LoginScreen');
     }
     this.applyFilter();
   }

@@ -8,18 +8,20 @@ import TitleText from '../../SeperateComponents/TitleText'
 import * as NavigationService from '../../../NavigationService';
 import Colors from '../../../helper/Colors';
 import * as actions from '../../../Store/Actions/AuthActions';
+import { Button as NativeBaseButton, Text } from 'native-base';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class NumberVerificationScreen extends React.Component {
 
   state = {
-    code: '',
+    code: ''
   };
 
   componentDidMount = () => {
     this.sendCode();
   }
 
-  sendCode = () => {
+  sendCode = (userAction = false) => {
     const {
       sendNumberVerificationCode,
       user: {
@@ -29,15 +31,22 @@ class NumberVerificationScreen extends React.Component {
 
     sendNumberVerificationCode({
       token,
+      onSuccess: () => {
+        if(userAction){
+          alert('Code was sent Successfully.');
+        }
+      },
       onError: alert
     });
   }
+
   toggleSubmitting = () => {
     const {submitting} = this.state;
     this.setState({
       submitting:!submitting,
     });
   };
+
   verifyNumber = () => {
 
     const {
@@ -67,21 +76,32 @@ class NumberVerificationScreen extends React.Component {
     });
   };
 
+  renderRecendCodeButton = () => {
+    return (
+      <TouchableOpacity onPress={() => this.sendCode(true)}>
+        <TitleText containerStyle={{alignItems: 'flex-start',}} style={{ marginStart: 15, marginTop: 5, fontSize: 16, color:Colors.orange }}>
+          Resend Code
+        </TitleText>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     const { code,submitting } = this.state;
     const { user: { number } } = this.props;
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-        <Header />
+        <Header backButton={true} />
         <View style={styles.container}>
           <View style={styles.child}>
             <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Verify Number!</TitleText>
-            <TitleText style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Number Verification code is send to your number {number}</TitleText>
-            <View style={{ marginTop: 30, marginStart: '5%', marginEnd: '5%' }}>
+            <TitleText containerStyle={{alignItems: 'flex-start',}} style={{ margin: 15, marginBottom: 0, fontSize: 16, }}>Number Verification code is send to your number {number}</TitleText>
+            {this.renderRecendCodeButton()}
+            <View style={{ marginTop: 15, marginStart: '5%', marginEnd: '5%' }}>
               <InputField iconName="md-phone-portrait" value={code} onChangeText={code => this.setState({ code })}>Code</InputField>
             </View>
-            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 20, }}>
+            <View style={{ justifyContent: 'center', marginTop: 20, marginBottom: 20, }}>
               <Button disabled={submitting} onPress={this.verifyNumber} >{submitting ? 'Please wait...':'Verify Number'}</Button>
             </View>
           </View>

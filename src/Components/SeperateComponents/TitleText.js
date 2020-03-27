@@ -4,11 +4,11 @@ import { Button as NativeButton, View } from 'native-base';
 
 
 const TitleText = (props) => {
-  let { children, style } = props;
+  let { children, style, containerStyle } = props;
 
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle || {}]}>
       <Text textAlign="center" style={{ ...style, }}>{children}</Text>
     </View>
   );
