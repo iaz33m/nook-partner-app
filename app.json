@@ -24,11 +24,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "xovoltlabs.nooks",
+      "bundleIdentifier": "com.xovoltlab.nooks",
+      "buildNumber": "30",
       "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw"
-        }
+        "googleMapsApiKey":"AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw"
       }
     },
     "android": {
