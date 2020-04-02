@@ -16,7 +16,7 @@ import TitleText from '../../SeperateComponents/TitleText';
 import * as NavigationService from '../../../NavigationService';
 import Colors from '../../../helper/Colors';
 import styles from './styles';
-import MapView from 'react-native-maps';
+import MapView, { AnimatedRegion, Animated } from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 
 import PopupDialog from 'react-native-popup-dialog';
@@ -102,6 +102,28 @@ class HomeScreen extends React.Component {
     }
 
 
+    renderDesiredLocationMarker = () => {
+        const { desiredLocation } = this.props;
+        if(desiredLocation){
+
+            const point = {
+                latitude: desiredLocation.lat,
+                longitude: desiredLocation.lng,
+            };
+
+            if(_mapView){
+                this._mapView.animateToCoordinate(point, 1000)
+            }
+
+            return (
+                <Marker
+                    title="Desired Location" 
+                    coordinate={point}
+                />
+            )
+        }
+    }
+
     mapView = () => {
 
         const { nooks, desiredLocation } = this.props;
@@ -123,7 +145,9 @@ class HomeScreen extends React.Component {
         }
         return (<View style={{ flex: 1 }}>
 
-            <MapView initialRegion={{
+            <MapView 
+            ref = {(mapView) => { this.mapView = mapView; }}
+            initialRegion={{
                 ...this.state.markers.latlng,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
@@ -141,6 +165,7 @@ class HomeScreen extends React.Component {
                         />
                     );
                 })}
+                {this.renderDesiredLocationMarker()}
             </MapView>
             <TouchableOpacity onPress={() => NavigationService.navigate("GooglePlacesInput",this.state.markers.latlng)} // todo update this.state.markers.latlng with current location for better results
                 style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
@@ -410,6 +435,9 @@ class HomeScreen extends React.Component {
         let tab4Color;
         let tab3Icon;
         let tab4Icon;
+        
+        let ScrollViewComponent = ScrollView;
+
         if (this.state.isMap) {
             // view = this.mapView();
             tab1Color = Colors.orange;
@@ -425,12 +453,14 @@ class HomeScreen extends React.Component {
         }
         if (this.state.tabIndex === 3) {
             view = this.mapView();
+            ScrollViewComponent = React.Fragment;
             tab3Color = Colors.orange;
             tab4Color = Colors.white;
             tab3Icon = require('./../../../../assets/icons8-individual-server-100.png');
             tab4Icon = require('./../../../../assets/icons8-shared-mailbox-100-yellow.png');
         } else if (this.state.tabIndex === 4) {
             view = this.mapView();
+            ScrollViewComponent = React.Fragment;
             tab4Color = Colors.orange;
             tab3Color = Colors.white;
             tab3Icon = require('./../../../../assets/icons8-individual-server-100-yellow.png');
@@ -451,7 +481,7 @@ class HomeScreen extends React.Component {
         return (
             <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
                 <Header backButton={false} optionButton={true} />
-
+                <ScrollViewComponent>
                 <View style={{ flexDirection: 'row', display: 'flex', width: '100%' }}>
                     <TitleText
                         style={{ fontWeight: 'bold', fontSize: 20, marginTop: 10, marginStart: '53%' }}>Nook
@@ -568,6 +598,7 @@ class HomeScreen extends React.Component {
                     {view}
                 </View>
                 {this.renderFilterView()}
+                </ScrollViewComponent>
             </View>
         );
 
