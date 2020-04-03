@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { StyleSheet, View, Image, ScrollView, Alert, TouchableWithoutFeedback } from 'react-native';
-// import { Item, Input, Icon } from 'native-base';
-import { Text, Icon, Button as NativeButton, CheckBox, Textarea, Thumbnail } from 'native-base';
+import { Text, Icon, Button as NativeButton, CheckBox, Textarea, Thumbnail, Item, Picker, ListItem, Body } from 'native-base';
 import Button from '../SeperateComponents/Button';
 import InputField from '../SeperateComponents/InputField';
 import Header from '../SeperateComponents/Header'
@@ -25,6 +24,9 @@ class ProfileScreen extends React.Component {
     gender: '',
     profile: '',
     address: '',
+    city: '',
+    occupation: '',
+    aggreedToTerms: 0,
     oldPassword: '',
     password: '',
     confirmPassword: '',
@@ -95,23 +97,29 @@ class ProfileScreen extends React.Component {
   }
 
   toggleSubmitting = () => {
-    const {submitting} = this.state;
+    const { submitting } = this.state;
     this.setState({
-      submitting:!submitting,
+      submitting: !submitting,
     });
   };
   updateProfile = () => {
-    this.toggleSubmitting();
-    const { name, number, gender, profile, address } = this.state;
+    const { name, number, gender, profile, address, city, occupation, aggreedToTerms } = this.state;
     const { user: { access_token: token }, updateUser } = this.props;
+
+    if(!aggreedToTerms){
+      return alert('Please Agree to terms and conditions to complete your profile.');
+    }
+
+    this.toggleSubmitting();
+
     updateUser({
       token,
-      data: { name, number, gender: gender.toLocaleLowerCase(), address, profile },
-      onSuccess: message=> {
+      data: { name, number, gender: gender.toLocaleLowerCase(), address, profile, city, occupation, aggreedToTerms },
+      onSuccess: message => {
         alert(message);
-      this.toggleSubmitting();
+        this.toggleSubmitting();
       },
-      onError: message=> {
+      onError: message => {
         alert(message);
         this.toggleSubmitting();
       }
@@ -128,11 +136,11 @@ class ProfileScreen extends React.Component {
     changePassword({
       token,
       data: { old_password: oldPassword, password },
-      onSuccess: message=> {
+      onSuccess: message => {
         alert(message);
         this.toggleSubmitting();
       },
-      onError: message=> {
+      onError: message => {
         alert(message);
         this.toggleSubmitting();
       }
@@ -140,7 +148,7 @@ class ProfileScreen extends React.Component {
   }
 
   render() {
-    let { name, number, gender, profile, address, oldPassword, password, confirmPassword,submitting } = this.state;
+    let { name, number, gender, profile, address, oldPassword, password, confirmPassword, submitting, city, occupation, aggreedToTerms } = this.state;
 
     // image is not coming from internet
     if (!profile.includes('http')) {
@@ -156,14 +164,7 @@ class ProfileScreen extends React.Component {
 
           <TouchableWithoutFeedback onPress={this.selectImageSrc}>
             <View style={styles.imageContainer} onPress={this.selectImageSrc}>
-              {/* <Image
-                style={styles.imageView}
-                source={{ uri: profile }}
-                onPress={this.selectImageSrc}
-              /> */}
-
-              <Thumbnail style={styles.imageView} source={{ uri: profile }} large/>
-
+              <Thumbnail style={styles.imageView} source={{ uri: profile }} large />
               <Image style={styles.imageButton}
                 source={require('./../../../assets/camera_icon.png')}
                 onPress={this.selectImageSrc}
@@ -184,6 +185,26 @@ class ProfileScreen extends React.Component {
                 <InputField value={number} iconName="call"
                   onChangeText={number => this.setState({ number })}
                 >Phone</InputField>
+                <InputField value={city} onChangeText={city => this.setState({ city })}>City i.e Lahore</InputField>
+
+                <Item picker style={styles.pickerStyle}>
+                  <Picker
+                    mode="dropdown"
+                    iosIcon={<Icon name="arrow-down" />}
+                    style={{ width: "100%" }}
+                    placeholder="Select Cccupation"
+                    placeholderStyle={{ color: "#bfc6ea" }}
+                    placeholderIconColor="#007aff"
+                    selectedValue={occupation}
+                    onValueChange={occupation => this.setState({ occupation })}>
+                    <Picker.Item label="Select Cccupation" value="" />
+                    <Picker.Item label="Employee" value="Employee" />
+                    <Picker.Item label="Student" value="Student" />
+                    <Picker.Item label="Business" value="Business" />
+                    <Picker.Item label="Other" value="Other" />
+                  </Picker>
+                </Item>
+
               </View>
               <TitleText style={{ alignSelf: 'flex-start', margin: 15, fontWeight: 'bold', marginBottom: 0, fontSize: 18, }}>
                 Gender
@@ -197,7 +218,7 @@ class ProfileScreen extends React.Component {
                     source={require('./../../../assets/male.png')}
                   />
                   <Text>Male</Text>
-                  <CheckBox style={{borderColor: Colors.orange }} checked={gender === 'Male'} onPress={() => { this.setState({ gender: 'Male' }) }} />
+                  <CheckBox color={Colors.orange} checked={gender === 'Male'} onPress={() => this.setState({ gender: 'Male' })} />
                 </View>
                 <View style={styles.checkboxItem}>
                   <Image style={{
@@ -207,7 +228,7 @@ class ProfileScreen extends React.Component {
                     source={require('./../../../assets/female.png')}
                   />
                   <Text>Female</Text>
-                  <CheckBox style={{borderColor: Colors.orange }} checked={gender === 'Female'} onPress={() => { this.setState({ gender: 'Female' }) }} />
+                  <CheckBox color={Colors.orange} checked={gender === 'Female'} onPress={() => this.setState({ gender: 'Female' })} />
                 </View>
               </View>
               <Textarea
@@ -218,8 +239,16 @@ class ProfileScreen extends React.Component {
                 value={address}
                 onChangeText={address => this.setState({ address })}
               />
+
+              <ListItem>
+                <CheckBox color={Colors.orange} checked={aggreedToTerms} onPress={() => { this.setState({ aggreedToTerms: !aggreedToTerms }) }} />
+                <Body>
+                  <Text>I Agree to terms and conditions</Text>
+                </Body>
+              </ListItem>
+
               <View style={{ justifyContent: 'center', marginBottom: 20, }}>
-                <Button disabled={submitting} onPress={this.updateProfile} >{submitting ? 'Please wait...':'Update'}</Button>
+                <Button disabled={submitting} onPress={this.updateProfile} >{submitting ? 'Please wait...' : 'Update'}</Button>
               </View>
             </View>
           </View>
@@ -242,7 +271,7 @@ class ProfileScreen extends React.Component {
                 <InputField iconName="eye" secureTextEntry value={confirmPassword} onChangeText={(confirmPassword) => this.setState({ confirmPassword })} >Confrim New Password</InputField>
               </View>
               <View style={{ justifyContent: 'center' }}>
-                <Button disabled={submitting} onPress={this.updatePassword} >{submitting ? 'Please wait...':'Update Password'}</Button>
+                <Button disabled={submitting} onPress={this.updatePassword} >{submitting ? 'Please wait...' : 'Update Password'}</Button>
               </View>
             </View>
           </View>
@@ -259,6 +288,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignSelf: 'center',
   },
+  pickerStyle: {
+    marginBottom: 10,
+    backgroundColor: Colors.white,
+    borderRadius: 10, marginTop: 10,
+  },
   imageButton: {
     width: 40,
     height: 40,
@@ -274,7 +308,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.primaryColor,
     backgroundColor: Colors.white,
-    borderRadius: 160/2,
+    borderRadius: 160 / 2,
   },
   textArea: {
     margin: 10,

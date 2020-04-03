@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
-import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, RefreshControl, FlatList} from 'react-native';
+import {StyleSheet, Text, View, Platform, Image, TouchableOpacity, RefreshControl, FlatList,Linking} from 'react-native';
 import {Icon, Item, Picker, Spinner} from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
@@ -67,6 +67,17 @@ class BookingsScreen extends React.Component {
     }
 
 
+    cancelBooking = (booking) => {
+        const {user: {access_token}, cancelBooking} = this.props;
+        cancelBooking({
+            onError: alert,
+            onSuccess: alert,
+            data:{booking_id:booking.id},
+            token: access_token
+        });
+    }
+
+
     renderFilterView = () => {
         const {modalVisible, statses, filter} = this.state;
 
@@ -118,13 +129,41 @@ class BookingsScreen extends React.Component {
                     </Picker>
                 </Item>
 
-                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <View style={{justifyContent: 'center'}}>
                     <Button onPress={this.applyFilter}>Apply Filter</Button>
                 </View>
 
             </View>
         );
     }
+
+
+    openGps = ({lat,lng},address) => {
+        const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+        const latLng = `${lat},${lng}`;
+        const url = Platform.select({
+          ios: `${scheme}${address}@${latLng}`,
+          android: `${scheme}${latLng}(${address})`
+        });
+    
+        this.openExternalApp(url)
+    }
+
+    openExternalApp = (url) => {
+        Linking.canOpenURL(url).then(supported => {
+          if (supported) {
+            Linking.openURL(url);
+          } else {
+            Alert.alert(
+                'ERROR',
+                'Unable to open: ' + url,
+                [
+                  {text: 'OK'},
+                ]
+            );
+          }
+        });
+      }
 
     renderBookings = () => {
 
@@ -141,21 +180,31 @@ class BookingsScreen extends React.Component {
                     renderItem={({ item,index }) => (
                         <View key={index} style={[styles.container]}>
                             <View style={styles.child}>
-                                <View>
-                                    <View style={{
-                                        padding: 15,
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: 'gray'
-                                    }}>
-                                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>ID: {item.id}</Text>
-                                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>{this.state.statses[item.status]}</Text>
-                                    </View>
-                                    <View style={{padding: 15, flexDirection: 'row', justifyContent: 'space-between'}}>
-                                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>Rent: {item.rent} Rs</Text>
-                                    </View>
+                            <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
+                                    source={require('./../../../assets/feature.png')}
+                            />
+                            <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
+                            <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
+                                <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Type</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Rent</TitleText>
                                 </View>
+                                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                                <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen",item.nook)}>
+                                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                                </TouchableOpacity>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{(item.room)? `${item.room.capacity} Person(s)` : ''}</TitleText>
+                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.rent} PKR</TitleText>
+                                </View>
+                            </View>
+
+                            <View style={{ justifyContent: 'center', marginBottom: 10 }}>
+                                <Button  onPress={()=>this.openGps(item.nook.location,item.nook.address)}>Get Direction</Button>
+                                {(item.status === 'Pending') && <Button  onPress={() => this.cancelBooking(item)}>Cancel Booking</Button>}
+                            </View>
                             </View>
                         </View>
                     )}
@@ -288,5 +337,6 @@ export default connect(
     mapStateToProps,
     {
         getBookings: actions.getBookings,
+        cancelBooking: actions.cancelBooking,
     },
 )(BookingsScreen);

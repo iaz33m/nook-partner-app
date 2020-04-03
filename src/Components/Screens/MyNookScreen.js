@@ -45,6 +45,7 @@ class MyNookScreen extends React.Component {
     addReview = () => {
         const { user, addReview } = this.props;
         const { rating } = this.state;
+        console.log('Doing it.....');
         addReview({
             data: { rating },
             onError: (error) => {
@@ -65,7 +66,7 @@ class MyNookScreen extends React.Component {
 
         if (!review) {
             return (
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                <View style={{ justifyContent: 'center', marginBottom: 10 }}>
                     <Button onPress={() => this.setState({ isDialogVisible: true })}>Add Rating</Button>
                 </View>
             );
@@ -73,14 +74,16 @@ class MyNookScreen extends React.Component {
 
         return (
             <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-                <AirbnbRating
-                    count={5}
-                    reviews={["Terrible", "Bad", "OK", "Good", "Excellent"]}
-                    defaultRating={review.rating}
-                    showRating
-                    isDisabled={true}
-                    size={30}
-                />
+                <TouchableOpacity onPress={() => this.setState({ isDialogVisible: true })}>
+                    <AirbnbRating
+                        count={5}
+                        reviews={["Terrible", "Bad", "OK", "Good", "Excellent"]}
+                        defaultRating={review.rating}
+                        showRating
+                        isDisabled={true}
+                        size={30}
+                    />
+                </TouchableOpacity>
             </View>
         )
     };
@@ -89,7 +92,7 @@ class MyNookScreen extends React.Component {
     renderNookDetails = () => {
 
         const { loading,isDialogVisible } = this.state;
-        const { nook } = this.props;
+        const { nook, review } = this.props;
 
         if (loading) {
             return <Spinner color="black" />
@@ -110,23 +113,54 @@ class MyNookScreen extends React.Component {
                 <View style={styles.child}>
                     <View style={{ flexDirection: 'row', margin: 15, marginBottom: 0, }}>
                         <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                            <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }}>Nook
-                                Code</TitleText>
+                            <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }}>Nook Code</TitleText>
+                            
                             <TitleText style={{
                                 color: Colors.textGray,
                                 marginTop: 10,
                                 fontSize: 16,
-                            }}>{nook.nookCode}</TitleText>
-                            <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }}>Your
-                                Ratings</TitleText>
+                            }}>Rent</TitleText>
+
+                            <TitleText style={{
+                                color: Colors.textGray,
+                                marginTop: 10,
+                                fontSize: 16,
+                            }}>Security</TitleText>
+                            
+                            <TitleText style={{
+                                color: Colors.textGray,
+                                marginTop: 10,
+                                fontSize: 16,
+                            }}>Paid Security</TitleText>
+
+                            <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }}>Your Ratings</TitleText>
 
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                            
+                            <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen",nook)}>
+                                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }}>
+                                    {nook.nookCode}
+                                </TitleText>
+                            </TouchableOpacity>
+                            
                             <TitleText style={{
-                                color: Colors.orange,
-                                fontWeight: 'bold',
+                                color: Colors.textGray,
+                                marginTop: 10,
                                 fontSize: 16,
-                            }}>{nook.booking.rent} Rs/month</TitleText>
+                            }}>{nook.booking.rent} PKR /month</TitleText>
+
+                            <TitleText style={{
+                                color: Colors.textGray,
+                                marginTop: 10,
+                                fontSize: 16,
+                            }}>{nook.booking.security} PKR</TitleText>
+                            
+                            <TitleText style={{
+                                color: Colors.textGray,
+                                marginTop: 10,
+                                fontSize: 16,
+                            }}>{nook.booking.paidSecurity} PKR</TitleText>
                         </View>
                     </View>
                     {this.renderRattingView()}
@@ -140,17 +174,17 @@ class MyNookScreen extends React.Component {
                                 <Image resizeMode="contain" source={require('./../../../assets/close.png')}
                                     style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
                             </TouchableOpacity>
-                            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                            <View style={{ justifyContent: 'center', marginTop: 10 }}>
 
                                 <AirbnbRating
                                     count={5}
                                     reviews={["Terrible", "Bad", "OK", "Good", "Excellent"]}
-                                    defaultRating={5}
+                                    defaultRating={(review) ? review.rating : 5}
                                     showRating
                                     size={40}
                                     onFinishRating={rating => this.setState({ rating })}
                                 />
-                                <Button style={{ marginTop: 15 }} onPress={this.addReview}>Add Review</Button>
+                                <Button style={{ marginTop: 15 }} onPress={this.addReview}>{(review) ? 'Update Review':'Add Review'}</Button>
                             </View>
 
                         </View>

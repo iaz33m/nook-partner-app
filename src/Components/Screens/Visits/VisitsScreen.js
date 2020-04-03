@@ -107,9 +107,7 @@ class VisitsScreen extends React.Component {
       return <Spinner color='black'/>;
     }
     return (
-        <View>
-          {this.state.visits.length>0&&
-          <FlatList
+      <FlatList
               data={this.state.visits}
               enableEmptySections={true}
               keyExtractor={(item, index) => index.toString()}
@@ -127,16 +125,20 @@ class VisitsScreen extends React.Component {
                           <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Date</TitleText>
                           <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Time</TitleText>
                           <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Partner Name</TitleText>
+                          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Partner Number</TitleText>
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                          <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                          <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen",item.nook)}>
+                            <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                          </TouchableOpacity>
                           <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.date}</TitleText>
                           <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.time}</TitleText>
                           <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.partner.name}</TitleText>
+                          <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.partner.number}</TitleText>
                         </View>
                       </View>
 
-                      <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                      <View style={{ justifyContent: 'center', marginBottom: 10 }}>
                         <Button  onPress={()=>this.openGps(item.nook.location.lat,item.nook.location.lng,item.nook.address)}>Get Direction</Button>
                       </View>
                     </View>
@@ -150,8 +152,6 @@ class VisitsScreen extends React.Component {
                 />
               }
           />
-              }
-        </View>
     );
   };
   renderFilterView = () => {
@@ -205,7 +205,7 @@ class VisitsScreen extends React.Component {
             </Picker>
           </Item>
 
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View style={{justifyContent: 'center'}}>
             <Button onPress={this.applyFilter}>Apply Filter</Button>
           </View>
 

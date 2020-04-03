@@ -104,7 +104,7 @@ class ShiftsScreen extends React.Component {
           </Picker>
         </Item>
 
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ justifyContent: 'center' }}>
           <Button onPress={this.applyFilter}>Apply Filter</Button>
         </View>
 

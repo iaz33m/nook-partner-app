@@ -11,6 +11,20 @@ const BookingsReducer = (state = initSate, action) => {
         bookings: [...action.payload],
       };
     }
+    case actions.CANCEL_BOOKING: {
+
+      const booking = action.payload;
+      const bookings = state.bookings.map(b => {
+        if(b.id === booking.id){
+          return {...booking};
+        }
+        return {...b}
+      })
+      return {
+        ...state,
+        bookings
+      };
+    }
 
     default: {
       return state;

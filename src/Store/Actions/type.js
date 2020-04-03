@@ -8,6 +8,7 @@ export const SET_NOOKS = 'SET_NOOKS';
 export const SET_NOOK_REVIEW = 'SET_NOOK_REVIEW';
 export const SET_COMPLAINS = 'SET_COMPLAINS';
 export const SET_BOOKINGS = 'SET_BOOKINGS';
+export const CANCEL_BOOKING = 'CANCEL_BOOKING';
 export const SET_SHIFTS = 'SET_SHIFTS';
 export const ADD_SHIFT = 'ADD_SHIFT';
 export const SET_NOTICES = 'SET_NOTICES';

@@ -102,7 +102,7 @@ class HomeScreen extends React.Component {
     }
 
 
-    renderDesiredLocationMarker = () => {
+    componentDidUpdate(){
         const { desiredLocation } = this.props;
         if(desiredLocation){
 
@@ -111,10 +111,22 @@ class HomeScreen extends React.Component {
                 longitude: desiredLocation.lng,
             };
 
-            if(_mapView){
-                this._mapView.animateToCoordinate(point, 1000)
+            if(this.myMap){
+                this.myMap.animateCamera({
+                    center: point
+                },2000)
             }
+        }
+    }
 
+    renderDesiredLocationMarker = () => {
+        const { desiredLocation } = this.props;
+        if(desiredLocation){
+
+            const point = {
+                latitude: desiredLocation.lat,
+                longitude: desiredLocation.lng,
+            };
             return (
                 <Marker
                     title="Desired Location" 
@@ -146,7 +158,7 @@ class HomeScreen extends React.Component {
         return (<View style={{ flex: 1 }}>
 
             <MapView 
-            ref = {(mapView) => { this.mapView = mapView; }}
+            ref = {(myMap) => { this.myMap = myMap; }}
             initialRegion={{
                 ...this.state.markers.latlng,
                 latitudeDelta: 0.0922,
@@ -157,12 +169,16 @@ class HomeScreen extends React.Component {
                         <Marker key={nook.id} onPress={(coordinate, points) => {
                             this.setState({ isDialogVisible: true, selectedNook: nook });
                         }}
-                            image={require('./../../../../assets/marker.png')}
                             coordinate={{
                                 latitude: nook.location.lat,
                                 longitude: nook.location.lng,
                             }}
-                        />
+                        >
+                            <Image
+                                source={require('./../../../../assets/marker.png')}
+                                style={{ width: 40, height: 62 }}
+                            />
+                            </Marker>
                     );
                 })}
                 {this.renderDesiredLocationMarker()}
@@ -416,7 +432,7 @@ class HomeScreen extends React.Component {
                     </Picker>
                 </Item>
 
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ justifyContent: 'center' }}>
                     <Button onPress={this.applyFilter}>Apply Filter</Button>
                 </View>
 
@@ -589,7 +605,7 @@ class HomeScreen extends React.Component {
                                 source={tab4Icon}
                             /> */}
                             
-                            <Text style={{color:tab3Color}}>Shared</Text>
+                            <Text style={{color:tab3Color}}>Shared Nook</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
