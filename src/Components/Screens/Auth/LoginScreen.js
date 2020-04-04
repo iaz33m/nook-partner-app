@@ -120,7 +120,7 @@ class LoginScreen extends React.Component {
                 </View> */}
               </View>
               <View style={{ flex: 1, alignContent: "center", alignItems: "center", marginTop: 10 }}>
-                {/* <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
+                <View style={{ flexDirection: 'row', width: '40%', alignSelf: 'center', }}>
                   <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
                   <Image style={{ marginEnd: 20, width: 40, height: 40 }}
                     source={require('./../../../../assets/facebook.png')}
@@ -131,7 +131,7 @@ class LoginScreen extends React.Component {
                     source={require('./../../../../assets/google.png')}
                   />
                   </TouchableOpacity>
-                </View> */}
+                </View>
                 <View style={{ marginTop: 20, flexDirection: 'row' }} >
                   <Text>Don't have an account? </Text><Text style={{
                     textDecorationLine: 'underline',
