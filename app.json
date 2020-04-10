@@ -35,7 +35,16 @@
           "reservedClientId": "com.googleusercontent.apps.214085325694-n1qltnm7ke5afb77sa8eadvl7l5kmcmh"
         }
       },
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Nooks requires access to your camera to let you add pictures to post to your social media channels",
+        "NSPhotoLibraryUsageDescription": "Nooks needs to access your camera roll so that you can upload images. Your images will not be shared without your permission",
+        "NSPhotoLibraryAddUsageDescription": "Nooks needs to access your camera roll so that you can upload images. Your images will not be shared without your permission",
+        "NSLocationWhenInUseUsageDescription": "Nooks requires your location so that we can centre the map on you & show you your current location",
+        "NSLocationAlwaysUsageDescription": "Nooks requires your location so that we can centre the map on you & show you your current location",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Nooks requires your location so that we can centre the map on you & show you your current location",
+        "NSLocationUsageDescription": "Nooks requires your location so that we can centre the map on you & show you your current location"
+      }
     },
     "android": {
       "package": "xovoltlabs.nooks",
