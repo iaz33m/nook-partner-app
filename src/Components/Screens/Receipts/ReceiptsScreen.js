@@ -42,11 +42,14 @@ class ReceiptsScreen extends React.Component {
     }
     this.applyFilter();
   }
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (nextProps.receipts !== this.state.receipts) {
-      this.setState({ receipts: nextProps.receipts });
+  
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.receipts !== prevState.receipts) {
+      return { receipts: nextProps.receipts };
     }
+    return null;
   }
+
   onRefresh() {
     //Clear old data of the list
     this.setState({ receipts: [] });

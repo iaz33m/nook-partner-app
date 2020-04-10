@@ -32,11 +32,14 @@ class ShiftsScreen extends React.Component {
   componentDidMount() {
     this.applyFilter();
   }
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (nextProps.shifts !== this.state.shifts) {
-      this.setState({ shifts: nextProps.shifts });
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.shifts !== prevState.shifts) {
+      return { shifts: nextProps.shifts };
     }
+    return null;
   }
+
   onRefresh() {
     //Clear old data of the list
     this.setState({ shifts: [] });

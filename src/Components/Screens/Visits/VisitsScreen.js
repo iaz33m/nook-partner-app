@@ -47,11 +47,13 @@ class VisitsScreen extends React.Component {
     this.applyFilter();
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (nextProps.visits !== this.state.visits) {
-      this.setState({ visits: nextProps.visits });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.visits !== prevState.visits) {
+      return { visits: nextProps.visits };
     }
+    return null;
   }
+
   onRefresh() {
     //Clear old data of the list
     this.setState({ visits: [] });

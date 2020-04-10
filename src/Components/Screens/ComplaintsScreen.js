@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, RefreshControl, FlatList} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, RefreshControl, FlatList } from 'react-native';
 import { Icon, Item, Picker, Spinner, Textarea } from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
@@ -26,32 +26,35 @@ class ComplaintsScreen extends React.Component {
       filter: {
         status: '',
       },
-      description:'',
-      type:'',
-      types:{
-        'internet':'Internet',
-        'cleaning':'Cleaning',
-        'entertainment':'Entertainment',
-        'security':'Security',
-        'food':'Food',
-        'maintenance':'Maintenance',
-        'discipline' : 'Discipline',
-        'staff_related' : 'Staff Related',
-        'privacy' : 'Privacy',
-        'other' : 'Other'
+      description: '',
+      type: '',
+      types: {
+        'internet': 'Internet',
+        'cleaning': 'Cleaning',
+        'entertainment': 'Entertainment',
+        'security': 'Security',
+        'food': 'Food',
+        'maintenance': 'Maintenance',
+        'discipline': 'Discipline',
+        'staff_related': 'Staff Related',
+        'privacy': 'Privacy',
+        'other': 'Other'
       },
-      complains:[]
+      complains: []
     };
   }
 
   componentDidMount() {
     this.applyFilter();
   }
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (nextProps.complains !== this.state.complains) {
-      this.setState({ complains: nextProps.complains });
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.complains !== prevState.complains) {
+      return { complains: nextProps.complains };
     }
+    return null;
   }
+
   onRefresh() {
     //Clear old data of the list
     this.setState({ complains: [] });
@@ -63,7 +66,7 @@ class ComplaintsScreen extends React.Component {
   applyFilter = () => {
     const { user: { access_token }, getComplains } = this.props;
     const { filter } = this.state;
-    this.setState({ loading: true,modalVisible: false });
+    this.setState({ loading: true, modalVisible: false });
     getComplains({
       onError: (error) => {
         alert(error);
@@ -79,7 +82,7 @@ class ComplaintsScreen extends React.Component {
 
 
   renderFilterView = () => {
-    const { modalVisible, statses,filter } = this.state;
+    const { modalVisible, statses, filter } = this.state;
 
     if (!modalVisible) {
       return;
@@ -113,15 +116,15 @@ class ComplaintsScreen extends React.Component {
             placeholderStyle={{ color: "#bfc6ea" }}
             placeholderIconColor="#007aff"
             selectedValue={filter.status}
-            onValueChange={status => this.setState({filter:{...filter,status}})}>
+            onValueChange={status => this.setState({ filter: { ...filter, status } })}>
             <Picker.Item label="All Complains" value="" />
             {Object.keys(statses)
-            .filter(k => k)
-            .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
+              .filter(k => k)
+              .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
           </Picker>
         </Item>
 
-        <View style={{ justifyContent: 'center'}}>
+        <View style={{ justifyContent: 'center' }}>
           <Button onPress={this.applyFilter}>Apply Filter</Button>
         </View>
 
@@ -136,78 +139,78 @@ class ComplaintsScreen extends React.Component {
     }
 
     return (
-        <FlatList
-            data={this.state.complains}
-            enableEmptySections={true}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={{ paddingBottom: "50%"}}
-            renderItem={({ item,index }) => (
-                <View key={index} style={[styles.container]}>
-                  <View style={styles.child}>
-                    <View>
-                      <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID: {item.id}</Text>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.statses[item.status]}</Text>
-                      </View>
-                      <View style={{ padding: 10 }}>
-                        <Text>{item.description}</Text>
-                      </View>
-                    </View>
-                  </View>
+      <FlatList
+        data={this.state.complains}
+        enableEmptySections={true}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={{ paddingBottom: "50%" }}
+        renderItem={({ item, index }) => (
+          <View key={index} style={[styles.container]}>
+            <View style={styles.child}>
+              <View>
+                <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
+                  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID: {item.id}</Text>
+                  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.statses[item.status]}</Text>
                 </View>
-            )}
-            refreshControl={
-              <RefreshControl
-                  //refresh control used for the Pull to Refresh
-                  refreshing={this.state.loading}
-                  onRefresh={this.onRefresh.bind(this)}
-              />
-            }
-        />
+                <View style={{ padding: 10 }}>
+                  <Text>{item.description}</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+        refreshControl={
+          <RefreshControl
+            //refresh control used for the Pull to Refresh
+            refreshing={this.state.loading}
+            onRefresh={this.onRefresh.bind(this)}
+          />
+        }
+      />
     );
   };
   renderComplainsPopup = () => {
-    const { isSchedule, isDialogVisible, date, description ,submitting} = this.state;
+    const { isSchedule, isDialogVisible, date, description, submitting } = this.state;
 
     if (isSchedule) {
       return (
-          <PopupDialog
-              width={0.9} height={0.5}
-              visible={isDialogVisible}
-              onTouchOutside={this.togglePopup}>
-            <View style={{ flex: 1, padding: 25, }}>
-              <TouchableOpacity onPress={()=>this.setState({
-                isDialogVisible: false
-              })}>
-                <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
-              </TouchableOpacity>
-              <Item picker style={styles.pickerStyle}>
-                <Picker
-                    mode="dropdown"
-                    iosIcon={<Icon name="arrow-down" />}
-                    style={{ width: "100%" }}
-                    placeholder="Select Type"
-                    placeholderStyle={{ color: "#bfc6ea" }}
-                    placeholderIconColor="#007aff"
-                    selectedValue={this.state.type}
-                    onValueChange={type => this.setState({ type })}>
-                  <Picker.Item label="All Types" value="" />
-                  {Object.keys(this.state.types)
-                      .filter(k => k)
-                      .map(k => <Picker.Item key={k} label={this.state.types[k]} value={k} />)}
-                </Picker>
-              </Item>
+        <PopupDialog
+          width={0.9} height={0.5}
+          visible={isDialogVisible}
+          onTouchOutside={this.togglePopup}>
+          <View style={{ flex: 1, padding: 25, }}>
+            <TouchableOpacity onPress={() => this.setState({
+              isDialogVisible: false
+            })}>
+              <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+            </TouchableOpacity>
+            <Item picker style={styles.pickerStyle}>
+              <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                style={{ width: "100%" }}
+                placeholder="Select Type"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.type}
+                onValueChange={type => this.setState({ type })}>
+                <Picker.Item label="All Types" value="" />
+                {Object.keys(this.state.types)
+                  .filter(k => k)
+                  .map(k => <Picker.Item key={k} label={this.state.types[k]} value={k} />)}
+              </Picker>
+            </Item>
 
-              <Textarea
-                rowSpan={4}
-                bordered
-                placeholder="Description"
-                value={description}
-                onChangeText={description => this.setState({ description })}
-              />
-              <Button disabled={submitting} onPress={() => {this.sendComplains()}} >{submitting ? 'Please wait...':'Add Complain'}</Button>
-            </View>
-          </PopupDialog>
+            <Textarea
+              rowSpan={4}
+              bordered
+              placeholder="Description"
+              value={description}
+              onChangeText={description => this.setState({ description })}
+            />
+            <Button disabled={submitting} onPress={() => { this.sendComplains() }} >{submitting ? 'Please wait...' : 'Add Complain'}</Button>
+          </View>
+        </PopupDialog>
       );
     }
 
@@ -224,11 +227,11 @@ class ComplaintsScreen extends React.Component {
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
             <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true }); }}
+              style={styles.addButton}
+              onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true }); }}
             >
               <Text style={{
-                color:'white',fontWeight:'bold'
+                color: 'white', fontWeight: 'bold'
               }}>Add </Text>
               <Image style={{
                 width: 30,
@@ -236,8 +239,8 @@ class ComplaintsScreen extends React.Component {
                 alignSelf: 'center',
                 alignItems: 'center'
               }}
-                     resizeMode="contain"
-                     source={require('./../../../assets/add.png')}
+                resizeMode="contain"
+                source={require('./../../../assets/add.png')}
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
@@ -262,9 +265,9 @@ class ComplaintsScreen extends React.Component {
     );
   }
   toggleSubmitting = () => {
-    const {submitting} = this.state;
+    const { submitting } = this.state;
     this.setState({
-      submitting:!submitting,
+      submitting: !submitting,
     });
   };
   sendComplains() {
@@ -339,9 +342,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingStart:5,
-    paddingEnd:5,
-    paddingTop:5,
+    paddingStart: 5,
+    paddingEnd: 5,
+    paddingTop: 5,
     paddingBottom: 15,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
@@ -364,10 +367,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#E59413',
     padding: 10,
     display: 'flex',
-    flexDirection:'row',
+    flexDirection: 'row',
     borderRadius: 5,
     marginStart: 5,
-    marginEnd: 5,height: 40
+    marginEnd: 5, height: 40
   },
   child: {
     flex: 1,

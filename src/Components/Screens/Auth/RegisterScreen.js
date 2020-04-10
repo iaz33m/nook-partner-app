@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
-import { Text } from 'native-base';
+import { Text, Spinner } from 'native-base';
 import Button from './../../SeperateComponents/Button';
 import InputField from './../../SeperateComponents/InputField';
 import Header from '../../SeperateComponents/Header'
@@ -23,14 +23,23 @@ class RegisterScreen extends React.Component {
       nameError: '',
       numberError: '',
       passwordError: '',
-      confirmPasswordError: ''
+      confirmPasswordError: '',
+      processing: false,
+      submitting: false,
     };
   }
 
   toggleSubmitting = () => {
-    const {submitting} = this.state;
+    const { submitting } = this.state;
     this.setState({
-      submitting:!submitting,
+      submitting: !submitting,
+    });
+  };
+
+  toggleProcessing = () => {
+    const { processing } = this.state;
+    this.setState({
+      processing: !processing,
     });
   };
 
@@ -85,12 +94,16 @@ class RegisterScreen extends React.Component {
 
   socialLogin = (provider) => {
     const { socialLogin } = this.props;
+    this.toggleProcessing();
     socialLogin({
       data: { provider },
       onSuccess: () => {
         NavigationService.navigateAndResetStack("TabScreens");
       },
-      onError: alert
+      onError: (error) => {
+        this.toggleProcessing();
+        alert(error)
+      }
     });
   };
 
@@ -104,6 +117,7 @@ class RegisterScreen extends React.Component {
       numberError,
       passwordError,
       confirmPasswordError,
+      processing
     } = this.state;
 
     return (
@@ -111,7 +125,7 @@ class RegisterScreen extends React.Component {
         <Header backButton={true} />
         <View style={styles.container}>
           <View style={styles.child}>
-            <KeyboardAwareScrollView contentContainerStyle={{paddingBottom:200}} >
+            <KeyboardAwareScrollView contentContainerStyle={{ paddingBottom: 200 }} >
               <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Sign Up</TitleText>
               <TitleText style={{ margin: 15, marginBottom: 10, fontSize: 16, }}>Sign up to continue Nook </TitleText>
               <View style={{ marginStart: '5%', marginEnd: '5%' }}>
@@ -141,26 +155,34 @@ class RegisterScreen extends React.Component {
                 >Confirm Password</InputField>
               </View>
               <View style={{ justifyContent: 'center', marginTop: 10 }}>
-                <Button disabled={submitting} onPress={this.handleSignup} >{submitting ? 'Please wait...':'Sign Up'}</Button>
+                <Button disabled={submitting} onPress={this.handleSignup} >{submitting ? 'Please wait...' : 'Sign Up'}</Button>
               </View>
               <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10, flexDirection: 'row' }}>
                 <Text>Already have an account? </Text><Text style={{
                   textDecorationLine: 'underline',
                 }} onPress={() => NavigationService.goBack()}>Login!</Text>
               </View>
-              {/* <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row', alignSelf: 'center', marginBottom:140 }}>
+              <View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row', alignSelf: 'center', marginBottom: 140 }}>
 
-                <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
-                  <Image style={{ marginEnd: 20, width: 40, height: 40, marginBottom: 20 }}
-                    source={require('./../../../../assets/facebook.png')}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.socialLogin('google')}>
-                  <Image style={{ marginEnd: 20, width: 40, height: 40, marginBottom: 20 }}
-                    source={require('./../../../../assets/google.png')}
-                  />
-                </TouchableOpacity>
-              </View> */}
+                {processing && <Spinner color='black' />}
+                
+                {
+                  !processing &&
+                  <>
+                    <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
+                      <Image style={{ marginEnd: 20, width: 40, height: 40, marginBottom: 20 }}
+                        source={require('./../../../../assets/facebook.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.socialLogin('google')}>
+                      <Image style={{ marginEnd: 20, width: 40, height: 40, marginBottom: 20 }}
+                        source={require('./../../../../assets/google.png')}
+                      />
+                    </TouchableOpacity>
+                  </>
+                }
+
+              </View>
             </KeyboardAwareScrollView>
           </View>
 

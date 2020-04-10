@@ -74,11 +74,14 @@ class HomeScreen extends React.Component {
     componentDidMount() {
         this.applyFilter();
     }
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.nooks !== this.state.nooks) {
-            this.setState({ nooks: nextProps.nooks });
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.nooks !== prevState.nooks) {
+          return { nooks: nextProps.nooks };
         }
+        return null;
     }
+
     onRefresh() {
         //Clear old data of the list
         this.setState({ nooks: [] });

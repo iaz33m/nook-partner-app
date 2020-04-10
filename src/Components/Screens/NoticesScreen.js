@@ -40,10 +40,12 @@ class NoticesScreen extends React.Component {
   componentDidMount() {
     this.applyFilter();
   }
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (nextProps.notices !== this.state.notices) {
-      this.setState({ notices: nextProps.notices });
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.notices !== prevState.notices) {
+      return { notices: nextProps.notices };
     }
+    return null;
   }
 
   applyFilter = () => {

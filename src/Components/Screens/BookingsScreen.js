@@ -38,11 +38,13 @@ class BookingsScreen extends React.Component {
         this.applyFilter();
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.bookings !== this.state.bookings) {
-            this.setState({ bookings: nextProps.bookings });
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.bookings !== prevState.bookings) {
+            return { bookings: nextProps.bookings };
         }
+        return null;
     }
+
     onRefresh() {
         //Clear old data of the list
         this.setState({ bookings: [] });

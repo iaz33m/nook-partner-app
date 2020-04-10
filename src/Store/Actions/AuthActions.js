@@ -2,12 +2,8 @@ import * as actions from './type';
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 import * as Facebook from 'expo-facebook';
-import * as Google from "expo-google-app-auth";
+import * as GoogleSignIn from 'expo-google-sign-in';
 import APIModel from '../../Models/APIModal';
-import { CLIENT_IDS } from "../../helper/Constants"
-
-const FACEBOOK_CLIENT_ID = CLIENT_IDS._facebook;
-const ANDROID_CLIENT_ID = CLIENT_IDS._google;
 
 
 const fallBackErrorMessage = 'Something went wrong, please try again later!';
@@ -213,18 +209,17 @@ const getSocialUser = async (provider) => {
   if (provider === 'google') {
     return new Promise(async (resolve, reject) => {
       try {
-        const result = await Google.logInAsync({
-          // iosClientId: IOS_CLIENT_ID,
-          issuer: 'https://accounts.google.com',
-          androidClientId: ANDROID_CLIENT_ID,
-          scopes: ["profile", "email"]
-        });
+        
+        await GoogleSignIn.initAsync();
+        await GoogleSignIn.askForPlayServicesAsync();
+        const result = await GoogleSignIn.signInAsync();
 
         if (result.type === "success") {
-          const { user: {
-            id: provider_user_id,
-            name
-          } } = result;
+          const user = await GoogleSignIn.signInSilentlyAsync();
+          const {
+            uid: provider_user_id,
+            displayName:name,
+          } = user;
           return resolve({ provider_user_id, name, provider });
         }
 
@@ -241,18 +236,16 @@ const getSocialUser = async (provider) => {
 
   return new Promise(async (resolve, reject) => {
     try {
-
+      
+      await Facebook.initializeAsync('214106956407112');
       const {
         type,
         token,
-      } = await Facebook.logInWithReadPermissionsAsync(FACEBOOK_CLIENT_ID,{
-        permissions: ["public_profile"]
+      } = await Facebook.logInWithReadPermissionsAsync({
+        permissions: ['public_profile'],
       });
 
-      console.log({type});
-
       if (type === "success") {
-        console.log({token});
         const response = await fetch(
           `https://graph.facebook.com/me?access_token=${token}`
         );
@@ -298,7 +291,9 @@ const socialLogin = options => async dispatch => {
       onSuccess(message);
     }
   } catch (error) {
-    const message = error.message || fallBackErrorMessage;
+    const { data } = error.response;
+    const message = data.message || error.message || fallBackErrorMessage;
+
     if (onError) {
       onError(message);
     }

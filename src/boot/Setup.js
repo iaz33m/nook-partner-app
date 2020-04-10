@@ -21,9 +21,10 @@ export default class Setup extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.loadFonts();
     }
+
     async loadFonts() {
         await Font.loadAsync({
             Roboto: require("../../node_modules/native-base/Fonts/Roboto.ttf"),

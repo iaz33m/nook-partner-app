@@ -36,11 +36,14 @@ class PaymentsScreen extends React.Component {
     }
     this.applyFilter();
   }
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (nextProps.payments !== this.state.payments) {
-      this.setState({ payments: nextProps.payments });
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.payments !== prevState.payments) {
+      return { payments: nextProps.payments };
     }
+    return null;
   }
+
   onRefresh() {
     //Clear old data of the list
     this.setState({ payments: [] });
