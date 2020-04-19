@@ -11,6 +11,21 @@ const NoticesReducer = (state = initSate, action) => {
         notices: [...action.payload],
       };
     }
+
+    case actions.CANCEL_NOTICE: {
+
+      const notice = action.payload;
+      const notices = state.notices.map(b => {
+        if(b.id === notice.id){
+          return {...notice};
+        }
+        return {...b}
+      })
+      return {
+        ...state,
+        notices
+      };
+    }
     default: {
       return state;
     }

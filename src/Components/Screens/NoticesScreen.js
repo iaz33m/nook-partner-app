@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from "react-redux";
-import {FlatList, Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Icon, Item, Picker, Spinner, Textarea} from "native-base";
+import { connect } from "react-redux";
+import { FlatList, Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Icon, Item, Picker, Spinner, Textarea } from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
@@ -9,6 +9,7 @@ import Button from '../SeperateComponents/Button';
 import * as actions from '../../Store/Actions/NoticesActions';
 import PopupDialog from "react-native-popup-dialog";
 import DatePicker from "react-native-datepicker";
+import * as NavigationService from '../../NavigationService';
 import moment from "moment";
 
 class NoticesScreen extends React.Component {
@@ -51,7 +52,7 @@ class NoticesScreen extends React.Component {
   applyFilter = () => {
     const { user: { access_token }, getNotices } = this.props;
     const { filter } = this.state;
-    this.setState({ loading: true,modalVisible: false });
+    this.setState({ loading: true, modalVisible: false });
     getNotices({
       onError: (error) => {
         alert(error);
@@ -67,7 +68,7 @@ class NoticesScreen extends React.Component {
 
 
   renderFilterView = () => {
-    const { modalVisible,statses,filter } = this.state;
+    const { modalVisible, statses, filter } = this.state;
 
     if (!modalVisible) {
       return;
@@ -101,11 +102,11 @@ class NoticesScreen extends React.Component {
             placeholderStyle={{ color: "#bfc6ea" }}
             placeholderIconColor="#007aff"
             selectedValue={filter.status}
-            onValueChange={status => this.setState({filter:{...filter,status}})}>
+            onValueChange={status => this.setState({ filter: { ...filter, status } })}>
             <Picker.Item label="All Notices" value="" />
             {Object.keys(statses)
-            .filter(k => k)
-            .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
+              .filter(k => k)
+              .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
           </Picker>
         </Item>
 
@@ -124,103 +125,137 @@ class NoticesScreen extends React.Component {
     }
 
     return (
-          <FlatList
-              data={this.state.notices}
-              enableEmptySections={true}
-              keyExtractor={(item, index) => index.toString()}
-              contentContainerStyle={{ paddingBottom: "45%"}}
-              renderItem={({ item }) => (
-                  <View key={item.id} style={[styles.container]}>
-                    <View style={styles.child}>
-                      <View>
-                        <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-                          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID: {item.id}</Text>
-                          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.statses[item.status]}</Text>
-                        </View>
-                        <View style={{ padding: 10 }}>
-                          <Text>{item.details}</Text>
-                        </View>
-                      </View>
-                    </View>
-                  </View>
-              )}
-              refreshControl={
-                <RefreshControl
-                    //refresh control used for the Pull to Refresh
-                    refreshing={this.state.loading}
-                    onRefresh={this.onRefresh.bind(this)}
-                />
-              }
+      <FlatList
+        data={this.state.notices}
+        enableEmptySections={true}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={{ paddingBottom: "45%" }}
+        renderItem={({ item, index }) => (
+          <View key={index} style={[styles.container]}>
+            <View style={styles.child}>
+              <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
+                source={require('./../../../assets/feature.png')}
+              />
+              <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
+              <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
+                <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                  <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Checkout</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Days Left</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Submited At</TitleText>
+                </View>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen", item.nook)}>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                  </TouchableOpacity>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.checkout}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.diffInDays} days</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.created_at}</TitleText>
+                </View>
+              </View>
+              <View style={{ justifyContent: 'center' }}>
+                <View style={{ paddingStart: 10, paddingEnd: 10 }}>
+                  <TitleText style={{ fontWeight: 'bold', fontSize: 16, }} >Notice Details</TitleText>
+                  <Text style={{marginTop:10}}>{item.details}</Text>
+                </View>
+              </View>
+              <View style={{ justifyContent: 'center', marginBottom: 10 }}>
+                {(item.status === 'Pending') && <Button onPress={() => this.cancelNotice(item)}>Cancel Notice</Button>}
+              </View>
+            </View>
+          </View>
+        )}
+        refreshControl={
+          <RefreshControl
+            //refresh control used for the Pull to Refresh
+            refreshing={this.state.loading}
+            onRefresh={this.onRefresh.bind(this)}
           />
+        }
+      />
     );
   };
 
   renderNoticePopup = () => {
-    const { isSchedule, isDialogVisible, date, details,submitting } = this.state;
+    const { isSchedule, isDialogVisible, date, details, submitting } = this.state;
 
     if (isSchedule) {
       return (
-          <PopupDialog
-              width={0.9} height={0.50}
-              visible={isDialogVisible}
-              onTouchOutside={this.togglePopup}>
-            <View style={{ flex: 1, padding: 25, }}>
-              <TouchableOpacity onPress={()=>this.setState({
-                isDialogVisible: false
-              })}>
-                <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
-              </TouchableOpacity>
+        <PopupDialog
+          width={0.9} height={0.50}
+          visible={isDialogVisible}
+          onTouchOutside={this.togglePopup}>
+          <View style={{ flex: 1, padding: 25, }}>
+            <TouchableOpacity onPress={() => this.setState({
+              isDialogVisible: false
+            })}>
+              <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+            </TouchableOpacity>
 
-              <DatePicker
-                  style={{
-                    ...styles.container,
-                    width: "100%", flex: 0, padding: 0, marginTop: 10
-                  }}
-                  mode="datetime"
-                  date={date}
-                  placeholder='Select a date'
-                  format="MMMM Do YYYY, h:mm a"
-                  // format="X"
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  iconSource={require('./../../../assets/date.png')}
-                  customStyles={{
-                    dateText: {
-                      margin: 15,
-                      marginTop:15,
-                      color: 'black'
-                    },
-                    dateIcon: {
-                      height: 20, width: 20,
-                    },
-                    dateInput: {
-                      ...styles.child,
-                      borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15,
+            <DatePicker
+              style={{
+                ...styles.container,
+                width: "100%", flex: 0, padding: 0, marginTop: 10
+              }}
+              mode="datetime"
+              date={date}
+              placeholder='Select a date'
+              format="MMMM Do YYYY, h:mm a"
+              // format="X"
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              iconSource={require('./../../../assets/date.png')}
+              customStyles={{
+                dateText: {
+                  margin: 15,
+                  marginTop: 15,
+                  color: 'black'
+                },
+                dateIcon: {
+                  height: 20, width: 20,
+                },
+                dateInput: {
+                  ...styles.child,
+                  borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15,
 
-                    }
-                  }}
-                  onDateChange={(date) => {
-                    this.setState({
-                      date
-                    })
-                  }}
-              />
+                }
+              }}
+              onDateChange={(date) => {
+                this.setState({
+                  date
+                })
+              }}
+            />
 
-              <Textarea
-                rowSpan={4}
-                bordered
-                placeholder="Description"
-                value={details}
-                onChangeText={details => {
-                  this.setState({ details })
-                }}
-              />
-              <Button disabled={submitting} onPress={() => {this.sendNotice()}} >{submitting ? 'Please wait...':'Add Notice'}</Button>
-            </View>
-          </PopupDialog>
+            <Textarea
+              rowSpan={4}
+              bordered
+              placeholder="Description"
+              value={details}
+              onChangeText={details => {
+                this.setState({ details })
+              }}
+            />
+            <Button disabled={submitting} onPress={() => { this.sendNotice() }} >{submitting ? 'Please wait...' : 'Add Notice'}</Button>
+          </View>
+        </PopupDialog>
       );
     }
 
+  }
+
+  cancelNotice = (notice) => {
+    const { user: { access_token }, cancelNotice } = this.props;
+    cancelNotice({
+      onError: alert,
+      onSuccess: alert,
+      data: {
+        notice_id: notice.id
+      },
+      token: access_token
+    });
   }
 
   onRefresh() {
@@ -242,11 +277,11 @@ class NoticesScreen extends React.Component {
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
             <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true }); }}
+              style={styles.addButton}
+              onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true }); }}
             >
               <Text style={{
-                color:'white',fontWeight:'bold'
+                color: 'white', fontWeight: 'bold'
               }}>Add </Text>
               <Image style={{
                 width: 30,
@@ -254,8 +289,8 @@ class NoticesScreen extends React.Component {
                 alignSelf: 'center',
                 alignItems: 'center'
               }}
-                     resizeMode="contain"
-                     source={require('./../../../assets/add.png')}
+                resizeMode="contain"
+                source={require('./../../../assets/add.png')}
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
@@ -280,9 +315,9 @@ class NoticesScreen extends React.Component {
     );
   }
   toggleSubmitting = () => {
-    const {submitting} = this.state;
+    const { submitting } = this.state;
     this.setState({
-      submitting:!submitting,
+      submitting: !submitting,
     });
   };
   sendNotice() {
@@ -320,10 +355,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#E59413',
     padding: 10,
     display: 'flex',
-    flexDirection:'row',
+    flexDirection: 'row',
     borderRadius: 5,
     marginStart: 5,
-    marginEnd: 5,height: 40
+    marginEnd: 5, height: 40
   },
   pickerStyle: {
     marginBottom: 10,
@@ -377,9 +412,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingStart:5,
-    paddingEnd:5,
-    paddingTop:5,
+    paddingStart: 5,
+    paddingEnd: 5,
+    paddingTop: 5,
     paddingBottom: 15,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
@@ -411,6 +446,7 @@ export default connect(
   mapStateToProps,
   {
     getNotices: actions.getNotices,
-    addNotice: actions.addNotice
+    addNotice: actions.addNotice,
+    cancelNotice: actions.cancelNotice,
   },
 )(NoticesScreen);

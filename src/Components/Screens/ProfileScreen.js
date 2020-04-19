@@ -30,6 +30,7 @@ class ProfileScreen extends React.Component {
     oldPassword: '',
     password: '',
     confirmPassword: '',
+    shouldDisableFields: false,
   };
 
   componentDidMount() {
@@ -37,10 +38,13 @@ class ProfileScreen extends React.Component {
     if (!user) {
       return NavigationService.navigateAndResetStack('LoginScreen');
     }
-    this.state = {
+    const shouldDisableFields = user.aggreedToTerms;
+
+    this.setState({
       user,
-      ...user
-    }
+      ...user,
+      shouldDisableFields
+    });
   }
 
   pickImage = async (driver) => {
@@ -106,7 +110,7 @@ class ProfileScreen extends React.Component {
     const { name, number, gender, profile, address, city, occupation, aggreedToTerms } = this.state;
     const { user: { access_token: token }, updateUser } = this.props;
 
-    if(!aggreedToTerms){
+    if (!aggreedToTerms) {
       return alert('Please Agree to terms and conditions to complete your profile.');
     }
 
@@ -148,7 +152,7 @@ class ProfileScreen extends React.Component {
   }
 
   render() {
-    let { name, number, gender, profile, address, oldPassword, password, confirmPassword, submitting, city, occupation, aggreedToTerms } = this.state;
+    let { name, number, gender, profile, address, oldPassword, password, confirmPassword, submitting, city, occupation, aggreedToTerms, shouldDisableFields } = this.state;
 
     // image is not coming from internet
     if (!profile.includes('http')) {
@@ -182,8 +186,7 @@ class ProfileScreen extends React.Component {
                 <InputField value={name} iconName="person"
                   onChangeText={name => this.setState({ name })}
                 >Name</InputField>
-                <InputField value={number} iconName="call"
-                  onChangeText={number => this.setState({ number })}
+                <InputField inputProps={{ disabled: shouldDisableFields }} value={number} iconName="call" onChangeText={number => this.setState({ number })}
                 >Phone</InputField>
                 <InputField value={city} onChangeText={city => this.setState({ city })}>City i.e Lahore</InputField>
 

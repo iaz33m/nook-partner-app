@@ -69,4 +69,4 @@ const cancelBooking = options => async dispatch => {
     }
 };
 
-export { getBookings,cancelBooking };
+export { getBookings, cancelBooking };

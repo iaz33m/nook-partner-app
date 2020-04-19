@@ -12,6 +12,20 @@ const ShiftsReducer = (state = initSate, action) => {
       };
     }
 
+    case actions.CANCEL_SHIFT: {
+      const shift = action.payload;
+      const shifts = state.shifts.map(b => {
+        if(b.id === shift.id){
+          return {...shift};
+        }
+        return {...b}
+      })
+      return {
+        ...state,
+        shifts
+      };
+    }
+
     case actions.ADD_SHIFT: {
       return {
         ...state,

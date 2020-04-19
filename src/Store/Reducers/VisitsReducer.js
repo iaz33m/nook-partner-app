@@ -11,6 +11,19 @@ const VisitsReducer = (state = initSate, action) => {
         visits: [...action.payload],
       };
     }
+    case actions.CANCEL_VISIT: {
+      const visit = action.payload;
+      const visits = state.visits.map(b => {
+        if(b.id === visit.id){
+          return {...visit};
+        }
+        return {...b}
+      })
+      return {
+        ...state,
+        visits
+      };
+    }
     default: {
       return state;
     }

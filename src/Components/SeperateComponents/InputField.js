@@ -10,7 +10,8 @@ const InputField = (props) => {
     let inputStyleMain = (style) ? style.inputStyleMain || {} : {};
 
     // const itemProps = { regular };
-    const inputProps = { secureTextEntry };
+    let inputProps = props.inputProps || {};
+    inputProps = { secureTextEntry, ...inputProps };
 
     return (
         <Item regular style={{ ...styles.container, ...inputStyleMain }}>

@@ -285,6 +285,27 @@ class NookDetailScreen extends React.Component {
   }
 
 
+  renderNookRooms = (nook) => {
+    if (nook.space_type === 'Shared') {
+      let roomDetails = '';
+      nook.rooms.forEach((room,index) => {
+        roomDetails += `•  ${room.capacity} Peron(s) Sharing - ${room.price_per_bed} PKR\n`
+      });
+      return (
+        <View style={[styles.container, { marginBottom: 10, padding: 0 }]}>
+          <View style={styles.child}>
+            <View style={{ padding: 20 }}>
+              <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >Room Details</TitleText>
+              <View >
+                <Text style={{ fontSize: 16 }}>{roomDetails}</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      );
+    }
+  }
+
   sendBookingRequest = () => {
 
     this.toggleSubmitting();
@@ -337,7 +358,9 @@ class NookDetailScreen extends React.Component {
 
     let canShowBookingButton = true;
 
-    if (usersNook || bookings.length > 0) {
+    const validBookingStatues = ['in_progress', 'pending', 'Approved'];
+
+    if (usersNook || bookings.filter(b => validBookingStatues.includes(b.status)).length > 0) {
       canShowBookingButton = false;
     }
 
@@ -377,12 +400,16 @@ class NookDetailScreen extends React.Component {
           </View>
           <View style={{ borderRadius: 30, marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
             <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
+              <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Nook Gender</Text>
+              <Text style={{ margin: 15, fontSize: 16, }}>{nook.gender_type}</Text>
+            </View>
+            <View style={[styles.child, { marginTop: 10, borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Type</Text>
               <Text style={{ margin: 15, fontSize: 16, }}>{nook.type}</Text>
             </View>
             <View style={[styles.child, { marginTop: 10, borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Rent</Text>
-              <Text style={{ margin: 15, fontSize: 16, }}>{nook.rent ? nook.rent : Math.min(...nook.rooms.map(r => r.price_per_bed))} PKR / Month</Text>
+              <Text style={{ margin: 15, fontSize: 16, }}>{(nook.rent && nook.rent !== '0') ? nook.rent : Math.min(...nook.rooms.map(r => r.price_per_bed))} PKR / Month</Text>
             </View>
             {this.state.tabIndex === 0 ?
               <View>
@@ -559,8 +586,10 @@ class NookDetailScreen extends React.Component {
                   </Card>
                 </View>
               )}
-
             </View>
+
+            {this.renderNookRooms(nook)}
+
             {nook.location &&
               <View>
                 <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >

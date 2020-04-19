@@ -11,7 +11,7 @@
     "facebookAppId":"214106956407112",
     "facebookDisplayName":"Nooks",
     "facebookScheme":"fb214106956407112",
-    "version": "3.0.3",
+    "version": "3.0.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -28,7 +28,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.xovoltlab.nooks",
-      "buildNumber": "33",
+      "buildNumber": "35",
       "config": {
         "googleMapsApiKey": "AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw",
         "googleSignIn":{
@@ -48,7 +48,7 @@
     },
     "android": {
       "package": "xovoltlabs.nooks",
-      "versionCode": 33,
+      "versionCode": 35,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw"

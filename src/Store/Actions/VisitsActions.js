@@ -38,4 +38,34 @@ const getVisits = options => async dispatch => {
     }
 };
 
-export { getVisits };
+const cancelVisit = options => async dispatch => {
+    const { data, token, onError,onSuccess } = options;
+    try {
+
+        const {data:{visit,message}} = await axios.post(`${APIModel.HOST}/auth/user/visits/cancel`,data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        dispatch({
+            type: actions.CANCEL_VISIT,
+            payload: visit
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
+export { getVisits, cancelVisit };

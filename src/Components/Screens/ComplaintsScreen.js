@@ -6,6 +6,7 @@ import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
+import * as NavigationService from '../../NavigationService';
 import * as actions from '../../Store/Actions/ComplainsActions';
 import PopupDialog from "react-native-popup-dialog";
 
@@ -147,13 +148,30 @@ class ComplaintsScreen extends React.Component {
         renderItem={({ item, index }) => (
           <View key={index} style={[styles.container]}>
             <View style={styles.child}>
-              <View>
-                <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-                  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID: {item.id}</Text>
-                  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.statses[item.status]}</Text>
+              <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
+                source={require('./../../../assets/feature.png')}
+              />
+              <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
+              <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
+                <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                  <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Type</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Submited At</TitleText>
                 </View>
-                <View style={{ padding: 10 }}>
-                  <Text>{item.description}</Text>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen", item.nook)}>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                  </TouchableOpacity>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.type}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.created_at}</TitleText>
+                </View>
+              </View>
+              <View style={{ justifyContent: 'center' }}>
+                <View style={{ padding:10 }}>
+                  <TitleText style={{ fontWeight: 'bold', fontSize: 16, }} >Complain Details</TitleText>
+                  <Text >{item.description}</Text>
                 </View>
               </View>
             </View>

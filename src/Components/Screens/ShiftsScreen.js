@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from "react-redux";
-import {StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, RefreshControl, FlatList} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, RefreshControl, FlatList } from 'react-native';
 import { Icon, Item, Picker, Spinner } from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
+import * as NavigationService from '../../NavigationService';
 import * as actions from '../../Store/Actions/ShiftsActions';
 
 class ShiftsScreen extends React.Component {
@@ -25,7 +26,7 @@ class ShiftsScreen extends React.Component {
       filter: {
         status: '',
       },
-      shifts:[]
+      shifts: []
     };
   }
 
@@ -49,7 +50,7 @@ class ShiftsScreen extends React.Component {
   applyFilter = () => {
     const { user: { access_token }, getShifts } = this.props;
     const { filter } = this.state;
-    this.setState({ loading: true,modalVisible: false });
+    this.setState({ loading: true, modalVisible: false });
     getShifts({
       onError: (error) => {
         alert(error);
@@ -64,8 +65,21 @@ class ShiftsScreen extends React.Component {
   }
 
 
+  cancelShift = (shift) => {
+    const { user: { access_token }, cancelShift } = this.props;
+    cancelShift({
+      onError: alert,
+      onSuccess: alert,
+      data: {
+        id: shift.id,
+        status: "canceled"
+      },
+      token: access_token
+    });
+  }
+
   renderFilterView = () => {
-    const { modalVisible, statses,filter } = this.state;
+    const { modalVisible, statses, filter } = this.state;
 
     if (!modalVisible) {
       return;
@@ -99,11 +113,11 @@ class ShiftsScreen extends React.Component {
             placeholderStyle={{ color: "#bfc6ea" }}
             placeholderIconColor="#007aff"
             selectedValue={filter.status}
-            onValueChange={status => this.setState({filter:{...filter,status}})}>
+            onValueChange={status => this.setState({ filter: { ...filter, status } })}>
             <Picker.Item label="All Shifts" value="" />
             {Object.keys(statses)
-            .filter(k => k)
-            .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
+              .filter(k => k)
+              .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
           </Picker>
         </Item>
 
@@ -121,34 +135,56 @@ class ShiftsScreen extends React.Component {
     }
 
     return (
-        <FlatList
-            data={this.state.shifts}
-            enableEmptySections={true}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={{ paddingBottom: "45%"}}
-            renderItem={({ item,index }) => (
-                <View key={index} style={[styles.container]}>
-                  <View style={styles.child}>
-                    <View>
-                      <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: 'gray' }}>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>ID: {item.id}</Text>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{this.state.statses[item.status]}</Text>
-                      </View>
-                      <View style={{ padding: 10 }}>
-                        <Text>{item.details}</Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-            )}
-            refreshControl={
-              <RefreshControl
-                  //refresh control used for the Pull to Refresh
-                  refreshing={this.state.loading}
-                  onRefresh={this.onRefresh.bind(this)}
+      <FlatList
+        data={this.state.shifts}
+        enableEmptySections={true}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={{ paddingBottom: "45%" }}
+        renderItem={({ item, index }) => (
+          <View key={index} style={[styles.container]}>
+            <View style={styles.child}>
+              <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
+                source={require('./../../../assets/feature.png')}
               />
-            }
-        />
+              <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
+              <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
+                <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                  <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Room Type</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Price Per bed</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Submited At</TitleText>
+                </View>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen", item.nook)}>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                  </TouchableOpacity>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.room_type} Person(s) Sharing</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.price_per_bed} PKR</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.created_at}</TitleText>
+                </View>
+              </View>
+              <View style={{ justifyContent: 'center' }}>
+                <View style={{ padding:10 }}>
+                  <TitleText style={{ fontWeight: 'bold', fontSize: 16, }} >Shift Details</TitleText>
+                  <Text>{item.details}</Text>
+                </View>
+              </View>
+              <View style={{ justifyContent: 'center', marginBottom: 10 }}>
+                {(item.status === 'Pending') && <Button onPress={() => this.cancelShift(item)}>Cancel Shift Request</Button>}
+              </View>
+            </View>
+          </View>
+        )}
+        refreshControl={
+          <RefreshControl
+            //refresh control used for the Pull to Refresh
+            refreshing={this.state.loading}
+            onRefresh={this.onRefresh.bind(this)}
+          />
+        }
+      />
     );
   }
 
@@ -236,9 +272,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingStart:5,
-    paddingEnd:5,
-    paddingTop:5,
+    paddingStart: 5,
+    paddingEnd: 5,
+    paddingTop: 5,
     paddingBottom: 15,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
@@ -270,5 +306,6 @@ export default connect(
   mapStateToProps,
   {
     getShifts: actions.getShifts,
+    cancelShift: actions.cancelShift,
   },
 )(ShiftsScreen);

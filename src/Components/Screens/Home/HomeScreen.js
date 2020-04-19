@@ -231,7 +231,7 @@ class HomeScreen extends React.Component {
                             <TitleText style={{
                                 fontWeight: 'bold',
                                 fontSize: 16,
-                            }}>PKR {selectedNook.rooms[0].price_per_bed}</TitleText>
+                            }}>PKR {selectedNook.rent && selectedNook.rent !== '0' ? selectedNook.rent : Math.min(...selectedNook.rooms.map(r => r.price_per_bed))}</TitleText>
                             {(() => {
                                 if (distance) {
                                     return <TitleText style={{ marginTop: 15, fontWeight: 'bold', fontSize: 16, }}>{distance} km</TitleText>
@@ -310,7 +310,7 @@ class HomeScreen extends React.Component {
                             }}>
                                 <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text>{item.type} </Text>
-                                    <Text>PKR {item.price ? item.price : Math.min(...item.rooms.map(r => r.price_per_bed))}</Text>
+                                    <Text>PKR {item.rent && item.rent !== '0' ? item.rent : Math.min(...item.rooms.map(r => r.price_per_bed))}</Text>
                                 </View>
                                 <CardItem cardBody>
                                     {

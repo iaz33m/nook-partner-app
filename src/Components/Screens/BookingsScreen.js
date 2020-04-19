@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from "react-redux";
-import {StyleSheet, Text, View, Platform, Image, TouchableOpacity, RefreshControl, FlatList,Linking} from 'react-native';
-import {Icon, Item, Picker, Spinner} from "native-base";
+import { connect } from "react-redux";
+import { StyleSheet, Text, View, Platform, Image, TouchableOpacity, RefreshControl, FlatList, Linking } from 'react-native';
+import { Icon, Item, Picker, Spinner } from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
@@ -26,14 +26,14 @@ class BookingsScreen extends React.Component {
             filter: {
                 status: '',
             },
-            bookings:[]
+            bookings: []
         };
     }
 
     componentDidMount() {
         const { user } = this.props;
         if (!user) {
-          return NavigationService.navigateAndResetStack('LoginScreen');
+            return NavigationService.navigateAndResetStack('LoginScreen');
         }
         this.applyFilter();
     }
@@ -52,16 +52,16 @@ class BookingsScreen extends React.Component {
         this.applyFilter();
     }
     applyFilter = () => {
-        const {user: {access_token}, getBookings} = this.props;
-        const {filter} = this.state;
-        this.setState({loading: true, modalVisible: false});
+        const { user: { access_token }, getBookings } = this.props;
+        const { filter } = this.state;
+        this.setState({ loading: true, modalVisible: false });
         getBookings({
             onError: (error) => {
                 alert(error);
-                this.setState({loading: false});
+                this.setState({ loading: false });
             },
             onSuccess: () => {
-                this.setState({loading: false});
+                this.setState({ loading: false });
             },
             filter,
             token: access_token
@@ -70,18 +70,20 @@ class BookingsScreen extends React.Component {
 
 
     cancelBooking = (booking) => {
-        const {user: {access_token}, cancelBooking} = this.props;
+        const { user: { access_token }, cancelBooking } = this.props;
         cancelBooking({
             onError: alert,
             onSuccess: alert,
-            data:{booking_id:booking.id},
+            data: {
+                booking_id: booking.id
+            },
             token: access_token
         });
     }
 
 
     renderFilterView = () => {
-        const {modalVisible, statses, filter} = this.state;
+        const { modalVisible, statses, filter } = this.state;
 
         if (!modalVisible) {
             return;
@@ -97,7 +99,7 @@ class BookingsScreen extends React.Component {
                 backgroundColor: "white"
             }}>
                 <TouchableOpacity onPress={() => {
-                    this.setState({modalVisible: false})
+                    this.setState({ modalVisible: false })
                 }}>
                     <Image style={{
                         width: 20,
@@ -106,32 +108,32 @@ class BookingsScreen extends React.Component {
                         height: 20,
                         alignSelf: 'flex-end'
                     }}
-                           resizeMode="contain"
-                           source={require('./../../../assets/close.png')}
+                        resizeMode="contain"
+                        source={require('./../../../assets/close.png')}
                     />
                 </TouchableOpacity>
                 <TitleText
-                    style={{alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5}}>Filter</TitleText>
+                    style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Filter</TitleText>
 
 
                 <Item picker style={styles.pickerStyle}>
                     <Picker
                         mode="dropdown"
-                        iosIcon={<Icon name="arrow-down"/>}
-                        style={{width: "100%"}}
+                        iosIcon={<Icon name="arrow-down" />}
+                        style={{ width: "100%" }}
                         placeholder="Room Catagories"
-                        placeholderStyle={{color: "#bfc6ea"}}
+                        placeholderStyle={{ color: "#bfc6ea" }}
                         placeholderIconColor="#007aff"
                         selectedValue={filter.status}
-                        onValueChange={status => this.setState({filter: {...filter, status}})}>
-                        <Picker.Item label="All Bookings" value=""/>
+                        onValueChange={status => this.setState({ filter: { ...filter, status } })}>
+                        <Picker.Item label="All Bookings" value="" />
                         {Object.keys(statses)
                             .filter(k => k)
-                            .map(k => <Picker.Item key={k} label={statses[k]} value={k}/>)}
+                            .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
                     </Picker>
                 </Item>
 
-                <View style={{justifyContent: 'center'}}>
+                <View style={{ justifyContent: 'center' }}>
                     <Button onPress={this.applyFilter}>Apply Filter</Button>
                 </View>
 
@@ -140,103 +142,103 @@ class BookingsScreen extends React.Component {
     }
 
 
-    openGps = ({lat,lng},address) => {
+    openGps = ({ lat, lng }, address) => {
         const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
         const latLng = `${lat},${lng}`;
         const url = Platform.select({
-          ios: `${scheme}${address}@${latLng}`,
-          android: `${scheme}${latLng}(${address})`
+            ios: `${scheme}${address}@${latLng}`,
+            android: `${scheme}${latLng}(${address})`
         });
-    
+
         this.openExternalApp(url)
     }
 
     openExternalApp = (url) => {
         Linking.canOpenURL(url).then(supported => {
-          if (supported) {
-            Linking.openURL(url);
-          } else {
-            Alert.alert(
-                'ERROR',
-                'Unable to open: ' + url,
-                [
-                  {text: 'OK'},
-                ]
-            );
-          }
+            if (supported) {
+                Linking.openURL(url);
+            } else {
+                Alert.alert(
+                    'ERROR',
+                    'Unable to open: ' + url,
+                    [
+                        { text: 'OK' },
+                    ]
+                );
+            }
         });
-      }
+    }
 
     renderBookings = () => {
 
         if (this.state.loading) {
-            return <Spinner color='black'/>;
+            return <Spinner color='black' />;
         }
 
         return (
-                <FlatList
-                    data={this.state.bookings}
-                    enableEmptySections={true}
-                    keyExtractor={(item, index) => index.toString()}
-                    contentContainerStyle={{ paddingBottom: "45%"}}
-                    renderItem={({ item,index }) => (
-                        <View key={index} style={[styles.container]}>
-                            <View style={styles.child}>
+            <FlatList
+                data={this.state.bookings}
+                enableEmptySections={true}
+                keyExtractor={(item, index) => index.toString()}
+                contentContainerStyle={{ paddingBottom: "45%" }}
+                renderItem={({ item, index }) => (
+                    <View key={index} style={[styles.container]}>
+                        <View style={styles.child}>
                             <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
-                                    source={require('./../../../assets/feature.png')}
+                                source={require('./../../../assets/feature.png')}
                             />
                             <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
                             <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
                                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                                <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
-                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
-                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Type</TitleText>
-                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Rent</TitleText>
+                                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Type</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Rent</TitleText>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                                <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen",item.nook)}>
-                                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
-                                </TouchableOpacity>
-                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
-                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{(item.room)? `${item.room.capacity} Person(s)` : ''}</TitleText>
-                                <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.rent} PKR</TitleText>
+                                    <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen", item.nook)}>
+                                        <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                                    </TouchableOpacity>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{(item.room) ? `${item.room.capacity} Person(s)` : ''}</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.rent} PKR</TitleText>
                                 </View>
                             </View>
 
                             <View style={{ justifyContent: 'center', marginBottom: 10 }}>
-                                <Button  onPress={()=>this.openGps(item.nook.location,item.nook.address)}>Get Direction</Button>
-                                {(item.status === 'Pending') && <Button  onPress={() => this.cancelBooking(item)}>Cancel Booking</Button>}
-                            </View>
+                                <Button onPress={() => this.openGps(item.nook.location, item.nook.address)}>Get Direction</Button>
+                                {(item.status === 'Pending') && <Button onPress={() => this.cancelBooking(item)}>Cancel Booking</Button>}
                             </View>
                         </View>
-                    )}
-                    refreshControl={
-                        <RefreshControl
-                            //refresh control used for the Pull to Refresh
-                            refreshing={this.state.loading}
-                            onRefresh={this.onRefresh.bind(this)}
-                        />
-                    }
-                />
+                    </View>
+                )}
+                refreshControl={
+                    <RefreshControl
+                        //refresh control used for the Pull to Refresh
+                        refreshing={this.state.loading}
+                        onRefresh={this.onRefresh.bind(this)}
+                    />
+                }
+            />
         );
     }
 
     render() {
 
 
-        const {filter: {status}, statses} = this.state;
+        const { filter: { status }, statses } = this.state;
 
         return (
-            <View style={{flex: 1, backgroundColor: Colors.backgroundColor}}>
-                <Header backButton={true} optionButton={true}/>
-                <TitleText style={{marginTop: 25, fontWeight: 'bold', fontSize: 20,}}>Bookings</TitleText>
-                <View style={{padding: 20}}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
-                        <TitleText style={{alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16,}}>
+            <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
+                <Header backButton={true} optionButton={true} />
+                <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }}>Bookings</TitleText>
+                <View style={{ padding: 20 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+                        <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }}>
                             {statses[status]} Bookings
                         </TitleText>
                         <TouchableOpacity onPress={() => {
-                            this.setState({modalVisible: true})
+                            this.setState({ modalVisible: true })
                         }}>
                             <Image style={{
                                 width: 30,
@@ -244,8 +246,8 @@ class BookingsScreen extends React.Component {
                                 marginBottom: 5,
                                 alignSelf: 'flex-end'
                             }}
-                                   resizeMode="contain"
-                                   source={require('./../../../assets/filter.png')}
+                                resizeMode="contain"
+                                source={require('./../../../assets/filter.png')}
                             />
                         </TouchableOpacity>
                     </View>
