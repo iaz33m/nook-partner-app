@@ -31,6 +31,8 @@ import * as NavigationService from './NavigationService';
 import PaymentScreen from './Components/Screens/PaymentScreen';
 import HomeScreen from './Components/Screens/Home/HomeScreen';
 import NookDetailScreen from './Components/Screens/NookDetail/NookDetailScreen';
+import ComplainsDetailScreen from './Components/Screens/Partner/ComplainsDetailScreen'
+import VisitsNookScreen from './Components/Screens/Partner/VisitsScreen'
 const DrawerContent = (props) => (
 
   <View>
@@ -181,6 +183,9 @@ const TabScreens = createBottomTabNavigator(
 
 const AppNavigator = createStackNavigator(
   {
+    NookDetailScreen,
+    VisitsNookScreen,
+    ComplainsDetailScreen,
     SplashScreen,
     LoginScreen,
     TabScreens,
@@ -192,14 +197,13 @@ const AppNavigator = createStackNavigator(
     PaymentScreen,
     AddNookScreen,
     GuideScreen,
-    NookDetailScreen,
     ForgotPasswordScreen,
     NumberVerificationScreen,
     RegisterScreen,
     GooglePlacesInput,
     ReceiptDetailsScreen
   }, {
-  initialRouteName: "SplashScreen",
+  initialRouteName: "NookDetailScreen",
   headerMode: 'none'
 }
 );

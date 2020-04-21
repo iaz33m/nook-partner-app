@@ -56,8 +56,8 @@ class NookDetailScreen extends React.Component {
     return (<View pointerEvents="none" style={{ flex: 1 }}>
 
       <MapView initialRegion={{
-        latitude: nook.location.lat,
-        longitude: nook.location.lng,
+        latitude: 6422,
+        longitude: 6422,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       }} style={styles.mapStyle} >
@@ -65,15 +65,15 @@ class NookDetailScreen extends React.Component {
         }}
           image={require('./../../../../assets/marker.png')}
           coordinate={{
-            latitude: nook.location.lat,
-            longitude: nook.location.lng,
+            latitude: 6422,
+            longitude: 6422,
           }}
         />
       </MapView>
       <View style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
         <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', paddingStart: 20 }]}>
           <Image resizeMode="contain" source={require('./../../../../assets/search.png')} style={{ height: 20, width: 20, }} />
-          <Text style={{ margin: 15, }}>{nook.address}</Text>
+          <Text style={{ margin: 15, }}>nook.address</Text>
         </View>
       </View>
     </View>)
@@ -89,10 +89,10 @@ class NookDetailScreen extends React.Component {
     }
     
     let featuredImage = null;
-    const nook = this.props.navigation.state.params;
-    if (nook.medias && nook.medias.length > 0) {
-      featuredImage = nook.medias[0].path;
-    }
+    // const nook = this.props.navigation.state.params;
+    // if (nook.medias && nook.medias.length > 0) {
+    //   featuredImage = nook.medias[0].path;
+    // }
 
     this.setState({
       featuredImage,
@@ -174,7 +174,7 @@ class NookDetailScreen extends React.Component {
     const {roomId, details} = this.state;
     addShift({
       data: {
-        nook_id: nook.id,
+        nook_id: 1,
         room_id: roomId,
         details,
       },
@@ -290,7 +290,7 @@ class NookDetailScreen extends React.Component {
 
     this.setState({ loading: true, modalVisible: false });
     addNookRoom({
-        data: { "nook_id": nook.id, "room_id": this.state.roomId },
+        data: { "nook_id": 1, "room_id": this.state.roomId },
         onError: (error) => {
           this.toggleSubmitting();
           alert(error);
@@ -361,7 +361,7 @@ class NookDetailScreen extends React.Component {
               <Image resizeMode="contain"  style={{ height: 100, width: 100, }} />
             </View>
             <View style={{ flex: 1, width: '100%', marginTop: 10, position: 'absolute', }}>
-              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 22, }} >{nook.nookCode}</TitleText>
+              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 22, }} >Nook Code</TitleText>
             </View>
           </View>
           <View style={{ borderRadius: 30, marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
@@ -369,8 +369,8 @@ class NookDetailScreen extends React.Component {
               showMode('time');
             }}>
               <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
-                <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>{nook.type}</Text>
-                <Text style={{ margin: 15, fontSize: 16, }}>PKR {nook.price ? nook.price : Math.min(...nook.rooms.map(r => r.price_per_bed))}</Text>
+                <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Nook Type</Text>
+                <Text style={{ margin: 15, fontSize: 16, }}>PKR 1222</Text>
               </View>
             </TouchableOpacity>
             {this.state.tabIndex === 0 ?
@@ -385,28 +385,19 @@ class NookDetailScreen extends React.Component {
                 </View>
                 <ScrollView horizontal={true} style={{ paddingTop: 15, paddingBottom: 15 }}>
                   {
-                    nook.medias.map((m, index) => (
-                      <TouchableOpacity key={index} onPress={() => this.setState({ featuredImage: m.path })}>
-                        <Image resizeMode="cover" resizeMode="contain" source={{
-                          uri: m.path
-                        }
-                        } style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
-                      </TouchableOpacity>
-                    ))
+                    // nook.medias.map((m, index) => (
+                    //   <TouchableOpacity key={index} onPress={() => this.setState({ featuredImage: m.path })}>
+                    //     <Image resizeMode="cover" resizeMode="contain" source={{
+                    //       uri: m.path
+                    //     }
+                    //     } style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
+                    //   </TouchableOpacity>
+                    // ))
                   }
                 </ScrollView>
               </View> :
               <View style={{ marginTop: 15, paddingBottom: 15, borderRadius: 10, backgroundColor: Colors.white }}>
-                <WebView
-                  style={{ height: 200, width: null, flex: 1 }}
-                  javaScriptEnabled={true}
-                  domStorageEnabled={true}
-                  source={{ uri: `https://www.youtube.com/embed/${this.getYoutubeIDFromURL(nook.video_url)}?autoplay=1&theme=light&color=white&disablekb=1` }}
-                  scalesPageToFit={true}
-                  bounces={false}
-                  javaScriptEnabled
-                  automaticallyAdjustContentInsets={false}
-                />
+                
               </View>
             }
             <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
@@ -434,7 +425,7 @@ class NookDetailScreen extends React.Component {
                   <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >
                     Description
                     </TitleText>
-                  <Text>{nook.description}</Text>
+                  <Text>nook.description</Text>
                 </View>
               </View>
             </View>
@@ -443,17 +434,13 @@ class NookDetailScreen extends React.Component {
             </TitleText>
 
             <View style={{ flexWrap: 'wrap', flexDirection: 'row', }}>
-              {nook.facilities.map((fac, facI) =>
-                <View key={facI} style={{ width: "25%" }}>
+              <View style={{ width: "25%" }}>
                   <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
-                    <Text>{fac}</Text>
+                    <Text>fac</Text>
                   </Card>
                 </View>
-              )}
-
             </View>
-            {nook.location &&
-              <View>
+            <View>
                 <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
                   Location
               </TitleText>
@@ -461,18 +448,16 @@ class NookDetailScreen extends React.Component {
                   {view}
                 </View>
               </View>
-            }
 
             <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
-              <Text style={{ margin: 15, fontSize: 16, }}>{nook.number}</Text>
+              <Text style={{ margin: 15, fontSize: 16, }}>Number</Text>
             </View>
             {usersNook && <Button onPress={this.toggleShiftNookModal}>Shift To This Nook</Button>}
             {!usersNook && <Button onPress={this.submitNookBooking}>Book Now</Button>}
             <Button onPress={this.toggleScheduleVisitModal}>Schedule Visit</Button>
           </View>
-          {this.renderAddShiftPopup()}
-          {this.renderScheduleVisitPopup(nook.id)}
+
           {
             this.state.isBookNow &&
             <PopupDialog
