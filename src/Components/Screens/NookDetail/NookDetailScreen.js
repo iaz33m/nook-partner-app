@@ -81,12 +81,12 @@ class NookDetailScreen extends React.Component {
 
   componentDidMount() {
 
-    const { user, getMyNookDetails } = this.props;
-    if(user){
-      getMyNookDetails({
-        token: user.access_token
-      });
-    }
+    // const { user, getMyNookDetails } = this.props;
+    // if(user){
+    //   getMyNookDetails({
+    //     token: user.access_token
+    //   });
+    // }
     
     let featuredImage = null;
     // const nook = this.props.navigation.state.params;
@@ -98,231 +98,6 @@ class NookDetailScreen extends React.Component {
       featuredImage,
     });
   }
-
-  handleRoomChange = value => this.setState({
-    roomId: value
-  });
-
-  togglePopup = () => {
-    const { isSchedule, isDialogVisible } = this.state;
-    this.setState({
-      isDialogVisible:!isDialogVisible
-    });
-  }
-
-  renderScheduleVisitPopup = (nook_id) => {
-    const { isSchedule, isDialogVisible,date,submitting } = this.state;
-
-    if (isSchedule) {
-      return (
-        <PopupDialog
-          width={0.9} height={0.40}
-          visible={isDialogVisible}
-          onTouchOutside={this.togglePopup}>
-          <View style={{ flex: 1, padding: 25, }}>
-            <TouchableOpacity onPress={this.togglePopup}>
-              <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
-            </TouchableOpacity>
-            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
-              Date & Time
-            </TitleText>
-
-            <DatePicker
-              style={{
-                ...styles.container,
-                width: "100%", flex: 0, padding: 0,
-              }}
-              mode="datetime"
-              date={this.state.date}
-              placeholder="Select Date & Time"
-              format="MMMM Do YYYY, h:mm a"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              iconSource={require('./../../../../assets/date.png')}
-              customStyles={{
-                dateText: {
-                  margin: 0,
-                  color: 'black'
-                },
-                dateIcon: {
-                  height: 20, width: 20,
-                },
-                dateInput: {
-                  ...styles.child,
-                  borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15,
-
-                }
-              }}
-              onDateChange={(date) => {
-                this.setState({
-                  date: date
-                })
-              }}
-            />
-            <Button disabled={submitting} onPress={() => {this.setSchedule(nook_id)}} >{submitting ? 'Please wait...':'Schedule'}</Button>
-          </View>
-        </PopupDialog>
-      );
-    }
-
-  }
-
-  submitShift = () => {
-    this.toggleSubmitting();
-    const { user: { access_token }, addShift } = this.props;
-    const nook = this.props.navigation.state.params;
-    const {roomId, details} = this.state;
-    addShift({
-      data: {
-        nook_id: 1,
-        room_id: roomId,
-        details,
-      },
-      onError: message => {
-      alert(message);
-      this.toggleSubmitting();
-    },
-      onSuccess: message => {
-        alert(message);
-        this.toggleSubmitting();
-      },
-      token: access_token
-    });
-  };
-
-  toggleShiftNookModal = () => {
-    const {addShiftModal} = this.state;
-    
-    const { user } = this.props;
-    if (!user) {
-      return NavigationService.navigateAndResetStack('LoginScreen');
-    }
-
-    this.setState({
-      addShiftModal:!addShiftModal
-    });
-  };
-
-  toggleScheduleVisitModal = () => {
-    const { user } = this.props;
-    if (!user) {
-      return NavigationService.navigateAndResetStack('LoginScreen');
-    }
-    this.setState({ isDialogVisible: true, isSchedule: true, isBookNow: false });
-  }
-
-  toggleSubmitting = () => {
-    const {submitting} = this.state;
-    this.setState({
-      submitting:!submitting,
-    });
-  };
-
-  renderAddShiftPopup = () => {
-
-    const {addShiftModal, details, roomId,submitting} = this.state;
-    const nook = this.props.navigation.state.params;
-    const { rooms, space_type } = nook;
-    const height = (space_type === 'Shared') ? 0.6 : 0.6
-    return (
-      <PopupDialog
-        width={0.9} height={height}
-        ref={"popupDialog"}
-        visible={addShiftModal}
-        onTouchOutside={this.toggleShiftNookModal}>
-        <View style={{ flex: 1, padding: 25, }}>
-          <TouchableOpacity onPress={this.toggleShiftNookModal}>
-            <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
-          </TouchableOpacity>
-
-          {(space_type === 'Shared') && (
-            <>
-              <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
-                Room
-              </TitleText>
-
-              <Item picker style={styles.pickerStyle}>
-                <Picker
-                  mode="dropdown"
-                  iosIcon={<Icon name="arrow-down" />}
-                  style={{ width: "100%" }}
-                  placeholder="Room Catagories"
-                  placeholderStyle={{ color: "#bfc6ea" }}
-                  placeholderIconColor="#007aff"
-                  selectedValue={roomId}
-                  onValueChange={this.handleRoomChange
-                  }>
-                  <Picker.Item key={-1} value={0} label="Select Room" />
-                  {rooms.map((room, roomi) => {
-                    return <Picker.Item key={roomi} value={room.id} label={`${room.capacity} Persons Sharing - ${room.price_per_bed} PKR`} />
-                  })}
-                </Picker>
-              </Item>
-            </>
-          )}
-
-          <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
-            Shift Details
-          </TitleText>
-
-          <Textarea
-              rowSpan={4}
-              bordered
-              placeholder="Details"
-              value={details}
-              onChangeText={details => this.setState({ details })}
-            />
-
-          <Button disabled={submitting} onPress={this.submitShift} >{submitting ? 'Please wait...':'Shift Nook'}</Button>
-        </View>
-      </PopupDialog>
-    );
-  }
-
-
-  sendBookingRequest = () => {
-
-    this.toggleSubmitting();
-    const nook = this.props.navigation.state.params;
-
-    this.setState({ isDialogVisible: false });
-    const { user: { access_token }, addNookRoom } = this.props;
-
-    this.setState({ loading: true, modalVisible: false });
-    addNookRoom({
-        data: { "nook_id": 1, "room_id": this.state.roomId },
-        onError: (error) => {
-          this.toggleSubmitting();
-          alert(error);
-          this.setState({ loading: false });
-        },
-        onSuccess: () => {
-          this.toggleSubmitting();
-          this.setState({ loading: false });
-          alert('Booking of room has been created successfully');
-        },
-        token: access_token
-    });
-
-  }
-
-  submitNookBooking = () => {
-
-    const { user } = this.props;
-    if (!user) {
-      return NavigationService.navigateAndResetStack('LoginScreen');
-    }
-
-    const nook = this.props.navigation.state.params;
-    const { space_type } = nook;
-
-    if(space_type === 'Shared'){
-      return this.setState({ isDialogVisible: true, isBookNow: true, isSchedule: false });
-    }
-    this.sendBookingRequest();
-  };
-
-
 
   render() {
     const nook = this.props.navigation.state.params;
@@ -453,9 +228,9 @@ class NookDetailScreen extends React.Component {
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
               <Text style={{ margin: 15, fontSize: 16, }}>Number</Text>
             </View>
-            {usersNook && <Button onPress={this.toggleShiftNookModal}>Shift To This Nook</Button>}
-            {!usersNook && <Button onPress={this.submitNookBooking}>Book Now</Button>}
-            <Button onPress={this.toggleScheduleVisitModal}>Schedule Visit</Button>
+            {usersNook && <Button onPress={}>Shift To This Nook</Button>}
+            {!usersNook && <Button onPress={}>Book Now</Button>}
+            <Button onPress={}>Schedule Visit</Button>
           </View>
 
           {
@@ -485,53 +260,20 @@ class NookDetailScreen extends React.Component {
                     placeholderStyle={{ color: "#bfc6ea" }}
                     placeholderIconColor="#007aff"
                     selectedValue={this.state.roomId}
-                    onValueChange={this.handleRoomChange
-                    }>
+                    onValueChange={}>
                     <Picker.Item key={-1} value={0} label="Select Room" />
                     {rooms.map((room, roomi) => {
                       return <Picker.Item key={roomi} value={room.id} label={`${room.capacity} Persons Sharing - ${room.price_per_bed} PKR`} />
                     })}
                   </Picker>
                 </Item>
-                <Button disabled={submitting} onPress={this.sendBookingRequest} >{submitting ? 'Please wait...':'Book Nook'}</Button>
+                <Button disabled={submitting} onPress={} >{submitting ? 'Please wait...':'Book Nook'}</Button>
               </View>
             </PopupDialog>
           }
         </ScrollView>
       </View >
     );
-  }
-
-  setSchedule(nook_id) {
-    this.toggleSubmitting();
-    this.setState({ isDialogVisible: false });
-    const { filter } = this.state;
-    const { user: { access_token }, addNookSchedule } = this.props;
-    this.setState({ loading: true, modalVisible: false });
-    addNookSchedule({
-      data: { "nook_id": nook_id, "time": moment(this.state.date, 'MMMM Do YYYY, h:mm a').unix() },
-      onError: (error) => {
-        this.toggleSubmitting();
-        alert(error);
-        this.setState({ loading: false });
-      },
-      onSuccess: () => {
-        this.toggleSubmitting();
-        this.setState({ loading: false });
-        alert('Visit has been scheduled successfully');
-      },
-      filter,
-      token: access_token
-    })
-  }
-
-  getYoutubeIDFromURL(url) {
-    var video_id = url.split('v=')[1];
-    var ampersandPosition = video_id.indexOf('&');
-    if(ampersandPosition != -1) {
-      return video_id = video_id.substring(0, ampersandPosition);
-    }
-    return video_id;
   }
 }
 const mapStateToProps = state => {
