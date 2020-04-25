@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
-import { Icon, Card, Textarea, Picker, Item } from "native-base";
+import { Input, Icon, Card, Textarea, Picker, Item } from "native-base";
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
 import Colors from '../../../helper/Colors';
@@ -101,7 +101,7 @@ class NookDetailScreen extends React.Component {
 
   render() {
     const nook = this.props.navigation.state.params;
-    const { rooms } = nook;
+    // const { rooms } = nook;
     const { filter, featuredImage ,submitting} = this.state;
     const {usersNook} = this.props;
 
@@ -175,6 +175,7 @@ class NookDetailScreen extends React.Component {
                 
               </View>
             }
+
             <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity onPress={() => {
@@ -192,6 +193,7 @@ class NookDetailScreen extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
+
             <View style={[styles.container, {
               marginBottom: 10, padding: 0
             }]}>
@@ -228,9 +230,120 @@ class NookDetailScreen extends React.Component {
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
               <Text style={{ margin: 15, fontSize: 16, }}>Number</Text>
             </View>
-            {usersNook && <Button onPress={}>Shift To This Nook</Button>}
-            {!usersNook && <Button onPress={}>Book Now</Button>}
-            <Button onPress={}>Schedule Visit</Button>
+
+            {/* Rooms and user data tab */}
+            <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 30, marginBottom: 10, }}>
+              <View style={{ flex: 1 }}>
+                <TouchableOpacity onPress={() => {
+                  this.setState({ tabIndex: 2 });
+                }} style={[styles.tabButton, { backgroundColor: tab1Color }]} >
+                  <Text style={{ color: tab2Color }}>Rooms</Text>
+
+                </TouchableOpacity>
+              </View>
+              <View style={{ flex: 1 }}>
+                <TouchableOpacity onPress={() => {
+                  this.setState({ tabIndex: 3 })
+                }} style={[styles.tabButton, { backgroundColor: tab2Color }]} >
+                  <Text style={{ color: tab1Color }}>Users</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {this.state.tabIndex === 2 ?
+              <View>
+                <View style={{ marginTop: 15 }}>
+                  
+                </View>
+              </View> :
+              <View style={[styles.container, { width: "100%", marginTop: 10, padding: 0, }]}>
+                <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
+                  <View style={{ flexDirection: "row" }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Single</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                      <Text style={{ marginBottom: 15, fontSize: 16, }}>12000</Text>
+                      <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
+                        <Image resizeMode="contain" source={require('./../../../../assets/bed-icon.png')} style={{ marginRight: 15, }} />
+                        <Text style={{ fontSize: 16, }}>2</Text>
+                      </View>
+                      <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
+                        <Image resizeMode="contain" source={require('./../../../../assets/user-icon.png')} style={{ marginRight: 15, }} />
+                        <Text style={{ fontSize: 16, }}>5</Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
+                  <View style={{ flexDirection: "row", }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Two Person</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                      <Text style={{ marginBottom: 15, fontSize: 16, }}>12000</Text>
+                      <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
+                        <Image resizeMode="contain" source={require('./../../../../assets/bed-icon.png')} style={{ marginRight: 15, }} />
+                        <Text style={{ fontSize: 16, }}>3</Text>
+                      </View>
+                      <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
+                        <Image resizeMode="contain" source={require('./../../../../assets/user-icon.png')} style={{ marginRight: 15, }} />
+                        <Text style={{ fontSize: 16, }}>10</Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
+              
+            }
+
+            {this.state.tabIndex === 3 ?
+              <View>
+                <View style={{ marginTop: 15 }}>
+                
+                </View>
+                
+              </View> :
+              <View style={[styles.container, { width: "100%", marginTop: 10, padding: 0, }]}>
+                <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', paddingStart: 20 }]}>
+                  <View searchBar rounded>
+                    <Item>
+                      <Icon name="ios-search" />
+                      <Input placeholder="Search" />
+                    </Item>
+                  </View>
+                </View>
+
+                <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
+                  <View style={{ flexDirection: "row" }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Bilal Ali</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                      <Text style={{ marginBottom: 15, fontSize: 16, }}>Room # 3</Text>
+                    </View>
+                  </View>
+
+                  <View style={{ flexDirection: "row",  }}>
+                    <View style={{ flex: 1 }}>
+                    <Text style={{ marginBottom: 15, fontSize: 16, }}>Receivable</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                      <Text style={{ marginBottom: 15, fontSize: 16, }}>15000</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            
+            }
+
+            <View style={{ marginTop: 30, }}>
+              <Button>
+                  <Text style={styles.buttonTextStyle}>Update Status</Text>
+              </Button>
+            </View>
+
           </View>
 
           {
@@ -260,14 +373,14 @@ class NookDetailScreen extends React.Component {
                     placeholderStyle={{ color: "#bfc6ea" }}
                     placeholderIconColor="#007aff"
                     selectedValue={this.state.roomId}
-                    onValueChange={}>
+                    onValueChange={() => {}}>
                     <Picker.Item key={-1} value={0} label="Select Room" />
-                    {rooms.map((room, roomi) => {
+                    {[].map((room, roomi) => {
                       return <Picker.Item key={roomi} value={room.id} label={`${room.capacity} Persons Sharing - ${room.price_per_bed} PKR`} />
                     })}
                   </Picker>
                 </Item>
-                <Button disabled={submitting} onPress={} >{submitting ? 'Please wait...':'Book Nook'}</Button>
+                
               </View>
             </PopupDialog>
           }
@@ -290,4 +403,6 @@ export default connect(
     addShift: shiftsActions.addShift,
     getMyNookDetails: actions.getMyNookDetails,
   },
-)(NookDetailScreen)
+  
+)
+(NookDetailScreen)

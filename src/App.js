@@ -183,6 +183,7 @@ const TabScreens = createBottomTabNavigator(
 
 const AppNavigator = createStackNavigator(
   {
+    GuideScreen,
     NookDetailScreen,
     VisitsNookScreen,
     ComplainsDetailScreen,
@@ -196,14 +197,14 @@ const AppNavigator = createStackNavigator(
     ShiftsScreen,
     PaymentScreen,
     AddNookScreen,
-    GuideScreen,
+    
     ForgotPasswordScreen,
     NumberVerificationScreen,
     RegisterScreen,
     GooglePlacesInput,
     ReceiptDetailsScreen
   }, {
-  initialRouteName: "NookDetailScreen",
+  initialRouteName: "GuideScreen",
   headerMode: 'none'
 }
 );

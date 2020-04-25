@@ -29,21 +29,24 @@ class GuideScreen extends React.Component {
         </View>
         <View style={styles.container}>
           <View style={styles.child}>
-            <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Welcome Nook</TitleText>
-            <TitleText style={{ margin: 20, marginBottom: 0, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
-
             <Swiper style={styles.wrapper} showsButtons={false}>
               <View style={styles.slide}>
+                <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Welcome Nook</TitleText>
+                <TitleText style={{ margin: 20, marginBottom: 30, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
                 <Image style={styles.slideItem}
                   source={require('./../../../assets/logo.png')}
                 />
               </View>
               <View style={styles.slide}>
+                <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Heading 2</TitleText>
+                <TitleText style={{ margin: 20, marginBottom: 30, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam. Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
                 <Image style={styles.slideItem}
                   source={require('./../../../assets/logo.png')}
                 />
               </View>
               <View style={styles.slide}>
+                <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Heading 3</TitleText>
+                <TitleText style={{ margin: 20, marginBottom: 30, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
                 <Image style={styles.slideItem}
                   source={require('./../../../assets/logo.png')}
                 />
@@ -87,11 +90,11 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     borderWidth: 0,
     // Android shadow
-    elevation: 10
+    elevation: 3
   },
   slideItem: {
     width: '60%',
-    height: '40%',
+    height: '30%',
     borderColor: '#000',
     borderWidth: 1,
   },
