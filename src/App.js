@@ -2,10 +2,10 @@ import React from 'react';
 
 import SplashScreen from "./Components/Screens/SplashScreen";
 import GuideScreen from "./Components/Screens/GuideScreen";
+import ManageNooks from "./Components/Screens/ManageNooks";
 import NookListScreen from "./Components/Screens/NookListScreen";
 import VisitsScreen from "./Components/Screens/Visits/VisitsScreen";
 import ComplaintsScreen from "./Components/Screens/ComplaintsScreen";
-// import GoogleLoginTemp from "./Components/Temp/GoogleLoginTemp";
 import ShiftsScreen from "./Components/Screens/ShiftsScreen";
 import BookingsScreen from "./Components/Screens/BookingsScreen";
 import NoticesScreen from "./Components/Screens/NoticesScreen";
@@ -14,46 +14,31 @@ import AddNookScreen from "./Components/Screens/AddNookScreen";
 import PaymentsScreen from "./Components/Screens/Payments/PaymentsScreen";
 import ReceiptsScreen from "./Components/Screens/Receipts/ReceiptsScreen";
 import ReceiptDetailsScreen from "./Components/Screens/Receipts/ReceiptDetailsScreen";
-
 import ProfileScreen from "./Components/Screens/ProfileScreen";
-
 import LoginScreen from "./Components/Screens/Auth/LoginScreen";
 import RegisterScreen from "./Components/Screens/Auth/RegisterScreen";
 import GooglePlacesInput from "./Components/Screens/AutoComplete";
 import ForgotPasswordScreen from "./Components/Screens/Auth/ForgotPasswordScreen";
 import NumberVerificationScreen from "./Components/Screens/Auth/NumberVerificationScreen";
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { Icon } from "native-base";
-import { createSwitchNavigator, createAppContainer, createDrawerNavigator, DrawerItems } from "react-navigation";
+import { View, Image } from 'react-native';
+import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import * as NavigationService from './NavigationService';
 import PaymentScreen from './Components/Screens/PaymentScreen';
 import HomeScreen from './Components/Screens/Home/HomeScreen';
 import NookDetailScreen from './Components/Screens/NookDetail/NookDetailScreen';
-const DrawerContent = (props) => (
+import ComplainsDetailScreen from './Components/Screens/Partner/ComplainsDetailScreen'
+import VisitsNookScreen from './Components/Screens/Partner/VisitsScreen';
 
-  <View>
-    <View
-      style={{
-        backgroundColor: '#D3D3D3',
-        height: 140,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Image source={{ uri: 'https://facebook.github.io/react/logo-og.png' }}
-        style={{ width: 40, height: 40 }} />
-    </View>
-    <DrawerItems {...props} />
-
-  </View>
-)
 
 const customTabs = ({ navigation }) => ({
-  tabBarIcon: ({ focused, horizontal, tintColor }) => {
+  tabBarIcon: ({ focused, tintColor }) => {
+    
     const { routeName } = navigation.state;
+    
     const tabStyle = { flex: 1, alignItems: 'center', borderBottomColor: focused ? tintColor : '', borderBottomWidth: focused ? 4 : 0 };
+    
     if (routeName === 'Profile') {
       return <View style={tabStyle}>
         <Image style={{ width: 20, height: 25, marginTop: 15 }}
@@ -181,6 +166,10 @@ const TabScreens = createBottomTabNavigator(
 
 const AppNavigator = createStackNavigator(
   {
+    GuideScreen,
+    NookDetailScreen,
+    VisitsNookScreen,
+    ComplainsDetailScreen,
     SplashScreen,
     LoginScreen,
     TabScreens,
@@ -191,15 +180,16 @@ const AppNavigator = createStackNavigator(
     ShiftsScreen,
     PaymentScreen,
     AddNookScreen,
-    GuideScreen,
-    NookDetailScreen,
+    ManageNooks,
     ForgotPasswordScreen,
     NumberVerificationScreen,
     RegisterScreen,
     GooglePlacesInput,
-    ReceiptDetailsScreen
+    ReceiptDetailsScreen,
+    NookListScreen
   }, {
   initialRouteName: "SplashScreen",
+  // initialRouteName: "ManageNooks",
   headerMode: 'none'
 }
 );

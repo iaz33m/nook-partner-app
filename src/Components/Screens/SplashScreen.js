@@ -22,7 +22,7 @@ class SplashScreen extends React.Component {
     syncWithAsyncStorage({
       onSuccess: ({user, skiped}) => {
         if(user !== undefined){
-          let screen = (user || skiped === 'true') ? "TabScreens" : "LoginScreen";
+          let screen = (user || skiped === 'true') ? "GuideScreen" : "LoginScreen";
           NavigationService.navigateAndResetStack(screen);
         }
       }

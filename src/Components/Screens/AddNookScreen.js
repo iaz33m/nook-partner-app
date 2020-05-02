@@ -1,14 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
-import { Container, Content, Card, CardItem, Body, Text, Icon, Button as NativeButton, Item, Picker, Form, CheckBox } from 'native-base';
-import Button from './../SeperateComponents/Button';
-import InputField from './../SeperateComponents/InputField';
+import { Text, Icon, Button as NativeButton, Item, Picker, CheckBox } from 'native-base';
 import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
-import * as NavigationService from '../../NavigationService';
 import Colors from '../../helper/Colors'
-import { Rating, AirbnbRating } from 'react-native-ratings';
+import { AirbnbRating } from 'react-native-ratings';
 
 class AddNookScreen extends React.Component {
 

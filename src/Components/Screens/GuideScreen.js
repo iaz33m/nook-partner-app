@@ -1,52 +1,51 @@
 import React from 'react';
 
 import { connect } from "react-redux";
-import { Icon } from 'native-base';
-
+import { Button, Text as NativeText } from 'native-base';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
+import * as NavigationService from '../../NavigationService'
 import Swiper from 'react-native-swiper'
 import Colors from '../../helper/Colors';
+
 class GuideScreen extends React.Component {
 
-
-  componentDidMount() {
-
-    const { user, navigation } = this.props;
-
-    const { navigate } = navigation;
-
-    let screen = (!user) ? "HomeScreen" : "LoginScreen";
-
+  movetoHome = () => {
+    NavigationService.navigateAndResetStack('TabScreens');
   }
 
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
         <View style={styles.header}>
-          <Icon name="arrow-back" />
         </View>
         <View style={styles.container}>
           <View style={styles.child}>
-            <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Welcome Nook</TitleText>
-            <TitleText style={{ margin: 20, marginBottom: 0, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
-
             <Swiper style={styles.wrapper} showsButtons={false}>
               <View style={styles.slide}>
+                <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Welcome Nook</TitleText>
+                <TitleText style={{ marginTop: 10, marginBottom: 30, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
                 <Image style={styles.slideItem}
                   source={require('./../../../assets/logo.png')}
                 />
               </View>
               <View style={styles.slide}>
+                <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Heading 2</TitleText>
+                <TitleText style={{ marginTop: 10, marginBottom: 30, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
                 <Image style={styles.slideItem}
                   source={require('./../../../assets/logo.png')}
                 />
               </View>
               <View style={styles.slide}>
+                <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Heading 3</TitleText>
+                <TitleText style={{ marginTop: 10, marginBottom: 30, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
                 <Image style={styles.slideItem}
                   source={require('./../../../assets/logo.png')}
                 />
+
+                <Button style={{alignSelf: 'center', marginTop: 50, backgroundColor: Colors.orange }} primary onPress={this.movetoHome}><NativeText> Get Started </NativeText></Button>
+
               </View>
             </Swiper>
           </View>
@@ -65,7 +64,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignContent: 'center',
     height: '90%',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   header: {
@@ -87,13 +85,11 @@ const styles = StyleSheet.create({
     borderColor: '#999',
     borderWidth: 0,
     // Android shadow
-    elevation: 10
+    elevation: 3
   },
   slideItem: {
     width: '60%',
-    height: '40%',
-    borderColor: '#000',
-    borderWidth: 1,
+    height: '30%',
   },
   text: {
     color: '#000',

@@ -77,6 +77,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         // Android shadow
         elevation: 3
-    }
+    },
+    buttonTextStyle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        lineHeight: 22,
+        paddingTop: 5,
+      }
 });
 export default styles;
