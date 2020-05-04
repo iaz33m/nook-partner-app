@@ -14,7 +14,7 @@ const getPublicNooks = options => async dispatch => {
     });
     try {
 
-        const res = await axios.get(`${APIModel.HOST}/nooks?${queryString}`, {
+        const res = await axios.get(`${APIModel.HOST}/admin/partner/all_nooks?${queryString}`, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -102,6 +102,32 @@ const addReview = options => async dispatch => {
     }
 };
 
+const addNook = options => async dispatch => {
+    const { data, token, onError,onSuccess } = options;
+    
+    try {
+
+        const {data:{message}} = await axios.post(`${APIModel.HOST}/admin/partner/nooks`,data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
 const addNookRoom = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     try {
@@ -169,6 +195,7 @@ export {
     getMyNookDetails,
     addReview ,
     getPublicNooks,
+    addNook,
     addNookRoom,
     setDesiredLocation,
     addNookSchedule

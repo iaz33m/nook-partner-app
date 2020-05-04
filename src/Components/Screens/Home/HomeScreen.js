@@ -84,8 +84,14 @@ class HomeScreen extends React.Component {
         this.applyFilter();
     }
     applyFilter = () => {
-        const { getPublicNooks } = this.props;
+        const {
+              getPublicNooks,
+              user: {
+                access_token: token
+              }
+            } = this.props;
         const { filter } = this.state;
+
         this.setState({ loading: true, modalVisible: false });
         getPublicNooks({
             onError: (error) => {
@@ -95,7 +101,7 @@ class HomeScreen extends React.Component {
             onSuccess: () => {
                 this.setState({ loading: false });
             },
-            filter
+            filter,token
         });
     }
 
@@ -155,7 +161,7 @@ class HomeScreen extends React.Component {
                             }}>
                                 <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text>{item.type} </Text>
-                                    <Text>PKR {item.rent && item.rent !== '0' ? item.rent : Math.min(...item.rooms.map(r => r.price_per_bed))}</Text>
+                                    <Text>PKR {item.rent && item.rent !== '0' && item.rent !== null ? item.rent : Math.min(...item.rooms.map(r => r.price_per_bed !== '0' && r.price_per_bed !== null ? r.price_per_bed:''))}</Text>
                                 </View>
                                 <CardItem cardBody>
                                     {
