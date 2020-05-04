@@ -188,7 +188,7 @@ const AppNavigator = createStackNavigator(
     ReceiptDetailsScreen,
     NookListScreen
   }, {
-  initialRouteName: "LoginScreen",
+  initialRouteName: "SplashScreen",
   // initialRouteName: "ManageNooks",
   headerMode: 'none'
 }
