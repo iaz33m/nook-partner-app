@@ -111,26 +111,33 @@ const customTabs = ({ navigation }) => ({
         />
       </View>;
     }
+    if (routeName === 'Receipts') {
+      return <View style={tabStyle}>
+        <Image style={{ width: 20, height: 25, marginTop: 15 }}
+          source={require('./../assets/payments.png')}
+        />
+      </View>;
+    }
   }
 });
 
 const TabScreens = createBottomTabNavigator(
   {
     // other screens
-    Profile: {
-      screen: ProfileScreen
+    Shifts: {
+      screen: ShiftsScreen,
     },
-    MyNook: {
-      screen: MyNookScreen,
+    Receipts: {
+      screen: ReceiptsScreen,
     },
     Home: {
       screen: HomeScreen
     },
-    Bookings: {
-      screen: BookingsScreen
+    Complaints: {
+      screen: ComplaintsScreen
     },
-    Visits: {
-      screen: VisitsScreen
+    Notices: {
+      screen: NoticesScreen
     },
   },
   {
@@ -188,7 +195,7 @@ const AppNavigator = createStackNavigator(
     ReceiptDetailsScreen,
     NookListScreen
   }, {
-  initialRouteName: "SplashScreen",
+  initialRouteName: "LoginScreen",
   // initialRouteName: "ManageNooks",
   headerMode: 'none'
 }

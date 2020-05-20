@@ -12,7 +12,7 @@ const getShifts = options => async dispatch => {
     })
     try {
 
-        const res = await axios.get(`${APIModel.HOST}/auth/user/shifts?${queryString}`, {
+        const res = await axios.get(`${APIModel.HOST}/admin/partner/shifts?${queryString}`, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -69,6 +69,31 @@ const cancelShift = options => async dispatch => {
     }
 };
 
+const updateShift = options => async dispatch => {
+    const { data, token, onError,onSuccess } = options;
+    try {
+
+        const {data:{shift,message}} = await axios.post(`${APIModel.HOST}/admin/partner/shifts/`+data.id, data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
 const addShift = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     try {
@@ -99,4 +124,4 @@ const addShift = options => async dispatch => {
     }
 };
 
-export { getShifts, addShift, cancelShift };
+export { getShifts, addShift, cancelShift, updateShift };

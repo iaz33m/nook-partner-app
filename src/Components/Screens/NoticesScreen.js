@@ -24,6 +24,14 @@ class NoticesScreen extends React.Component {
         "approved": "Approved",
         "rejected": "Rejected",
       },
+      action: {
+        "pending": "Pending",
+        "in_progress": "In Progress",
+        "approved": "Approved",
+        "rejected": "Rejected",
+      },
+      noticeId:'',
+      noticeStatus:'',
       loading: true,
       modalVisible: false,
       filter: {
@@ -157,12 +165,16 @@ class NoticesScreen extends React.Component {
               </View>
               <View style={{ justifyContent: 'center' }}>
                 <View style={{ paddingStart: 10, paddingEnd: 10 }}>
-                  <TitleText style={{ fontWeight: 'bold', fontSize: 16, }} >Notice Details</TitleText>
-                  <Text style={{marginTop:10}}>{item.details}</Text>
+                  <Text style={{marginTop:10,}}>{item.details}</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10,marginBottom:10 }}>
+                    <TouchableOpacity
+                      style={styles.addButton}
+                      onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, noticeId: item.id }); }}
+                    >
+                      <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Update Notice </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-              <View style={{ justifyContent: 'center', marginBottom: 10 }}>
-                {(item.status === 'Pending') && <Button onPress={() => this.cancelNotice(item)}>Cancel Notice</Button>}
               </View>
             </View>
           </View>
@@ -194,51 +206,24 @@ class NoticesScreen extends React.Component {
               <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
             </TouchableOpacity>
 
-            <DatePicker
-              style={{
-                ...styles.container,
-                width: "100%", flex: 0, padding: 0, marginTop: 10
-              }}
-              mode="datetime"
-              date={date}
-              placeholder='Select a date'
-              format="MMMM Do YYYY, h:mm a"
-              // format="X"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              iconSource={require('./../../../assets/date.png')}
-              customStyles={{
-                dateText: {
-                  margin: 15,
-                  marginTop: 15,
-                  color: 'black'
-                },
-                dateIcon: {
-                  height: 20, width: 20,
-                },
-                dateInput: {
-                  ...styles.child,
-                  borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15,
-
-                }
-              }}
-              onDateChange={(date) => {
-                this.setState({
-                  date
-                })
-              }}
-            />
-
-            <Textarea
-              rowSpan={4}
-              bordered
-              placeholder="Description"
-              value={details}
-              onChangeText={details => {
-                this.setState({ details })
-              }}
-            />
-            <Button disabled={submitting} onPress={() => { this.sendNotice() }} >{submitting ? 'Please wait...' : 'Add Notice'}</Button>
+            <Text style={{justifyContent: 'center', fontWeight: 'bold'}}>Update Notice {this.state.noticeId}</Text>
+            <Item picker style={styles.pickerStyle}>
+              <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                style={{ width: "100%" }}
+                placeholder="Select Status"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.noticeStatus}
+                onValueChange={noticeStatus => this.setState({ noticeStatus })}>
+                <Picker.Item  label="Select Status" value=""/>
+                {Object.keys(this.state.action)
+                  .filter(k => k)
+                  .map(k => <Picker.Item key={k} label={this.state.action[k]} value={k} />)}
+              </Picker>
+            </Item>
+            <Button disabled={submitting} onPress={() => { this.sendNotice() }} >{submitting ? 'Please wait...' : 'Update Notice'}</Button>
           </View>
         </PopupDialog>
       );
@@ -276,23 +261,9 @@ class NoticesScreen extends React.Component {
         <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >{statses[status]} Notices</TitleText>
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true }); }}
-            >
-              <Text style={{
-                color: 'white', fontWeight: 'bold'
-              }}>Add </Text>
-              <Image style={{
-                width: 30,
-                height: 30,
-                alignSelf: 'center',
-                alignItems: 'center'
-              }}
-                resizeMode="contain"
-                source={require('./../../../assets/add.png')}
-              />
-            </TouchableOpacity>
+            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }}>
+               List of Complains
+              </TitleText>
             <TouchableOpacity onPress={() => {
               this.setState({ modalVisible: true })
             }}>
@@ -322,11 +293,11 @@ class NoticesScreen extends React.Component {
   };
   sendNotice() {
     this.toggleSubmitting();
-    const { filter } = this.state;
-    const { user: { access_token }, addNotice } = this.props;
+    const { filter, noticeId, noticeStatus  } = this.state;
+    const { user: { access_token }, updateNotice } = this.props;
     this.setState({ loading: true, modalVisible: false });
-    addNotice({
-      data: { "details": this.state.details, "checkout": moment(this.state.date, 'MMMM Do YYYY, h:mm a').unix() },
+    updateNotice({
+      data: { "id": noticeId, "status": noticeStatus },
       onError: (error) => {
         this.toggleSubmitting();
         alert(error);
@@ -334,8 +305,9 @@ class NoticesScreen extends React.Component {
       },
       onSuccess: () => {
         this.toggleSubmitting();
-        this.setState({ loading: false });
-        alert('Notice has been sent successfully');
+        this.setState({ loading: false ,isDialogVisible: false});
+        alert('Notice has been updated successfully');
+        this.onRefresh();
       },
       filter,
       token: access_token
@@ -446,7 +418,7 @@ export default connect(
   mapStateToProps,
   {
     getNotices: actions.getNotices,
-    addNotice: actions.addNotice,
+    updateNotice: actions.updateNotice,
     cancelNotice: actions.cancelNotice,
   },
 )(NoticesScreen);

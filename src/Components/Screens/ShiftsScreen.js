@@ -6,8 +6,10 @@ import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
+import InputField from '../SeperateComponents/InputField';
 import * as NavigationService from '../../NavigationService';
 import * as actions from '../../Store/Actions/ShiftsActions';
+import PopupDialog from "react-native-popup-dialog";
 
 class ShiftsScreen extends React.Component {
 
@@ -21,7 +23,18 @@ class ShiftsScreen extends React.Component {
         "approved": "Approved",
         "rejected": "Rejected",
       },
+      action: {
+        "pending": "Pending",
+        "in_progress": "In Progress",
+        "approved": "Approved",
+        "rejected": "Rejected",
+      },
+      shiftId:'',
+      shiftStatus:'',
+      refunedSecurity:'',
       loading: true,
+      isDialogVisible: false,
+      isSchedule: false,
       modalVisible: false,
       filter: {
         status: '',
@@ -167,12 +180,16 @@ class ShiftsScreen extends React.Component {
               </View>
               <View style={{ justifyContent: 'center' }}>
                 <View style={{ padding:10 }}>
-                  <TitleText style={{ fontWeight: 'bold', fontSize: 16, }} >Shift Details</TitleText>
                   <Text>{item.details}</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20,marginBottom:10 }}>
+                    <TouchableOpacity
+                      style={styles.addButton}
+                      onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, shiftId: item.id }); }}
+                    >
+                      <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Update Shift </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-              <View style={{ justifyContent: 'center', marginBottom: 10 }}>
-                {(item.status === 'Pending') && <Button onPress={() => this.cancelShift(item)}>Cancel Shift Request</Button>}
               </View>
             </View>
           </View>
@@ -187,7 +204,49 @@ class ShiftsScreen extends React.Component {
       />
     );
   }
+  renderShiftPopup = () => {
+    const { isSchedule, isDialogVisible, submitting, refunedSecurity } = this.state;
 
+    if (isSchedule) {
+      return (
+        <PopupDialog
+          width={0.9} height={0.50}
+          visible={isDialogVisible}
+          onTouchOutside={this.togglePopup}>
+          <View style={{ flex: 1, padding: 25, }}>
+            <TouchableOpacity onPress={() => this.setState({
+              isDialogVisible: false,
+              shiftStatus:'',
+              refunedSecurity:'',
+            })}>
+              <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+            </TouchableOpacity>
+
+            <Text style={{justifyContent: 'center', fontWeight: 'bold'}}>Update Shift {this.state.shiftId}</Text>
+            <Item picker style={styles.pickerStyle}>
+              <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                style={{ width: "100%" }}
+                placeholder="Select Status"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.shiftStatus}
+                onValueChange={shiftStatus => this.setState({ shiftStatus })}>
+                <Picker.Item  label="Select Status" value=""/>
+                {Object.keys(this.state.action)
+                  .filter(k => k)
+                  .map(k => <Picker.Item key={k} label={this.state.action[k]} value={k} />)}
+              </Picker>
+            </Item>
+              {(this.state.shiftStatus === 'approved')? <View style={{ justifyContent: 'center', marginBottom: 10 }}><InputField value={refunedSecurity} onChangeText={refunedSecurity => this.setState({ refunedSecurity })}>Refuned Security</InputField></View>: <Text></Text>}
+            <Button disabled={submitting} onPress={() => { this.sendShift() }} >{submitting ? 'Please wait...' : 'Update Shift'}</Button>
+          </View>
+        </PopupDialog>
+      );
+    }
+
+  }
   render() {
 
 
@@ -219,11 +278,40 @@ class ShiftsScreen extends React.Component {
           {this.renderShifts()}
         </View>
         {this.renderFilterView()}
+        {this.renderShiftPopup()}
       </View >
     );
   }
-}
-
+  toggleSubmitting = () => {
+    const { submitting } = this.state;
+    this.setState({
+      submitting: !submitting,
+    });
+  }
+  sendShift() {
+    this.toggleSubmitting();
+    const { filter, shiftId, shiftStatus, refunedSecurity  } = this.state;
+    const { user: { access_token }, updateShift } = this.props;
+    this.setState({ loading: true, modalVisible: false });
+    updateShift({
+      data: { "id": shiftId, "status": shiftStatus, "refunedSecurity": refunedSecurity },
+      onError: (error) => {
+        this.toggleSubmitting();
+        alert(error);
+        this.setState({ loading: false });
+      },
+      onSuccess: () => {
+        this.toggleSubmitting();
+        this.setState({ loading: false ,isDialogVisible: false, shiftStatus:'', refunedSecurity:''});
+        alert('Shifts has been updated successfully');
+        this.onRefresh();
+      },
+      filter,
+      token: access_token
+    })
+  }
+};
+ 
 const styles = StyleSheet.create({
   imageContainer: {
     height: 160,
@@ -235,6 +323,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: Colors.white,
     borderRadius: 10, marginTop: 10,
+  },
+  addButton: {
+    alignItems: 'center',
+    backgroundColor: '#E59413',
+    padding: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    borderRadius: 5,
+    marginStart: 5,
+    marginEnd: 5, height: 40
   },
   imageButton: {
     position: 'absolute',
@@ -307,5 +405,6 @@ export default connect(
   {
     getShifts: actions.getShifts,
     cancelShift: actions.cancelShift,
+    updateShift: actions.updateShift,
   },
 )(ShiftsScreen);

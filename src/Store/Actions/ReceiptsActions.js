@@ -12,7 +12,7 @@ const getReceipts = options => async dispatch => {
     });
     try {
 
-        const res = await axios.get(`${APIModel.HOST}/auth/user/receipts?${queryString}`, {
+        const res = await axios.get(`${APIModel.HOST}/admin/partner/receipts?${queryString}`, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',

@@ -22,12 +22,20 @@ class ComplaintsScreen extends React.Component {
         "approved": "Approved",
         "rejected": "Rejected",
       },
+      action: {
+        "pending": "Pending",
+        "in_progress": "In Progress",
+        "approved": "Approved",
+        "rejected": "Rejected",
+      },
       loading: true,
       modalVisible: false,
       filter: {
         status: '',
       },
       description: '',
+      complainId:'',
+      complainStatus:'',
       type: '',
       types: {
         'internet': 'Internet',
@@ -170,8 +178,16 @@ class ComplaintsScreen extends React.Component {
               </View>
               <View style={{ justifyContent: 'center' }}>
                 <View style={{ padding:10 }}>
-                  <TitleText style={{ fontWeight: 'bold', fontSize: 16, }} >Complain Details</TitleText>
                   <Text >{item.description}</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+                    <TouchableOpacity
+                      style={styles.addButton}
+                      onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, complainId: item.id }); }}
+                    >
+                      <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Update Complain </Text>
+                    </TouchableOpacity>
+                  </View>
+                  
                 </View>
               </View>
             </View>
@@ -188,7 +204,7 @@ class ComplaintsScreen extends React.Component {
     );
   };
   renderComplainsPopup = () => {
-    const { isSchedule, isDialogVisible, date, description, submitting } = this.state;
+    const { isSchedule, isDialogVisible, date, description, submitting, complainId } = this.state;
 
     if (isSchedule) {
       return (
@@ -202,31 +218,26 @@ class ComplaintsScreen extends React.Component {
             })}>
               <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
             </TouchableOpacity>
+            <Text style={{justifyContent: 'center', fontWeight: 'bold'}}>Update Complain {this.state.complainId}</Text>
             <Item picker style={styles.pickerStyle}>
               <Picker
                 mode="dropdown"
                 iosIcon={<Icon name="arrow-down" />}
                 style={{ width: "100%" }}
-                placeholder="Select Type"
+                placeholder="Select Status"
                 placeholderStyle={{ color: "#bfc6ea" }}
                 placeholderIconColor="#007aff"
-                selectedValue={this.state.type}
-                onValueChange={type => this.setState({ type })}>
-                <Picker.Item label="All Types" value="" />
-                {Object.keys(this.state.types)
+                selectedValue={this.state.complainStatus}
+                onValueChange={complainStatus => this.setState({ complainStatus })}>
+                <Picker.Item  label="Select Status" value=""/>
+                {Object.keys(this.state.action)
                   .filter(k => k)
-                  .map(k => <Picker.Item key={k} label={this.state.types[k]} value={k} />)}
+                  .map(k => <Picker.Item key={k} label={this.state.action[k]} value={k} />)}
               </Picker>
             </Item>
 
-            <Textarea
-              rowSpan={4}
-              bordered
-              placeholder="Description"
-              value={description}
-              onChangeText={description => this.setState({ description })}
-            />
-            <Button disabled={submitting} onPress={() => { this.sendComplains() }} >{submitting ? 'Please wait...' : 'Add Complain'}</Button>
+            
+            <Button disabled={submitting} onPress={() => { this.sendComplains() }} >{submitting ? 'Please wait...' : 'Update Complain'}</Button>
           </View>
         </PopupDialog>
       );
@@ -244,23 +255,9 @@ class ComplaintsScreen extends React.Component {
         <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >{statses[status]} Complains</TitleText>
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true }); }}
-            >
-              <Text style={{
-                color: 'white', fontWeight: 'bold'
-              }}>Add </Text>
-              <Image style={{
-                width: 30,
-                height: 30,
-                alignSelf: 'center',
-                alignItems: 'center'
-              }}
-                resizeMode="contain"
-                source={require('./../../../assets/add.png')}
-              />
-            </TouchableOpacity>
+            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }}>
+               List of Complains
+              </TitleText>
             <TouchableOpacity onPress={() => {
               this.setState({ modalVisible: true })
             }}>
@@ -288,14 +285,19 @@ class ComplaintsScreen extends React.Component {
       submitting: !submitting,
     });
   };
+  moveToHome = () => {
+    NavigationService.navigateAndResetStack("TabScreens");
+  };
   sendComplains() {
     this.toggleSubmitting();
-    const { filter } = this.state;
-    const { user: { access_token }, addComplain } = this.props;
+    const { filter ,complainId , complainStatus} = this.state;
+    const { user: { access_token }, updateComplain } = this.props;
     this.setState({ loading: true, modalVisible: false });
-    const data = { "description": this.state.description, "type": this.state.type };
-    addComplain({
+    const data = { "id":complainId,"status": complainStatus };
+    const id = {complainId};
+    updateComplain({
       data: data,
+      id  : id,
       onError: (error) => {
         this.toggleSubmitting();
         alert(error);
@@ -303,8 +305,9 @@ class ComplaintsScreen extends React.Component {
       },
       onSuccess: () => {
         this.toggleSubmitting();
-        this.setState({ loading: false });
-        alert('Complain has been sent successfully');
+        this.setState({ loading: false ,isDialogVisible: false});
+        alert('Complain has been updated successfully');
+        this.onRefresh();
       },
       filter,
       token: access_token
@@ -415,6 +418,6 @@ export default connect(
   mapStateToProps,
   {
     getComplains: actions.getComplains,
-    addComplain: actions.addComplain
+    updateComplain: actions.updateComplain
   },
 )(ComplaintsScreen);

@@ -12,7 +12,8 @@ const getComplains = options => async dispatch => {
     })
     try {
 
-        const res = await axios.get(`${APIModel.HOST}/auth/user/complains?${queryString}`, {
+        const res = await axios.get(`${APIModel.HOST}/admin/partner/complaints?${queryString}`, {
+        // const res = await axios.get(`${APIModel.HOST}/auth/user/complains?${queryString}`, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -37,6 +38,33 @@ const getComplains = options => async dispatch => {
         }
     }
 };
+
+const updateComplain = options => async dispatch => {
+    const { data, id, token, onError,onSuccess } = options;
+    
+    try {
+
+        const { data: { message } } = await axios.post(`${APIModel.HOST}/admin/partner/complaints/`+data.id, data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
 
 const addComplain = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
@@ -63,4 +91,4 @@ const addComplain = options => async dispatch => {
     }
 };
 
-export { getComplains ,addComplain};
+export { getComplains ,addComplain, updateComplain};

@@ -12,7 +12,7 @@ const getNotices = options => async dispatch => {
     })
     try {
 
-        const res = await axios.get(`${APIModel.HOST}/auth/user/notices?${queryString}`, {
+        const res = await axios.get(`${APIModel.HOST}/admin/partner/notices?${queryString}`, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -27,6 +27,32 @@ const getNotices = options => async dispatch => {
 
         if (onSuccess) {
             onSuccess();
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
+const updateNotice = options => async dispatch => {
+    const { data, id, token, onError,onSuccess } = options;
+    
+    try {
+
+        const { data: { message } } = await axios.post(`${APIModel.HOST}/admin/partner/notices/`+data.id, data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
         }
 
     } catch (error) {
@@ -94,4 +120,4 @@ const cancelNotice = options => async dispatch => {
     }
 };
 
-export { getNotices, addNotice, cancelNotice };
+export { getNotices, addNotice, cancelNotice, updateNotice };
