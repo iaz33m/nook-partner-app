@@ -8,7 +8,7 @@ import styles from './styles';
 import MapView, { Marker } from 'react-native-maps';
 import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
-import { WebView } from 'react-native';
+import { WebView } from 'react-native-webview';
 import { connect } from "react-redux";
 import DatePicker from 'react-native-datepicker'
 import * as NavigationService from '../../../NavigationService';
@@ -24,6 +24,7 @@ class NookDetailScreen extends React.Component {
 
     this.state = {
       tabIndex: 0,
+      tabIndexUser: 0,
       isDialogVisible: false,
       date: moment(),
       markers: {
@@ -56,23 +57,23 @@ class NookDetailScreen extends React.Component {
     return (<View pointerEvents="none" style={{ flex: 1 }}>
 
       <MapView initialRegion={{
-        latitude: 6422,
-        longitude: 6422,
+        latitude: nook.location.lat,
+        longitude: nook.location.lng,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       }} style={styles.mapStyle} >
         <Marker
           image={require('./../../../../assets/marker.png')}
           coordinate={{
-            latitude: 6422,
-            longitude: 6422,
+            latitude: nook.location.lat,
+            longitude: nook.location.lng,
           }}
         />
       </MapView>
       <View style={[styles.container, { width: "100%", flex: 0, marginTop: 10, position: 'absolute' }]}>
         <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', paddingStart: 20 }]}>
           <Image resizeMode="contain" source={require('./../../../../assets/search.png')} style={{ height: 20, width: 20, }} />
-          <Text style={{ margin: 15, }}>nook.address</Text>
+          <Text style={{ margin: 15, }}>{nook.address}</Text>
         </View>
       </View>
     </View>)
@@ -88,10 +89,10 @@ class NookDetailScreen extends React.Component {
     // }
     
     let featuredImage = null;
-    // const nook = this.props.navigation.state.params;
-    // if (nook.medias && nook.medias.length > 0) {
-    //   featuredImage = nook.medias[0].path;
-    // }
+    const nook = this.props.navigation.state.params;
+    if (nook.medias && nook.medias.length > 0) {
+      featuredImage = nook.medias[0].path;
+    }
 
     this.setState({
       featuredImage,
@@ -109,6 +110,10 @@ class NookDetailScreen extends React.Component {
     let tab2Color;
     let tab1Icon;
     let tab2Icon;
+    let tab3Color;
+    let tab4Color;
+    let tab3Icon;
+    let tab4Icon;
     if (this.state.tabIndex == 0) {
 
       tab1Color = Colors.orange;
@@ -121,6 +126,19 @@ class NookDetailScreen extends React.Component {
       tab1Color = Colors.white;
       tab1Icon = require('./../../../../assets/map_unselect.png');
       tab2Icon = require('./../../../../assets/option_select.png');
+    }
+    if (this.state.tabIndexUser == 0) {
+
+      tab3Color = Colors.orange;
+      tab4Color = Colors.white;
+      tab3Icon = require('./../../../../assets/map_select.png');
+      tab4Icon = require('./../../../../assets/option_unselect.png');
+    } else {
+
+      tab4Color = Colors.orange;
+      tab3Color = Colors.white;
+      tab4Icon = require('./../../../../assets/map_unselect.png');
+      tab3Icon = require('./../../../../assets/option_select.png');
     }
 
     return (
@@ -135,7 +153,7 @@ class NookDetailScreen extends React.Component {
               <Image resizeMode="contain" style={{ height: 100, width: 100, }} />
             </View>
             <View style={{ flex: 1, width: '100%', marginTop: 10, position: 'absolute', }}>
-              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 22, }} >Nook Code</TitleText>
+              <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 22, }} >Nook Code {nook.nookCode}</TitleText>
             </View>
           </View>
           <View style={{ borderRadius: 30, marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
@@ -143,8 +161,16 @@ class NookDetailScreen extends React.Component {
               showMode('time');
             }}>
               <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
+                <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Nook Gender</Text>
+                <Text style={{ margin: 15, fontSize: 16, }}>{nook.gender_type}</Text>
+              </View>
+              <View style={[styles.child, { marginTop: 10, borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
                 <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Nook Type</Text>
-                <Text style={{ margin: 15, fontSize: 16, }}>PKR 1222</Text>
+                <Text style={{ margin: 15, fontSize: 16, }}>{nook.type}</Text>
+              </View>
+              <View style={[styles.child, { marginTop: 10, borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
+                <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Rent</Text>
+                <Text style={{ margin: 15, fontSize: 16, }}>{(nook.rent && nook.rent !== '0') ? nook.rent : Math.min(...nook.rooms.map(r => r.price_per_bed))} PKR / Month</Text>
               </View>
             </TouchableOpacity>
             {this.state.tabIndex === 0 ?
@@ -159,19 +185,29 @@ class NookDetailScreen extends React.Component {
                 </View>
                 <ScrollView horizontal={true} style={{ paddingTop: 15, paddingBottom: 15 }}>
                   {
-                    // nook.medias.map((m, index) => (
-                    //   <TouchableOpacity key={index} onPress={() => this.setState({ featuredImage: m.path })}>
-                    //     <Image resizeMode="cover" resizeMode="contain" source={{
-                    //       uri: m.path
-                    //     }
-                    //     } style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
-                    //   </TouchableOpacity>
-                    // ))
+                    nook.medias.map((m, index) => (
+
+                      <TouchableOpacity key={index} onPress={() => this.setState({ featuredImage: m.path })}>
+                        <Image resizeMode="cover" resizeMode="contain" source={{
+                          uri: m.path
+                        }
+                        } style={{ marginEnd: 10, borderRadius: 10, height: 100, width: 100, flex: 1 }} />
+                      </TouchableOpacity>
+                    ))
                   }
                 </ScrollView>
               </View> :
-              <View style={{ marginTop: 15, paddingBottom: 15, borderRadius: 10, backgroundColor: Colors.white }}>
-                
+              <View style={{ marginTop: 15, paddingBottom: 15, borderRadius: 10, backgroundColor: Colors.white }}>               
+                <WebView
+                    style={{ height: 200, width: null, flex: 1 }}
+                    javaScriptEnabled={true}
+                    domStorageEnabled={true}
+                    source={{ uri: `https://www.youtube.com/embed/${this.getYoutubeIDFromURL(nook.video_url)}?autoplay=1&theme=light&color=white&disablekb=1` }}
+                    scalesPageToFit={true}
+                    bounces={false}
+                    javaScriptEnabled
+                    automaticallyAdjustContentInsets={false}
+                  />        
               </View>
             }
 
@@ -201,7 +237,7 @@ class NookDetailScreen extends React.Component {
                   <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >
                     Description
                     </TitleText>
-                  <Text>nook.description</Text>
+                  <Text>{nook.description}</Text>
                 </View>
               </View>
             </View>
@@ -310,13 +346,17 @@ class NookDetailScreen extends React.Component {
             </TitleText>
 
             <View style={{ flexWrap: 'wrap', flexDirection: 'row', }}>
-              <View style={{ width: "25%" }}>
+              {nook.facilities.map((fac, facI) =>
+                <View key={facI} style={{ width: "25%" }}>
                   <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
-                    <Text>fac</Text>
+                    <Text>{fac}</Text>
                   </Card>
                 </View>
+              )}
             </View>
-            <View>
+
+              {nook.location &&
+              <View>
                 <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
                   Location
               </TitleText>
@@ -324,118 +364,122 @@ class NookDetailScreen extends React.Component {
                   {view}
                 </View>
               </View>
+            }
 
             <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
-              <Text style={{ margin: 15, fontSize: 16, }}>Number</Text>
+              <Text style={{ margin: 15, fontSize: 16, }}>{nook.number}</Text>
             </View>
 
             {/* Rooms and user data tab */}
             <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 30, marginBottom: 10, }}>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity onPress={() => {
-                  this.setState({ tabIndex: 2 });
-                }} style={[styles.tabButton, { backgroundColor: tab1Color }]} >
-                  <Text style={{ color: tab2Color }}>Rooms</Text>
+                  this.setState({ tabIndexUser: 0 });
+                }} style={[styles.tabButton, { backgroundColor: tab3Color }]} >
+                  <Text style={{ color: tab4Color }}>Rooms</Text>
 
                 </TouchableOpacity>
               </View>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity onPress={() => {
-                  this.setState({ tabIndex: 3 })
-                }} style={[styles.tabButton, { backgroundColor: tab2Color }]} >
-                  <Text style={{ color: tab1Color }}>Users</Text>
+                  this.setState({ tabIndexUser: 1 })
+                }} style={[styles.tabButton, { backgroundColor: tab4Color }]} >
+                  <Text style={{ color: tab3Color }}>Users</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
-            {this.state.tabIndex === 2 ?
-              <View>
-                <View style={{ marginTop: 15 }}>
-                  
-                </View>
-              </View> :
+            {this.state.tabIndexUser === 0 ?
               <View style={[styles.container, { width: "100%", marginTop: 10, padding: 0, }]}>
-                <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
-                  <View style={{ flexDirection: "row" }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Single</Text>
-                    </View>
-                    <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                      <Text style={{ marginBottom: 15, fontSize: 16, }}>12000</Text>
-                      <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
-                        <Image resizeMode="contain" source={require('./../../../../assets/bed-icon.png')} style={{ marginRight: 15, }} />
-                        <Text style={{ fontSize: 16, }}>2</Text>
-                      </View>
-                      <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
-                        <Image resizeMode="contain" source={require('./../../../../assets/user-icon.png')} style={{ marginRight: 15, }} />
-                        <Text style={{ fontSize: 16, }}>5</Text>
-                      </View>
+                {
+                  nook.rooms.map((r, rI) =>
+                    <View key={rI} style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
+                      <View style={{ flexDirection: "row" }}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Price Per Bed</Text>
+                        </View>
+                        <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                          <Text style={{ marginBottom: 15, fontSize: 16, }}>{r.price_per_bed} PKR</Text>
+                          <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
+                            <Image resizeMode="contain" source={require('./../../../../assets/bed-icon.png')} style={{ marginRight: 15, }} />
+                            <Text style={{ fontSize: 16, }}>{r.noOfBeds}</Text>
+                          </View>
+                          <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
+                            <Image resizeMode="contain" source={require('./../../../../assets/user-icon.png')} style={{ marginRight: 15, }} />
+                            <Text style={{ fontSize: 16, }}>{r.capacity}</Text>
+                          </View>
+                        </View>
+                      </View>   
+                   </View>    
+                  )
+                } 
+                </View>
+              :
+              <View style={[styles.container, { width: "100%", marginTop: 10, padding: 0, }]}>
+                  <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', paddingStart: 20 }]}>
+                    <View searchBar rounded>
+                      <Item>
+                        <Icon name="ios-search" />
+                        <Input placeholder="Search" />
+                      </Item>
                     </View>
                   </View>
-                </View>
 
-                <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
-                  <View style={{ flexDirection: "row", }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Two Person</Text>
-                    </View>
-                    <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                      <Text style={{ marginBottom: 15, fontSize: 16, }}>12000</Text>
-                      <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
-                        <Image resizeMode="contain" source={require('./../../../../assets/bed-icon.png')} style={{ marginRight: 15, }} />
-                        <Text style={{ fontSize: 16, }}>3</Text>
+                  <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
+                   {
+                    nook.bookings.map((b, bI) =>
+                      <View>
+                        <View style={{ flexDirection: "row" }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>{b.user.name}</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Room # {b.room.id}</Text>
+                          </View>
+                        </View>
+
+                        <View style={{ flexDirection: "row",  }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Rent</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.rent} PKR</Text>
+                          </View>
+                        </View>
+                        <View style={{ flexDirection: "row",  }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Paid Security</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.paidSecurity} PKR</Text>
+                          </View>
+                        </View>
+                        <View style={{ flexDirection: "row",  }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Security</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.security} PKR</Text>
+                          </View>
+                        </View>
+                        <View style={{ flexDirection: "row",  }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Refuned Security</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.refunedSecurity} PKR</Text>
+                          </View>
+                        </View>
                       </View>
-                      <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
-                        <Image resizeMode="contain" source={require('./../../../../assets/user-icon.png')} style={{ marginRight: 15, }} />
-                        <Text style={{ fontSize: 16, }}>10</Text>
-                      </View>
-                    </View>
+                    )
+                   }
+
                   </View>
-                </View>
-              </View>
-              
+                </View>  
             }
 
-            {this.state.tabIndex === 3 ?
-              <View>
-                <View style={{ marginTop: 15 }}>
-                
-                </View>
-                
-              </View> :
-              <View style={[styles.container, { width: "100%", marginTop: 10, padding: 0, }]}>
-                <View style={[styles.child, { borderRadius: 30, flexDirection: 'row', alignItems: 'center', paddingStart: 20 }]}>
-                  <View searchBar rounded>
-                    <Item>
-                      <Icon name="ios-search" />
-                      <Input placeholder="Search" />
-                    </Item>
-                  </View>
-                </View>
-
-                <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
-                  <View style={{ flexDirection: "row" }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Bilal Ali</Text>
-                    </View>
-                    <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                      <Text style={{ marginBottom: 15, fontSize: 16, }}>Room # 3</Text>
-                    </View>
-                  </View>
-
-                  <View style={{ flexDirection: "row",  }}>
-                    <View style={{ flex: 1 }}>
-                    <Text style={{ marginBottom: 15, fontSize: 16, }}>Receivable</Text>
-                    </View>
-                    <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                      <Text style={{ marginBottom: 15, fontSize: 16, }}>15000</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
             
-            }
 
             <View style={{ marginTop: 30, }}>
               <Button>
@@ -486,6 +530,14 @@ class NookDetailScreen extends React.Component {
         </ScrollView>
       </View >
     );
+  }
+  getYoutubeIDFromURL(url) {
+    var video_id = url.split('v=')[1];
+    var ampersandPosition = video_id.indexOf('&');
+    if (ampersandPosition != -1) {
+      return video_id = video_id.substring(0, ampersandPosition);
+    }
+    return video_id;
   }
 }
 const mapStateToProps = state => {
