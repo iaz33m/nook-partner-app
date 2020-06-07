@@ -5,6 +5,7 @@ import { Icon, Item, Picker, Spinner, Textarea } from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
+import InputField from '../SeperateComponents/InputField';
 import Button from '../SeperateComponents/Button';
 import * as NavigationService from '../../NavigationService';
 import * as actions from '../../Store/Actions/ComplainsActions';
@@ -32,6 +33,12 @@ class ComplaintsScreen extends React.Component {
       modalVisible: false,
       filter: {
         status: '',
+        type: '',
+        id: "",
+        nookCode: "",
+        space_type: "",
+        number: "",
+        email: "",
       },
       description: '',
       complainId:'',
@@ -49,7 +56,12 @@ class ComplaintsScreen extends React.Component {
         'privacy': 'Privacy',
         'other': 'Other'
       },
-      complains: []
+      complains: [],
+      id: "",
+      nookCode: "",
+      space_type: "",
+      number: "",
+      email: ""
     };
   }
 
@@ -91,7 +103,7 @@ class ComplaintsScreen extends React.Component {
 
 
   renderFilterView = () => {
-    const { modalVisible, statses, filter } = this.state;
+    const { modalVisible, statses, filter, types, } = this.state;
 
     if (!modalVisible) {
       return;
@@ -114,8 +126,27 @@ class ComplaintsScreen extends React.Component {
           />
         </TouchableOpacity>
         <TitleText style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }} >Filter</TitleText>
-
-
+        <ScrollView style={styles.scrollView}>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.id}
+          onChangeText={id => this.setState({ filter: { ...filter, id } })}
+        >ID</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.nookCode}
+          onChangeText={nookCode => this.setState({ filter: { ...filter, nookCode } })}
+        >Nook Code</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.number}
+          onChangeText={status => this.setState({ filter: { ...filter, number } })}
+        >User Number</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.emailemail}
+          onChangeText={email => this.setState({ filter: { ...filter, email } })}
+        >Email</InputField>
         <Item picker style={styles.pickerStyle}>
           <Picker
             mode="dropdown"
@@ -132,10 +163,41 @@ class ComplaintsScreen extends React.Component {
               .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
           </Picker>
         </Item>
-
+        <Item picker style={styles.pickerStyle}>
+          <Picker
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ width: "100%" }}
+            placeholder="Select Type"
+            placeholderStyle={{ color: "#bfc6ea" }}
+            placeholderIconColor="#007aff"
+            selectedValue={filter.type}
+            onValueChange={type => this.setState({ filter: { ...filter, type } })}>
+            <Picker.Item label="All Type" value="" />
+            {Object.keys(types)
+              .filter(t => t)
+              .map(t => <Picker.Item key={t} label={types[t]} value={t} />)}
+          </Picker>
+        </Item>
+        <Item picker style={styles.pickerStyle}>
+          <Picker
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ width: "100%" }}
+            placeholder="Select Space Type"
+            placeholderStyle={{ color: "#bfc6ea" }}
+            placeholderIconColor="#007aff"
+            selectedValue={filter.space_type}
+            onValueChange={space_type => this.setState({ filter: { ...filter, space_type } })}>
+            <Picker.Item label="All Space Type" value="" />
+            <Picker.Item label="Shared" value="shared" />
+            <Picker.Item label="Independent" value="independent" />
+          </Picker>
+        </Item>
         <View style={{ justifyContent: 'center' }}>
           <Button onPress={this.applyFilter}>Apply Filter</Button>
         </View>
+        </ScrollView>
 
       </View>
     );
@@ -164,6 +226,7 @@ class ComplaintsScreen extends React.Component {
                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
                   <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Type</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Submited At</TitleText>
                 </View>
@@ -172,6 +235,7 @@ class ComplaintsScreen extends React.Component {
                     <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
                   </TouchableOpacity>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.type}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.created_at}</TitleText>
                 </View>

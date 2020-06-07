@@ -5,6 +5,7 @@ import { Icon, Item, Picker, Spinner, Textarea } from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
+import InputField from '../SeperateComponents/InputField';
 import Button from '../SeperateComponents/Button';
 import * as actions from '../../Store/Actions/NoticesActions';
 import PopupDialog from "react-native-popup-dialog";
@@ -23,12 +24,14 @@ class NoticesScreen extends React.Component {
         "in_progress": "In Progress",
         "approved": "Approved",
         "rejected": "Rejected",
+        "canceled": "Canceled",
       },
       action: {
         "pending": "Pending",
         "in_progress": "In Progress",
         "approved": "Approved",
         "rejected": "Rejected",
+        "canceled": "Canceled",
       },
       noticeId:'',
       noticeStatus:'',
@@ -36,6 +39,11 @@ class NoticesScreen extends React.Component {
       modalVisible: false,
       filter: {
         status: '',
+        id: "",
+        nookCode: "",
+        space_type: "",
+        number: "",
+        email: "",
       },
       isDialogVisible: false,
       isSchedule: false,
@@ -99,8 +107,27 @@ class NoticesScreen extends React.Component {
           />
         </TouchableOpacity>
         <TitleText style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }} >Filter</TitleText>
-
-
+        <ScrollView style={styles.scrollView}>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.id}
+          onChangeText={id => this.setState({ filter: { ...filter, id } })}
+        >ID</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.nookCode}
+          onChangeText={nookCode => this.setState({ filter: { ...filter, nookCode } })}
+        >Nook Code</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.number}
+          onChangeText={status => this.setState({ filter: { ...filter, number } })}
+        >User Number</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.emailemail}
+          onChangeText={email => this.setState({ filter: { ...filter, email } })}
+        >Email</InputField>
         <Item picker style={styles.pickerStyle}>
           <Picker
             mode="dropdown"
@@ -117,10 +144,25 @@ class NoticesScreen extends React.Component {
               .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
           </Picker>
         </Item>
-
+        <Item picker style={styles.pickerStyle}>
+          <Picker
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ width: "100%" }}
+            placeholder="Select Space Type"
+            placeholderStyle={{ color: "#bfc6ea" }}
+            placeholderIconColor="#007aff"
+            selectedValue={filter.space_type}
+            onValueChange={space_type => this.setState({ filter: { ...filter, space_type } })}>
+            <Picker.Item label="All Space Type" value="" />
+            <Picker.Item label="Shared" value="shared" />
+            <Picker.Item label="Independent" value="independent" />
+          </Picker>
+        </Item>
         <View style={{ justifyContent: 'center' }}>
           <Button onPress={this.applyFilter}>Apply Filter</Button>
         </View>
+        </ScrollView>
 
       </View>
     );
@@ -149,6 +191,7 @@ class NoticesScreen extends React.Component {
                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
                   <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Checkout</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Days Left</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Submited At</TitleText>
@@ -158,6 +201,7 @@ class NoticesScreen extends React.Component {
                     <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
                   </TouchableOpacity>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.checkout}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.diffInDays} days</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.created_at}</TitleText>
@@ -262,7 +306,7 @@ class NoticesScreen extends React.Component {
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
             <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }}>
-               List of Complains
+               List of Notices
               </TitleText>
             <TouchableOpacity onPress={() => {
               this.setState({ modalVisible: true })

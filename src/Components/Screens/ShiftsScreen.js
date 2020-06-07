@@ -38,6 +38,13 @@ class ShiftsScreen extends React.Component {
       modalVisible: false,
       filter: {
         status: '',
+        price_per_bed:'',
+        id: "",
+        nookCode: "",
+        space_type: "",
+        room_type:"",
+        number: "",
+        email: "",
       },
       shifts: []
     };
@@ -115,8 +122,32 @@ class ShiftsScreen extends React.Component {
           />
         </TouchableOpacity>
         <TitleText style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }} >Filter</TitleText>
-
-
+        <ScrollView style={styles.scrollView}>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.id}
+          onChangeText={id => this.setState({ filter: { ...filter, id } })}
+        >ID</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.price_per_bed}
+          onChangeText={price_per_bed => this.setState({ filter: { ...filter, price_per_bed } })}
+        >Price Per Bed</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.nookCode}
+          onChangeText={nookCode => this.setState({ filter: { ...filter, nookCode } })}
+        >Nook Code</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.number}
+          onChangeText={status => this.setState({ filter: { ...filter, number } })}
+        >User Number</InputField>
+        <InputField
+          iconName="md-phone-portrait"
+          value={filter.emailemail}
+          onChangeText={email => this.setState({ filter: { ...filter, email } })}
+        >Email</InputField>
         <Item picker style={styles.pickerStyle}>
           <Picker
             mode="dropdown"
@@ -133,11 +164,44 @@ class ShiftsScreen extends React.Component {
               .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
           </Picker>
         </Item>
-
+        <Item picker style={styles.pickerStyle}>
+          <Picker
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ width: "100%" }}
+            placeholder="Room Type"
+            placeholderStyle={{ color: "#bfc6ea" }}
+            placeholderIconColor="#007aff"
+            selectedValue={filter.room_type}
+            onValueChange={room_type => this.setState({ filter: { ...filter, room_type } })}>
+            <Picker.Item label="All Room Type" value="" />
+            <Picker.Item label="One Person Sharing" value="1" />
+            <Picker.Item label="Two Person Sharing" value="2" />
+            <Picker.Item label="Three Person Sharing" value="3" />
+            <Picker.Item label="Four Person Sharing" value="4" />
+            <Picker.Item label="five Person Sharing" value="5" />
+            <Picker.Item label="Six Person Sharing" value="6" />
+          </Picker>
+        </Item>
+        <Item picker style={styles.pickerStyle}>
+          <Picker
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ width: "100%" }}
+            placeholder="Select Space Type"
+            placeholderStyle={{ color: "#bfc6ea" }}
+            placeholderIconColor="#007aff"
+            selectedValue={filter.space_type}
+            onValueChange={space_type => this.setState({ filter: { ...filter, space_type } })}>
+            <Picker.Item label="All Space Type" value="" />
+            <Picker.Item label="Shared" value="shared" />
+            <Picker.Item label="Independent" value="independent" />
+          </Picker>
+        </Item>
         <View style={{ justifyContent: 'center' }}>
           <Button onPress={this.applyFilter}>Apply Filter</Button>
         </View>
-
+        </ScrollView>
       </View>
     );
   }
@@ -164,6 +228,7 @@ class ShiftsScreen extends React.Component {
                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
                   <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Room Type</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Price Per bed</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Submited At</TitleText>
@@ -173,6 +238,7 @@ class ShiftsScreen extends React.Component {
                     <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
                   </TouchableOpacity>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.room_type} Person(s) Sharing</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.price_per_bed} PKR</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.created_at}</TitleText>

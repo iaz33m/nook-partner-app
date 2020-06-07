@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import { StyleSheet, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
-import { Text, Icon, Button as NativeButton, Item, Picker, CheckBox } from 'native-base';
+import { Text, Icon, Button as NativeButton, Item, Picker, CheckBox ,Textarea} from 'native-base';
 import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
 import Colors from '../../helper/Colors'
@@ -154,10 +154,15 @@ class AddNookScreen extends React.Component {
                       value={this.state.number}
                       onChangeText={number => this.setState({ number })}
                     >Enter Number</InputField>
-                    <InputField
+
+                    <Textarea
+                      style={{marginTop:20, margin:10}}
+                      rowSpan={5}
+                      bordered
+                      placeholder="Type your address"
                       value={this.state.address}
                       onChangeText={address => this.setState({ address })}
-                    >Enter Address</InputField>
+                    />
                   </View>
 
                 </View>
@@ -192,6 +197,10 @@ const styles = StyleSheet.create({
   pickerStyle: {
     backgroundColor: Colors.white,
     borderRadius: 10, marginTop: 25,
+  },
+  textArea: {
+    margin: 20,
+    paddingTop: 20
   },
   childItem: {
     padding: 20,

@@ -26,18 +26,20 @@ class itemDetailsScreen extends React.Component {
                         <View style={{ flex: 1, alignItems: 'flex-start' }}>
                             <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Sr#</TitleText>
                             <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
-                            <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Name</TitleText>
                             <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Room#</TitleText>
                             <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Date</TitleText>
                             <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Month</TitleText>
+                            <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Name</TitleText>
+
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end' }}>
                             <Text style={{ marginTop: 10, fontSize: 16, }} >{item.id}</Text>
                             <Text style={{ marginTop: 10, fontSize: 16, }} >{item.nook.nookCode}</Text>
-                            <Text style={{ marginTop: 10, fontSize: 16, }} >{item.user.name}</Text>
                             <Text style={{ marginTop: 10, fontSize: 16, }} >{item.room_id}</Text>
                             <Text style={{ marginTop: 10, fontSize: 16, }} >{item.due_date}</Text>
                             <Text style={{ marginTop: 10, fontSize: 16, }} >{item.month}</Text>
+                            <Text style={{ marginTop: 10, fontSize: 16, }} >{item.user.name}</Text>
+                            
                         </View>
                     </View>
                 </View>

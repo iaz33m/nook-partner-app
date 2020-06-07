@@ -19,6 +19,7 @@ class ReceiptsScreen extends React.Component {
     this.state = {
       statses: {
         "": "All",
+        "draft": "Draft",
         "paid": "Paid",
         "unpaid": "Unpaid",
         "in_progress": "In Progress"
@@ -30,7 +31,13 @@ class ReceiptsScreen extends React.Component {
       modalVisible: false,
       loading: true,
       filter: {
-        status: 'in_progress',
+        status: '',
+        id: "",
+        nookCode: "",
+        space_type: "",
+        number: "",
+        email: "",
+        month: "",
       },
       receipts: []
     };
@@ -165,12 +172,18 @@ class ReceiptsScreen extends React.Component {
                 <Text style={{ marginTop: 15, marginStart: 5, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
                 <View style={{ flexDirection: 'row', margin: 15, marginTop: 35 }}>
                   <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} ></TitleText>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Total Amount</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Late Date Charges</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Due Date</TitleText>
                   </View>
                   <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.total_amount} PKR</TitleText>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
+                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.total_amount} PKR</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.late_day_fine} PKR/Day</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.due_date}</TitleText>
                   </View>
@@ -180,13 +193,8 @@ class ReceiptsScreen extends React.Component {
                   (!item.transaction) && 
                   <View style={{ justifyContent: 'center', marginBottom: 10 }}>
                   <Button onPress={() => {
-                    this.setState({
-                      selectedReciept: item,
-                      amount: `${item.total_amount}`
-                    }, () => {
-                      this.togglePaymentModal();
-                    });
-                  }}>Pay Now</Button>
+                    NavigationService.navigate("ReceiptDetailsScreen", item)
+                  }}>View Details</Button>
                 </View>
                 }
 
@@ -237,28 +245,87 @@ class ReceiptsScreen extends React.Component {
         </TouchableOpacity>
         <TitleText
           style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Filter</TitleText>
-
-
-        <Item picker style={styles.pickerStyle}>
-          <Picker
-            mode="dropdown"
-            iosIcon={<Icon name="arrow-down" />}
-            style={{ width: "100%" }}
-            placeholder="Room Catagories"
-            placeholderStyle={{ color: "#bfc6ea" }}
-            placeholderIconColor="#007aff"
-            selectedValue={filter.status}
-            onValueChange={status => this.setState({ filter: { ...filter, status } })}>
-            <Picker.Item label="All Receipts" value="" />
-            {Object.keys(statses)
-              .filter(k => k)
-              .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
-          </Picker>
-        </Item>
-
-        <View style={{ justifyContent: 'center' }}>
-          <Button onPress={this.applyFilter}>Apply Filter</Button>
-        </View>
+        <ScrollView style={styles.scrollView}>
+          <InputField
+            iconName="md-phone-portrait"
+            value={filter.id}
+            onChangeText={id => this.setState({ filter: { ...filter, id } })}
+          >ID</InputField>
+          <InputField
+            iconName="md-phone-portrait"
+            value={filter.nookCode}
+            onChangeText={nookCode => this.setState({ filter: { ...filter, nookCode } })}
+          >Nook Code</InputField>
+          <InputField
+            iconName="md-phone-portrait"
+            value={filter.number}
+            onChangeText={status => this.setState({ filter: { ...filter, number } })}
+          >User Number</InputField>
+          <InputField
+            iconName="md-phone-portrait"
+            value={filter.emailemail}
+            onChangeText={email => this.setState({ filter: { ...filter, email } })}
+          >Email</InputField>
+          <Item picker style={styles.pickerStyle}>
+            <Picker
+              mode="dropdown"
+              iosIcon={<Icon name="arrow-down" />}
+              style={{ width: "100%" }}
+              placeholder="Room Catagories"
+              placeholderStyle={{ color: "#bfc6ea" }}
+              placeholderIconColor="#007aff"
+              selectedValue={filter.status}
+              onValueChange={status => this.setState({ filter: { ...filter, status } })}>
+              <Picker.Item label="All Receipts" value="" />
+              {Object.keys(statses)
+                .filter(k => k)
+                .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
+            </Picker>
+          </Item>
+          <Item picker style={styles.pickerStyle}>
+            <Picker
+              mode="dropdown"
+              iosIcon={<Icon name="arrow-down" />}
+              style={{ width: "100%" }}
+              placeholder="Select Space Type"
+              placeholderStyle={{ color: "#bfc6ea" }}
+              placeholderIconColor="#007aff"
+              selectedValue={filter.space_type}
+              onValueChange={space_type => this.setState({ filter: { ...filter, space_type } })}>
+              <Picker.Item label="All Space Type" value="" />
+              <Picker.Item label="Shared" value="shared" />
+              <Picker.Item label="Independent" value="independent" />
+            </Picker>
+          </Item>
+          <Item picker style={styles.pickerStyle}>
+            <Picker
+              mode="dropdown"
+              iosIcon={<Icon name="arrow-down" />}
+              style={{ width: "100%" }}
+              placeholder="Months"
+              placeholderStyle={{ color: "#bfc6ea" }}
+              placeholderIconColor="#007aff"
+              selectedValue={filter.month}
+              onValueChange={month => this.setState({ filter: { ...filter, month } })}>
+              <Picker.Item label="All Month" value="" />
+              <Picker.Item label="January" value="1" />
+              <Picker.Item label="February" value="2" />
+              <Picker.Item label="March" value="3" />
+              <Picker.Item label="April" value="4" />
+              <Picker.Item label="May" value="5" />
+              <Picker.Item label="June" value="6" />
+              <Picker.Item label="July" value="7" />
+              <Picker.Item label="August" value="8" />
+              <Picker.Item label="September" value="9" />
+              <Picker.Item label="October" value="10" />
+              <Picker.Item label="November" value="11" />
+              <Picker.Item label="December" value="12" />
+            </Picker>
+          </Item>
+          <View style={{ justifyContent: 'center' }}>
+            <Button onPress={this.applyFilter}>Apply Filter</Button>
+          </View>
+          </ScrollView>
 
       </View>
     );
