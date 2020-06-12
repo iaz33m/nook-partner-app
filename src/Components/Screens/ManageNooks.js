@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
-import { Text } from 'native-base';
+import { StyleSheet, View, Image, ScrollView,TouchableOpacity } from 'react-native';
+import { Text, Button as NativeButton } from 'native-base';
 import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
 import Colors from '../../helper/Colors'
@@ -45,13 +45,14 @@ class ManageNooks extends React.Component {
               <View style={styles.child}>
                 <View style={styles.childItem}>
                   <View style={styles.rowView}>
-                    <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, }} >
+                    <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, }} >
                       Add Nook
                     </TitleText>
-                    <Image style={{ width: 30, height: 30, marginStart: 5 }}
-                      source={require('./../../../assets/add.png')}
-                    />
-
+                    <TouchableOpacity style={{borderRadius: 15}} onPress={() => { NavigationService.navigate("AddNookScreen") }}>
+                        <Image style={{ width: 30, height: 30, }}
+                            source={require('./../../../assets/add.png')}
+                        />
+                    </TouchableOpacity>
                   </View>
                   <View
                     style={{
@@ -67,14 +68,14 @@ class ManageNooks extends React.Component {
               <View style={styles.child}>
                 <View style={styles.childItem}>
                   <View style={styles.rowView}>
-                    <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, }} >
+                    <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, }} >
                       Manage Nooks
                       </TitleText>
-
-                    <Image style={{ width: 30, height: 30, marginStart: 5 }}
-                      source={require('./../../../assets/add.png')}
-                    />
-
+                      <TouchableOpacity style={{borderRadius: 15}} onPress={() => { NavigationService.navigate("AddNookScreen") }}>
+                        <Image style={{ width: 30, height: 30, }}
+                            source={require('./../../../assets/add.png')}
+                        />
+                      </TouchableOpacity>
                   </View>
                   <View
                     style={{
