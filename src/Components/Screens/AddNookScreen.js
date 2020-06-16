@@ -633,6 +633,11 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingEnd: 35,
   },
+  mapStyle: {
+        width: "100%",
+        alignSelf: 'center',
+        height: "95%",
+    },
   checkboxItem: {
     flexDirection: 'row'
   },
