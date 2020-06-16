@@ -27,11 +27,11 @@ class AddNookScreen extends React.Component {
       capacity:"",
       noOfBeds:"",
       price_per_bed:"",
-      lng:0,
-      lat:0,
+      lng:10,
+      lat:10,
       blockName:{
-        lat:0,
-        lng:0,
+        lat:10,
+        lng:10,
         name:"",
       },
       images:"",
@@ -52,6 +52,7 @@ class AddNookScreen extends React.Component {
       submitting: false,
       processing: false, 
       isMapReady:false,
+      isDraggingMap: false,
     };
   }
 
@@ -387,7 +388,7 @@ class AddNookScreen extends React.Component {
     }
     return(
       <View style={styles.container}>
-        <View style={{ flex: 1,}} >
+        <View>
             <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
               Select Your Location
             </TitleText>
@@ -418,10 +419,9 @@ class AddNookScreen extends React.Component {
     if (!this.state.blockName.lat) {
         return true;
     }
-    let lat = this.state.blockName.lat;
-    let lng = this.state.blockName.lng;
-
-    return (<View pointerEvents="none" style={{ flex: 1 }}>
+    let lat = this.state.lat;
+    let lng = this.state.lng;
+    return (<View  style={{ flex: 1 }}>
 
       <MapView 
       initialRegion={{
@@ -438,14 +438,19 @@ class AddNookScreen extends React.Component {
       showsCompass
       showsPointsOfInterest
       showsBuildings
+      showsUserLocation={true}
+      onPanDrag={this.setMapDragging}
+      onRegionChangeComplete={this.onRegionChangeComplete}
       >
         { this.state.isMapReady &&
             
               <MapView.Marker
               image={require('./../../../assets/marker.png')}
+              style={{ width: 40, height: 62 }}
+              draggable
               coordinate={{
-                latitude: Number(lat),
-                longitude: Number(lng)
+                "latitude": Number(lat),
+                "longitude": Number(lng)
               }} />
           }
       </MapView>
@@ -457,6 +462,28 @@ class AddNookScreen extends React.Component {
       </View>
     </View>)
   }
+  setMapDragging = () => {
+    if (!this.state.isDraggingMap) {
+      this.setState({
+        isDraggingMap: true,
+      });
+    }
+  };
+
+  onRegionChangeComplete = (value) => {
+    if (this.state.isDraggingMap) {
+      this.setState({
+        isDraggingMap: false,
+        lat:value.latitude,
+        lat:value.longitude,
+      });
+    }
+
+    if (!this.state.isDraggingMap) {
+      return;
+    }
+
+ };
    onMapLayout = () => {
     this.setState({ isMapReady: true });
   }
