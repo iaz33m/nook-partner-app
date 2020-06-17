@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, Alert, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
-import { Text, Icon, Button as NativeButton, Item, Picker, CheckBox ,Textarea, Spinner} from 'native-base';
+import { Text, Icon, Button as NativeButton, Item, Picker, Thumbnail, CheckBox ,Textarea, Spinner} from 'native-base';
 import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
 import Colors from '../../helper/Colors'
@@ -10,6 +10,9 @@ import MapView, { Marker } from 'react-native-maps';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { AirbnbRating } from 'react-native-ratings';
 import PopupDialog from "react-native-popup-dialog";
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 import * as NavigationService from '../../NavigationService';
 import InputField from '../SeperateComponents/InputField';
 import Button from '../SeperateComponents/Button';
@@ -27,6 +30,9 @@ class AddNookScreen extends React.Component {
       capacity:"",
       noOfBeds:"",
       price_per_bed:"",
+      profile: [],
+      image:"", 
+      setImage:"",
       lng:10,
       lat:10,
       blockName:{
@@ -34,7 +40,7 @@ class AddNookScreen extends React.Component {
         lng:10,
         name:"",
       },
-      images:"",
+      images:[],
       rooms:[],
       area:[],
       mainArea:[],
@@ -137,7 +143,7 @@ class AddNookScreen extends React.Component {
   }
   create = () => {
 
-    const { number, description, type, space_type, review, Fernished, AC, TV, Wifi, CCTV, UPS, rooms, images, lat, lng} = this.state;
+    const { number, description, type, space_type, review, Fernished, AC, TV, Wifi, CCTV, UPS, rooms, profile, lat, lng} = this.state;
     var facilities = [];
     if(Fernished){
       facilities.push("Fernished");
@@ -179,9 +185,8 @@ class AddNookScreen extends React.Component {
           } = this.props;
 
     this.toggleSubmitting();
-    
-    let data = { number, description, type, space_type, facilities, review, rooms, images, lat, lng };
-    
+    let images = [];
+    let data = { number, description, type, space_type, facilities, review, rooms, images: { profile }, lat, lng };
     addNook({
       data: data,
       token,
@@ -487,8 +492,66 @@ class AddNookScreen extends React.Component {
    onMapLayout = () => {
     this.setState({ isMapReady: true });
   }
+  pickImage = async (driver) => {
+
+    const { status } = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL);
+
+    if (status === 'granted') {
+
+      let src = ImagePicker.launchImageLibraryAsync;
+
+      if (driver == "camera") {
+        src = ImagePicker.launchCameraAsync;
+      }
+
+      let result = await src({
+        allowsEditing: true,
+        aspect: [4, 3],
+        base64: true,
+        quality: 0.5
+      });
+      if (!result.cancelled) {
+        const base64 = result.base64.replace(/\n/g, "");
+        let {images,profile} = this.state;
+        images.push(result.uri);
+        profile.push(base64);
+        this.setState({ 
+          images : images,
+          profile : profile,
+          });
+      }
+
+    } else {
+      return alert("Permission not granted");
+    }
+
+  };
+  selectImageSrc = () => {
+
+    Alert.alert(
+      'Image Source',
+      'Select Image From', [
+      { text: 'Camera', onPress: () => this.pickImage("camera") },
+      { text: 'Gallery', onPress: () => this.pickImage("gallary") },
+    ],
+      { cancelable: true },
+    );
+
+  }
+ShowImages(){
+  const {images} = this.state;
+  if(images.length == 0){
+    return true;
+  }
+  return(
+        <View style={{margin:10,flexWrap: 'wrap', flexDirection: 'row',}}>
+              {  images.map( i =>  <Image source={{ uri: i }} style={{ width: 80, height: 80, margin:5 }} />) }
+        </View>
+  )
+}
   render() {
-    const { submitting, processing ,review} = this.state;
+    const { submitting, processing , review, profile, images} = this.state;
+
     return (
 
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
@@ -600,17 +663,20 @@ class AddNookScreen extends React.Component {
                 <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, }} >
                   Select Image
                 </TitleText>
-                <TouchableOpacity>
-                  <Image style={{
-                    width: 40,
-                    height: 40,
-                  }}
+                <TouchableWithoutFeedback onPress={this.selectImageSrc}>
+                  <View onPress={this.selectImageSrc}>
+                    <Image style={{
+                        width: 40,
+                        height: 40,
+                      }}
+                    onPress={this.selectImageSrc}
                     source={require('./../../../assets/add.png')}
-                  />
-                </TouchableOpacity>
+                    />
+                  </View>                  
+                </TouchableWithoutFeedback>
               </View>
             </View>
-
+              {this.ShowImages()}
             <InputField
                 iconName="md-phone-portrait"
                 value={this.state.number}
@@ -654,6 +720,34 @@ class AddNookScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  imageContainer: {
+    height: 160,
+    width: 160,
+    marginBottom: 20,
+    alignSelf: 'center',
+  },
+  pickerStyle: {
+    marginBottom: 10,
+    backgroundColor: Colors.white,
+    borderRadius: 10, marginTop: 10,
+  },
+  imageButton: {
+    width: 40,
+    height: 40,
+    position: 'absolute',
+    bottom: -7,
+    alignSelf: "flex-end"
+  },
+  imageView: {
+    height: 160,
+    width: 160,
+    position: 'relative',
+    marginTop: 20,
+    borderWidth: 2,
+    borderColor: Colors.primaryColor,
+    backgroundColor: Colors.white,
+    borderRadius: 160 / 2,
+  },
   checkbox: {
     justifyContent: 'space-between',
     flexDirection: 'row',
