@@ -67,6 +67,7 @@ class HomeScreen extends React.Component {
     }
 
     componentDidMount() {
+
         this.applyFilter();
     }
 
@@ -99,6 +100,9 @@ class HomeScreen extends React.Component {
                 this.setState({ loading: false });
             },
             onSuccess: () => {
+                if (this.state.nooks.length == 0) {
+                    return NavigationService.navigateAndResetStack('ManageNooks');
+                }
                 this.setState({ loading: false });
             },
             filter,token

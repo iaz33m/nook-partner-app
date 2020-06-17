@@ -98,7 +98,21 @@ class NookDetailScreen extends React.Component {
       featuredImage,
     });
   }
-
+  facilities(fc){
+    if(fc.length == 0){
+      return true;
+    }
+   return(
+        <View style={{ flexWrap: 'wrap', flexDirection: 'row', }}>
+              {fc.map((fac, facI) =>
+                <View key={facI} style={{ width: "25%" }}>
+                  <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
+                    <Text>{fac}</Text>
+                  </Card>
+                </View>
+              )}
+      </View>
+   )}
   render() {
     const nook = this.props.navigation.state.params;
     // const { rooms } = nook;
@@ -157,9 +171,7 @@ class NookDetailScreen extends React.Component {
             </View>
           </View>
           <View style={{ borderRadius: 30, marginTop: 10, marginBottom: 10, marginStart: 15, marginEnd: 15 }}>
-            <TouchableOpacity onPress={() => {
-              showMode('time');
-            }}>
+            <TouchableOpacity>
               <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
                 <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Nook Gender</Text>
                 <Text style={{ margin: 15, fontSize: 16, }}>{nook.gender_type}</Text>
@@ -198,6 +210,7 @@ class NookDetailScreen extends React.Component {
                 </ScrollView>
               </View> :
               <View style={{ marginTop: 15, paddingBottom: 15, borderRadius: 10, backgroundColor: Colors.white }}>               
+                { (nook.video_url) &&
                 <WebView
                     style={{ height: 200, width: null, flex: 1 }}
                     javaScriptEnabled={true}
@@ -207,7 +220,8 @@ class NookDetailScreen extends React.Component {
                     bounces={false}
                     javaScriptEnabled
                     automaticallyAdjustContentInsets={false}
-                  />        
+                  />
+                }
               </View>
             }
 
@@ -345,17 +359,8 @@ class NookDetailScreen extends React.Component {
               Facilities
             </TitleText>
 
-            <View style={{ flexWrap: 'wrap', flexDirection: 'row', }}>
-              {nook.facilities.map((fac, facI) =>
-                <View key={facI} style={{ width: "25%" }}>
-                  <Card style={{ borderRadius: 20, padding: 5, alignItems: 'center' }}>
-                    <Text>{fac}</Text>
-                  </Card>
-                </View>
-              )}
-            </View>
-
-              {nook.location &&
+            {this.facilities(nook.facilities)}
+              {(nook.location)?
               <View>
                 <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
                   Location
@@ -364,6 +369,10 @@ class NookDetailScreen extends React.Component {
                   {view}
                 </View>
               </View>
+              :
+              <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
+                  Location
+              </TitleText>
             }
 
             <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
@@ -478,14 +487,6 @@ class NookDetailScreen extends React.Component {
                   </View>
                 </View>  
             }
-
-            
-
-            <View style={{ marginTop: 30, }}>
-              <Button>
-                  <Text style={styles.buttonTextStyle}>Update Status</Text>
-              </Button>
-            </View>
 
           </View>
 

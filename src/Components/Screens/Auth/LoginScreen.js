@@ -92,11 +92,7 @@ class LoginScreen extends React.Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-        <Header skipButton={() => {
-          AsyncStorage.setItem('skiped', 'true').then(() => {
-            this.moveToHome();
-          });
-        }} />
+        <Header/>
         <View style={styles.container}>
           <View style={styles.child}>
             <KeyboardAwareScrollView>

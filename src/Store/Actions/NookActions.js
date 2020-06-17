@@ -128,6 +128,35 @@ const addNook = options => async dispatch => {
     }
 };
 
+const getArea = options => async dispatch => {
+    const { data, token, onError,onSuccess } = options;
+    
+    try {
+
+        const {data} = await axios.get(`${APIModel.HOST}/admin/partner/area`, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        dispatch({
+            type: actions.SET_AREA,
+            payload: data.data
+        });
+        if(onSuccess){
+            onSuccess(data);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
 const addNookRoom = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     try {
@@ -196,6 +225,7 @@ export {
     addReview ,
     getPublicNooks,
     addNook,
+    getArea,
     addNookRoom,
     setDesiredLocation,
     addNookSchedule

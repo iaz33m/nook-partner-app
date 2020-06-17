@@ -5,6 +5,7 @@ export const SET_AUTH_SKIPPED = 'SET_AUTH_SKIPPED';
 export const SYNC_WITH_ASYNC_STORAGE = 'SYNC_WITH_ASYNC_STORAGE';
 export const SET_MY_NOOK = 'SET_MY_NOOK';
 export const SET_NOOKS = 'SET_NOOKS';
+export const SET_AREA = 'SET_AREA';
 export const ADD_NOOKS = 'ADD_NOOKS';
 export const SET_NOOK_REVIEW = 'SET_NOOK_REVIEW';
 export const SET_COMPLAINS = 'SET_COMPLAINS';

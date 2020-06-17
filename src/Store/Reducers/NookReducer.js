@@ -4,6 +4,7 @@ const initSate = {
     nook:null,
     review:null,
     nooks:[],
+    area:[],
     desiredLocation:null,
 };
 
@@ -36,6 +37,12 @@ const NookReducer = (state = initSate, action) => {
         return {
           ...state,
           nooks: [...action.payload],
+        };
+      }
+      case actions.SET_AREA: {
+        return {
+          ...state,
+          area: [...action.payload],
         };
       }
       case actions.ADD_NOOK_ROOM: {
