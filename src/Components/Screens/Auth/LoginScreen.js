@@ -136,7 +136,7 @@ class LoginScreen extends React.Component {
                   }
                 </View>
                 <View style={{ flex: 1, alignContent: "center", alignItems: "center", marginTop: 10 }}>
-                  {
+                  {/* {
                     !processing && (
                       <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
@@ -151,7 +151,7 @@ class LoginScreen extends React.Component {
                         </TouchableOpacity>
                       </View>
                     )
-                  }
+                  } */}
                   <View style={{ marginTop: 20, flexDirection: 'row' }} >
                     <Text>Don't have an account? </Text>
                     <Text style={{

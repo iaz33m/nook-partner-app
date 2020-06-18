@@ -37,7 +37,7 @@ class HomeScreen extends React.Component {
                 description: ""
             },
             filter: {
-                space_type: 'shared',
+                space_type: '',
                 type: '',
                 gender: ''
             },
@@ -54,11 +54,12 @@ class HomeScreen extends React.Component {
                     'other': 'Other'
                 },
                 gender: {
+                    'both': 'Both',
                     'male': 'Male',
-                    'female': 'Female',
-                    'both': 'Both'
+                    'female': 'Female'
                 },
                 space_type: {
+                    '':'All Space Type',
                     'shared': 'Shared',
                     'independent': 'Independent'
                 }
@@ -283,6 +284,7 @@ class HomeScreen extends React.Component {
                         }, () => {
                             console.log('filter', this.state.filter);
                         })}>
+                        <Picker.Item label="All Space Type" value="" />
                         {Object.keys(filters.space_type)
                             .filter(k => k)
                             .map(k => <Picker.Item key={k} label={filters.space_type[k]} value={k} />)}
