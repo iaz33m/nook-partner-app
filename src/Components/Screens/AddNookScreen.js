@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView, Alert, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, Alert, TouchableWithoutFeedback,ImageBackground, TouchableOpacity } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
 import { Text, Icon, Button as NativeButton, Item, Picker, Thumbnail, CheckBox ,Textarea, Spinner} from 'native-base';
 import Header from '../SeperateComponents/Header'
@@ -545,10 +545,30 @@ ShowImages(){
   }
   return(
         <View style={{margin:10,flexWrap: 'wrap', flexDirection: 'row',}}>
-              {  images.map( i =>  <Image source={{ uri: i }} style={{ width: 80, height: 80, margin:5 }} />) }
+              {  images.map((value,index) =>  
+                <ImageBackground key={index}
+                  source={{ uri: value }} style={{ width: 80, height: 80, margin:2 }}
+                
+                >
+                  <TouchableOpacity onPress={()=>this.removeImage(index)}>
+                    <View>
+                        <Text>X</Text>
+                    </View>
+                  </TouchableOpacity>
+                </ImageBackground>
+                )}
         </View>
   )
 }
+removeImage = (index) =>{
+      var array = [...this.state.images];
+      var p     = [...this.state.profile];
+      
+        array.splice(index,1);
+        p.splice(index,1);
+        this.setState({images: array, profile: p});
+
+  }
   render() {
     const { submitting, processing , review, profile, images} = this.state;
 
