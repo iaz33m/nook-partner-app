@@ -903,7 +903,7 @@ class AddNookScreen extends React.Component {
                           </View>
                           <View style={styles.checkbox}>
                             <View style={styles.checkboxItem}>
-                              <Text>Fernished</Text>
+                              <Text>Furnished</Text>
                               <CheckBox
                                 checked={this.state.Fernished}
                                 onPress={() =>
