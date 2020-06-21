@@ -494,7 +494,7 @@ class NookDetailScreen extends React.Component {
                     <View style={{ flex: 1, alignContent: "center" }}>
                       <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
                         <Button disabled={submitting} >
-                          {submitting ? "Please wait..." : "GENERATE RECEIPT"}
+                          {submitting ? "Please wait..." : "PUBLISH ALL RECEIPTS"}
                         </Button>
                       </View>
                     </View>
