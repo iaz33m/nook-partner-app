@@ -480,6 +480,11 @@ class NookDetailScreen extends React.Component {
                             <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.refunedSecurity} PKR</Text>
                           </View>
                         </View>
+                        <View style={{ flex: 1 }}>
+                          <TouchableOpacity >
+                            <Text style={{ color: tab3Color }}>GENERATE RECEIPT</Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     )
                    }
