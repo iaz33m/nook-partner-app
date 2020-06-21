@@ -40,6 +40,7 @@ class NookDetailScreen extends React.Component {
       },
       roomId: 0,
       isBookNow: false,
+      submitting:false,
       isSchedule: false,
       show: false,
       nook: null,
@@ -435,10 +436,10 @@ class NookDetailScreen extends React.Component {
                     </View>
                   </View>
 
-                  <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
+                  <View >
                    {
                     nook.bookings.map((b, bI) =>
-                      <View>
+                      <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
                         <View style={{ flexDirection: "row" }}>
                           <View style={{ flex: 1 }}>
                             <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>{b.user.name}</Text>
@@ -480,19 +481,27 @@ class NookDetailScreen extends React.Component {
                             <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.refunedSecurity} PKR</Text>
                           </View>
                         </View>
-                        <View style={{ flex: 1 }}>
-                          <TouchableOpacity >
-                            <Text style={{ color: tab3Color }}>GENERATE RECEIPT</Text>
-                          </TouchableOpacity>
+                        <View style={{ flex: 1, alignContent: "center" }}>
+                          <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
+                            <Button disabled={submitting} >
+                              {submitting ? "Please wait..." : "GENERATE RECEIPT"}
+                            </Button>
+                          </View>
                         </View>
                       </View>
                     )
                    }
-
+                    <View style={{ flex: 1, alignContent: "center" }}>
+                      <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
+                        <Button disabled={submitting} >
+                          {submitting ? "Please wait..." : "GENERATE RECEIPT"}
+                        </Button>
+                      </View>
+                    </View>
                   </View>
                 </View>  
             }
-
+      
           </View>
 
           {
