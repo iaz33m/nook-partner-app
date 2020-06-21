@@ -5,7 +5,7 @@ const toRad = (Value) => {
 const calculateDistance = (pointA,pointB) => {
     
     if(!(pointA && pointB)){
-        return '';
+        return 'Enter Correct Value';
     }
 
     let lat1 = pointA.lat;
@@ -14,7 +14,7 @@ const calculateDistance = (pointA,pointB) => {
     let lat2 = pointB.lat;
     let lon2 = pointB.lng;
 
-    var R = 6371; // km
+    var R = 1000; // km
     var dLat = toRad(lat2-lat1);
     var dLon = toRad(lon2-lon1);
     lat1 = toRad(lat1);

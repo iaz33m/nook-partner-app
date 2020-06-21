@@ -36,6 +36,7 @@ import * as NavigationService from "../../NavigationService";
 import InputField from "../SeperateComponents/InputField";
 import Button from "../SeperateComponents/Button";
 import * as actions from "../../Store/Actions/NookActions";
+import { calculateDistance } from '../../helper/locationHelper';
 
 class AddNookScreen extends React.Component {
   constructor(props) {
@@ -57,6 +58,10 @@ class AddNookScreen extends React.Component {
         lat: 10,
         lng: 10,
         name: "",
+      },
+      OriginalLatLng: {
+        latitude: -35,
+        longitude: 120,
       },
       images: [],
       rooms: [],
@@ -145,11 +150,12 @@ class AddNookScreen extends React.Component {
     });
   }
   onValueChangeArea(value) {
-    const { blockName } = this.state;
+    const { blockName,OriginalLatLng } = this.state;
     this.setState({
       mainArea: value,
       areaLocation: [],
       blockName: { ...blockName },
+      OriginalLatLng: { ...OriginalLatLng },
     });
   }
   onValueChangeSubArea(value) {
@@ -157,6 +163,7 @@ class AddNookScreen extends React.Component {
     this.setState({
       areaLocation: value,
       blockName: { name: "", lat: "", lng: "" },
+      OriginalLatLng: { latitude: "", longitude: "" },
     });
   }
   onValueChangeLocation(value) {
@@ -164,6 +171,7 @@ class AddNookScreen extends React.Component {
       lat: value.lat,
       lng: value.lng,
       blockName: value,
+      OriginalLatLng:{ latitude: value.lat, longitude: value.lng }
     });
   }
   create = () => {
@@ -585,6 +593,17 @@ class AddNookScreen extends React.Component {
               }}
             />
           )}
+          <MapView.Circle
+                key = { (this.state.OriginalLatLng.latitude + this.state.OriginalLatLng.longitude + 1000).toString() }
+                center = {{
+                  latitude: Number(this.state.OriginalLatLng.latitude),
+                  longitude: Number(this.state.OriginalLatLng.longitude),
+                }}
+                radius = { 1000 }
+                strokeWidth = { 1 }
+                strokeColor = { '#1a66ff' }
+                fillColor = { 'rgba(230,238,255,0.9)' }
+        />
         </MapView>
         <View
           style={[
@@ -623,12 +642,22 @@ class AddNookScreen extends React.Component {
   };
 
   onRegionChangeComplete = (value) => {
+    const haversine = require('haversine')
+    let distance = '';
+     
     if (this.state.isDraggingMap) {
-      this.setState({
-        isDraggingMap: false,
-        lat: value.latitude,
-        lng: value.longitude,
-      });
+
+      distance = haversine(value, this.state.OriginalLatLng);
+      if(distance < 1){
+        this.setState({
+          isDraggingMap: false,
+          lat: value.latitude,
+          lng: value.longitude,
+        });
+      }else{
+        alert('Select location under Circle');
+      }
+      
     }
 
     if (!this.state.isDraggingMap) {
