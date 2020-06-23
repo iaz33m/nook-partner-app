@@ -567,8 +567,8 @@ class AddNookScreen extends React.Component {
           initialRegion={{
             latitude: Number(lat),
             longitude: Number(lng),
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitudeDelta: 0.03,
+            longitudeDelta: 0.03,
           }}
           style={styles.mapStyle}
           onLayout={this.onMapLayout}

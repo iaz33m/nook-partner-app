@@ -17,8 +17,8 @@ class SplashScreen extends React.Component {
 
   async componentDidMount() {
     const { syncWithAsyncStorage } = this.props;
-    await this.registerForPushNotificationsAsync();
-    this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    // await this.registerForPushNotificationsAsync();
+    // this._notificationSubscription = Notifications.addListener(this._handleNotification);
     syncWithAsyncStorage({
       onSuccess: ({user, skiped}) => {
         if(user !== undefined){
