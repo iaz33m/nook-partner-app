@@ -10,11 +10,11 @@ import PopupDialog from 'react-native-popup-dialog';
 import Button from '../../SeperateComponents/Button';
 import { WebView } from 'react-native-webview';
 import { connect } from "react-redux";
+import InputField from "../../SeperateComponents/InputField";
 import DatePicker from 'react-native-datepicker'
 import * as NavigationService from '../../../NavigationService';
-import * as actions from "../../../Store/Actions/NookActions";
-import * as bookingActions from '../../../Store/Actions/BookingsActions';
-import * as shiftsActions from "../../../Store/Actions/ShiftsActions";
+import * as actions from "../../../Store/Actions/ReceiptsActions";
+
 import moment from 'moment';
 
 class NookDetailScreen extends React.Component {
@@ -44,9 +44,23 @@ class NookDetailScreen extends React.Component {
       isSchedule: false,
       show: false,
       nook: null,
+      bookings:this.props.navigation.state.params.bookings,
       addShiftModal: false,
       details: '',
-      dateText: ''
+      dateText: '',
+      e_unit_cost:null,
+      status:"",
+      late_day_fine:null,
+      e_units:null,
+      user_id:null,
+      user_name:null,
+      fine:null,
+      due_date: moment(),
+      extras: [],
+      extra: {
+        name: '',
+        value: ''
+      }
     }
   }
 
@@ -114,6 +128,261 @@ class NookDetailScreen extends React.Component {
               )}
       </View>
    )}
+   
+  generateReceipt = () => {
+
+    const {
+      generateReceipt,
+      user: { access_token: token },
+    } = this.props;
+    this.setState({ submitting: true });
+    const extras = {};
+
+    this.state.extras.map((ex) => {
+      extras[ex.name] = ex.value
+    });
+
+    const data = {
+      "user_id": this.state.user_id,
+      "due_date": new Date(this.state.due_date).getTime() / 1000,
+      "status": this.state.status || "0",
+      "e_units": this.state.e_units || "0",
+      "e_unit_cost": this.state.e_unit_cost || "0",
+      "fine": this.state.fine || "0",
+      "late_day_fine": this.state.late_day_fine || "0",
+      "extras": extras
+    };
+    generateReceipt({
+      data: data,
+      token,
+      onSuccess: () => {
+        this.setState({ submitting: false ,isDialogVisible: false});
+        alert('Receipt Generated Successfully');
+      },
+      onError: (message) => {
+        alert(message);
+        this.setState({
+          isDialogVisible: false,
+          isSchedule:false,
+        });
+      },
+    });
+  };
+   renderReceiptGeneraterPopup = () => {
+    const { isSchedule, isDialogVisible, submitting,status,fine,late_day_fine,e_units,e_unit_cost,due_date } = this.state;
+
+    if (isSchedule) {
+      return (
+        <PopupDialog
+          width={0.9} height={0.9}
+          visible={isDialogVisible}
+          onTouchOutside={this.togglePopup}>
+          <View style={{ flex: 1, padding: 25, }}>
+            <TouchableOpacity onPress={() => this.setState({
+              isDialogVisible: false
+            })}>
+              <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+            </TouchableOpacity>
+            <Text style={{justifyContent: 'center', fontWeight: 'bold'}}>Generate Receipt</Text>
+            <ScrollView style={{ marginTop: 10 }}>
+              <Item picker style={styles.pickerStyle}>
+                <Picker
+                  mode="dropdown"
+                  iosIcon={<Icon name="arrow-down" />}
+                  style={{ width: "100%" }}
+                  placeholder="Select Status"
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff"
+                  selectedValue={this.state.status}
+                  onValueChange={(status) => this.setState({ status })}
+                >
+                  <Picker.Item value="" label="Select Status"/>
+                  <Picker.Item value="draft" label="Draft" />
+                  <Picker.Item value="unpaid" label="Unpaid" />
+                  <Picker.Item value="in_progress" label="In Progress" />
+                  <Picker.Item value="paid" label="paid" />
+                </Picker>
+              </Item>
+              <InputField onChangeText={(fine) => this.setState({ fine })} > Fine </InputField>
+              <DatePicker
+                style={{
+                  ...styles.container,
+                  width: "100%", flex: 0, padding: 0, marginTop: 10
+                }}
+                mode="datetime"
+                date={due_date}
+                placeholder='Select a date'
+                format="MMMM Do YYYY, h:mm a"
+                // format="X"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                iconSource={require('./../../../../assets/date.png')}
+                customStyles={{
+                  dateText: {
+                    margin: 15,
+                    marginTop: 15,
+                    color: 'black'
+                  },
+                  dateIcon: {
+                    height: 20, width: 20,
+                  },
+                  dateInput: {
+                    ...styles.child,
+                    borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15,
+                  }
+                }}
+                onDateChange={(due_date) => {
+                  this.setState({
+                    due_date
+                  })
+                }}
+              />
+              <InputField onChangeText={(late_day_fine) => this.setState({ late_day_fine })} > Late Day Fine </InputField>
+              <InputField onChangeText={(e_units) => this.setState({ e_units })} > Electricity units </InputField>
+              <InputField onChangeText={(e_unit_cost) => this.setState({ e_unit_cost })} > Electricity unit Cost </InputField>
+              
+              <Text style={{justifyContent: 'center', fontWeight: 'bold', margin: 20}}>Add Extras</Text>
+              
+                {this.state.extras.map((extra) =>
+                  this.Extra_row(extra)
+                )}
+                { this.ExtrasField()}
+              <Button disabled={submitting} onPress={() => { this.generateReceipt() }} >{submitting ? 'Please wait...' : 'Generate Receipt'}</Button>
+            </ScrollView>
+          </View>
+        </PopupDialog>
+      );
+    }
+  }
+  Extra_row =(extra)=>{
+    return(
+      <>
+        <View style={[styles.child, { marginTop: 10, borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
+          <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>{extra.name}</Text>
+          <Text style={{ margin: 15, fontSize: 16, }}>{extra.value}</Text>
+        </View>
+      </>
+    );
+  }
+  ExtrasField(){
+    
+    return(
+      <>
+        <InputField value={this.state.extra.name}  onChangeText={name => {
+            this.setState({
+              extra: {
+                ...this.state.extra,
+                name: name
+              }
+            })
+          }} > Name </InputField>
+        <InputField value={this.state.extra.value} onChangeText={value => {
+            this.setState({
+              extra: {
+                ...this.state.extra,
+                value: value
+              }
+            })
+          }} > Value </InputField>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => { this.addExtra() }}
+            >
+              <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Add Extra</Text>
+            </TouchableOpacity>
+          </View>
+      </>
+    );
+  }
+  addExtra = () => {
+    let joined = this.state.extras.concat(this.state.extra);
+    this.setState({
+      extras: joined,
+      extra: { name: '', value: '' }
+    });
+  };
+  SearchFilterFunction(text) {
+    const bookings = this.state.bookings;
+    if(text.length > 0){
+      const newData = bookings.filter(function(b) {
+        const itemData = b.user.name ? b.user.name.toUpperCase() : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      this.setState({
+        bookings: newData,
+      });
+    }else{
+      this.setState({
+        bookings: this.props.navigation.state.params.bookings,
+      });
+    }
+  }
+  bookings(){
+    const bookings = this.state.bookings;
+    return(
+        <View>
+        {bookings.map((b, bI) =>
+                      <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
+                        <View style={{ flexDirection: "row" }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>{b.user.name}</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Room # {b.room_id}</Text>
+                          </View>
+                        </View>
+
+                        {/* <View style={{ flexDirection: "row",  }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Rent</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.rent} PKR</Text>
+                          </View>
+                        </View>
+                        <View style={{ flexDirection: "row",  }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Paid Security</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.paidSecurity} PKR</Text>
+                          </View>
+                        </View>
+                        <View style={{ flexDirection: "row",  }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Security</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.security} PKR</Text>
+                          </View>
+                        </View> */}
+                        <View style={{ flexDirection: "row",  }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Receivable</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{(b.receipts)? b.receipts.received_amount :"0" } PKR</Text>
+                          </View>
+                        </View>
+                        <View style={{ flex: 1, alignContent: "center" }}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+                            
+                            <TouchableOpacity
+                              style={styles.addButton}
+                              onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, user_id: b.user.id}); }}
+                            >
+                              <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>GENERATE RECEIPT </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </View>
+                    )
+                  }
+        </View>
+    );
+  }
   render() {
     const nook = this.props.navigation.state.params;
     // const { rooms } = nook;
@@ -431,66 +700,18 @@ class NookDetailScreen extends React.Component {
                     <View searchBar rounded>
                       <Item>
                         <Icon name="ios-search" />
-                        <Input placeholder="Search" />
+                        <TextInput 
+                          style={{margin:15}} 
+                          onChangeText={user_name => this.SearchFilterFunction(user_name)}
+                          value={this.state.user_name}
+                          underlineColorAndroid="transparent"
+                          placeholder="Search Users ..."/> 
                       </Item>
                     </View>
                   </View>
 
                   <View >
-                   {
-                    nook.bookings.map((b, bI) =>
-                      <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
-                        <View style={{ flexDirection: "row" }}>
-                          <View style={{ flex: 1 }}>
-                            <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>{b.user.name}</Text>
-                          </View>
-                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Room # {b.room.id}</Text>
-                          </View>
-                        </View>
-
-                        <View style={{ flexDirection: "row",  }}>
-                          <View style={{ flex: 1 }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Rent</Text>
-                          </View>
-                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.rent} PKR</Text>
-                          </View>
-                        </View>
-                        <View style={{ flexDirection: "row",  }}>
-                          <View style={{ flex: 1 }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Paid Security</Text>
-                          </View>
-                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.paidSecurity} PKR</Text>
-                          </View>
-                        </View>
-                        <View style={{ flexDirection: "row",  }}>
-                          <View style={{ flex: 1 }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Security</Text>
-                          </View>
-                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.security} PKR</Text>
-                          </View>
-                        </View>
-                        <View style={{ flexDirection: "row",  }}>
-                          <View style={{ flex: 1 }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Refuned Security</Text>
-                          </View>
-                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.refunedSecurity} PKR</Text>
-                          </View>
-                        </View>
-                        <View style={{ flex: 1, alignContent: "center" }}>
-                          <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
-                            <Button disabled={submitting} >
-                              {submitting ? "Please wait..." : "GENERATE RECEIPT"}
-                            </Button>
-                          </View>
-                        </View>
-                      </View>
-                    )
-                   }
+                   {this.bookings()}
                     <View style={{ flex: 1, alignContent: "center" }}>
                       <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
                         <Button disabled={submitting} >
@@ -501,47 +722,8 @@ class NookDetailScreen extends React.Component {
                   </View>
                 </View>  
             }
-      
+          {this.renderReceiptGeneraterPopup()}
           </View>
-
-          {
-            this.state.isBookNow &&
-            <PopupDialog
-              width={0.9} height={0.35}
-              ref={"popupDialog"}
-              visible={this.state.isDialogVisible}
-              onTouchOutside={() => {
-                this.setState({ isDialogVisible: false });
-              }}>
-              <View style={{ flex: 1, padding: 25, }}>
-                <TouchableOpacity onPress={() => {
-                  this.setState({ isDialogVisible: false });
-                }}>
-                  <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
-                </TouchableOpacity>
-                <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginTop: 5 }} >
-                  Room
-                    </TitleText>
-                <Item picker style={styles.pickerStyle}>
-                  <Picker
-                    mode="dropdown"
-                    iosIcon={<Icon name="arrow-down" />}
-                    style={{ width: "100%" }}
-                    placeholder="Room Catagories"
-                    placeholderStyle={{ color: "#bfc6ea" }}
-                    placeholderIconColor="#007aff"
-                    selectedValue={this.state.roomId}
-                    onValueChange={() => {}}>
-                    <Picker.Item key={-1} value={0} label="Select Room" />
-                    {[].map((room, roomi) => {
-                      return <Picker.Item key={roomi} value={room.id} label={`${room.capacity} Persons Sharing - ${room.price_per_bed} PKR`} />
-                    })}
-                  </Picker>
-                </Item>
-                
-              </View>
-            </PopupDialog>
-          }
         </ScrollView>
       </View >
     );
@@ -555,6 +737,7 @@ class NookDetailScreen extends React.Component {
     return video_id;
   }
 }
+
 const mapStateToProps = state => {
   return {
     user: state.AuthReducer.user,
@@ -565,11 +748,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    addNookRoom: actions.addNookRoom,
-    addNookSchedule: actions.addNookSchedule,
-    addShift: shiftsActions.addShift,
-    getMyNookDetails: actions.getMyNookDetails,
-    getBookings: bookingActions.getBookings,
+    generateReceipt: actions.generateReceipt,
   },
   
 )

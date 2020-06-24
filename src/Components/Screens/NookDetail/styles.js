@@ -10,6 +10,16 @@ const styles = StyleSheet.create({
     tabContainer: {
         flex: 1,
     },
+    addButton: {
+        alignItems: 'center',
+        backgroundColor: '#E59413',
+        padding: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        borderRadius: 5,
+        marginStart: 5,
+        marginEnd: 5, height: 40
+      },
     tabButton: {
         justifyContent: 'center',
         height: 35,
