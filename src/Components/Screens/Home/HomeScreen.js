@@ -1,358 +1,492 @@
-import React from 'react';
+import React from "react";
 import {
-    Text,
-    View,
-    TouchableOpacity,
-    ScrollView,
-    Image,
-    RefreshControl,
-    FlatList
-} from 'react-native';
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  RefreshControl,
+  FlatList,
+} from "react-native";
 
-import { Icon, CardItem, Spinner, Item, Picker, Button as NativeButton } from "native-base";
-import Header from '../../SeperateComponents/Header';
-import TitleText from '../../SeperateComponents/TitleText';
-import * as NavigationService from '../../../NavigationService';
-import Colors from '../../../helper/Colors';
-import styles from './styles';
-import { Marker } from 'react-native-maps';
-import Button from '../../SeperateComponents/Button';
+import { AirbnbRating } from 'react-native-ratings';
+
+import {
+  Icon,
+  Spinner,
+  Item,
+  Picker,
+  Button as NativeButton,
+  Card,
+  CardItem,
+} from "native-base";
+
+import Header from "../../SeperateComponents/Header";
+import TitleText from "../../SeperateComponents/TitleText";
+import * as NavigationService from "../../../NavigationService";
+import Colors from "../../../helper/Colors";
+import styles from "./styles";
+import { Marker } from "react-native-maps";
+import Button from "../../SeperateComponents/Button";
 import * as actions from "../../../Store/Actions/NookActions";
 import { connect } from "react-redux";
 
 class HomeScreen extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            tabIndex: 4,
-            isMap: true,
-            isDialogVisible: false,
-            markers: {
-                latlng: {
-                    latitude: 31.4697,
-                    longitude: 74.2728,
-                },
-                title: "",
-                description: ""
-            },
-            filter: {
-                space_type: '',
-                type: '',
-                gender: ''
-            },
-            loading: true,
-            modalVisible: false,
-            nooks: [],
-            filters: {
-                type: {
-                    'house': 'House',
-                    'flat': 'Flat',
-                    'independentRoom': 'Independent Room',
-                    'hostelBuilding': 'Hostel Building',
-                    'outHouse': 'Out House',
-                    'other': 'Other'
-                },
-                gender: {
-                    'both': 'Both',
-                    'male': 'Male',
-                    'female': 'Female'
-                },
-                space_type: {
-                    '':'All Space Type',
-                    'shared': 'Shared',
-                    'independent': 'Independent'
-                }
-            }
-        }
-    }
-
-    componentDidMount() {
-
-        this.applyFilter();
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.nooks !== prevState.nooks) {
-            return { nooks: nextProps.nooks };
-        }
-        return null;
-    }
-
-    onRefresh() {
-        //Clear old data of the list
-        this.setState({ nooks: [] });
-        //Call the Service to get the latest data
-        this.applyFilter();
-    }
-    applyFilter = () => {
-        const {
-              getPublicNooks,
-              user: {
-                access_token: token
-              }
-            } = this.props;
-        const { filter } = this.state;
-
-        this.setState({ loading: true, modalVisible: false });
-        getPublicNooks({
-            onError: (error) => {
-                alert(error);
-                this.setState({ loading: false });
-            },
-            onSuccess: () => {
-                if (this.state.nooks.length == 0) {
-                    return NavigationService.navigateAndResetStack('ManageNooks');
-                }
-                this.setState({ loading: false });
-            },
-            filter,token
-        });
-    }
-
-
-    componentDidUpdate() {
-        const { desiredLocation } = this.props;
-        if (desiredLocation) {
-
-            const point = {
-                latitude: desiredLocation.lat,
-                longitude: desiredLocation.lng,
-            };
-
-            if (this.myMap) {
-                this.myMap.animateCamera({
-                    center: point
-                }, 2000)
-            }
-        }
-    }
-
-    renderDesiredLocationMarker = () => {
-        const { desiredLocation } = this.props;
-        if (desiredLocation) {
-
-            const point = {
-                latitude: desiredLocation.lat,
-                longitude: desiredLocation.lng,
-            };
-            return (
-                <Marker
-                    title="Desired Location"
-                    coordinate={point}
-                />
-            )
-        }
-    }
-
-    listView = () => {
-
-        if (this.state.loading) {
-            return <Spinner color='black' />;
-        }
-
-        return (
-            <View style={{ flex: 1, flexDirection: "column" }}>
-                <FlatList
-                    data={this.state.nooks}
-                    enableEmptySections={true}
-                    keyExtractor={(item, index) => index.toString()}
-                    contentContainerStyle={{ paddingBottom: "5%", marginTop: 10 }}
-                    renderItem={({ item, index }) => (
-                        <View style={styles.container} key={index}>
-                            <TouchableOpacity style={styles.child} onPress={() => {
-                                this.setState({ isDialogVisible: false });
-                                NavigationService.navigate("NookDetailScreen", item)
-                            }}>
-                                <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text>{item.type} </Text>
-                                    <Text>PKR {item.rent && item.rent !== '0' && item.rent !== null ? item.rent : Math.min(...item.rooms.map(r => r.price_per_bed !== '0' && r.price_per_bed !== null ? r.price_per_bed:''))}</Text>
-                                </View>
-                                <CardItem cardBody>
-                                    {
-                                        item.medias.map((m, index) => {
-                                            if (index === 0) {
-                                                return <Image key={index} resizeMode="contain" source={{
-                                                    uri: m.path
-                                                }
-                                                } style={{ height: 200, width: null, flex: 1 }} />
-                                            }
-                                        }
-                                        )
-                                    }
-                                </CardItem>
-                                <TitleText
-                                    style={{ marginTop: 10, marginBottom: 10, fontSize: 20, }}>{item.nookCode}</TitleText>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    refreshControl={
-                        <RefreshControl
-                            //refresh control used for the Pull to Refresh
-                            refreshing={this.state.loading}
-                            onRefresh={this.onRefresh.bind(this)}
-                        />
-                    }
-                />
-            </View>
-        )
+  constructor(props) {
+    super(props);
+    this.state = {
+      tabIndex: 4,
+      isMap: true,
+      isDialogVisible: false,
+      markers: {
+        latlng: {
+          latitude: 31.4697,
+          longitude: 74.2728,
+        },
+        title: "",
+        description: "",
+      },
+      filter: {
+        space_type: "",
+        type: "",
+        gender: "",
+      },
+      loading: true,
+      modalVisible: false,
+      nooks: [],
+      filters: {
+        type: {
+          house: "House",
+          flat: "Flat",
+          independentRoom: "Independent Room",
+          hostelBuilding: "Hostel Building",
+          outHouse: "Out House",
+          other: "Other",
+        },
+        gender: {
+          both: "Both",
+          male: "Male",
+          female: "Female",
+        },
+        space_type: {
+          "": "All Space Type",
+          shared: "Shared",
+          independent: "Independent",
+        },
+      },
     };
+  }
 
-    renderFilterView = () => {
-        const { modalVisible, filters, filter } = this.state;
+  componentDidMount() {
+    this.applyFilter();
+  }
 
-        if (!modalVisible) {
-            return;
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.nooks !== prevState.nooks) {
+      return { nooks: nextProps.nooks };
+    }
+    return null;
+  }
+
+  onRefresh() {
+    //Clear old data of the list
+    this.setState({ nooks: [] });
+    //Call the Service to get the latest data
+    this.applyFilter();
+  }
+  applyFilter = () => {
+    const {
+      getPublicNooks,
+      user: { access_token: token },
+    } = this.props;
+    const { filter } = this.state;
+
+    this.setState({ loading: true, modalVisible: false });
+    getPublicNooks({
+      onError: (error) => {
+        alert(error);
+        this.setState({ loading: false });
+      },
+      onSuccess: () => {
+        if (this.state.nooks.length == 0) {
+          return NavigationService.navigateAndResetStack("ManageNooks");
         }
+        this.setState({ loading: false });
+      },
+      filter,
+      token,
+    });
+  };
 
-        return (
-            <View style={{
-                position: 'absolute',
-                width: "70%",
-                height: "82%",
-                alignSelf: 'flex-end',
-                backgroundColor: "white"
-            }}>
-                <TouchableOpacity onPress={() => {
-                    this.setState({ modalVisible: false })
-                }}>
-                    <Image style={{
-                        width: 20,
-                        margin: 10,
-                        marginTop: 15,
-                        height: 20,
-                        alignSelf: 'flex-end'
+  componentDidUpdate() {
+    const { desiredLocation } = this.props;
+    if (desiredLocation) {
+      const point = {
+        latitude: desiredLocation.lat,
+        longitude: desiredLocation.lng,
+      };
+
+      if (this.myMap) {
+        this.myMap.animateCamera(
+          {
+            center: point,
+          },
+          2000
+        );
+      }
+    }
+  }
+
+  renderDesiredLocationMarker = () => {
+    const { desiredLocation } = this.props;
+    if (desiredLocation) {
+      const point = {
+        latitude: desiredLocation.lat,
+        longitude: desiredLocation.lng,
+      };
+      return <Marker title="Desired Location" coordinate={point} />;
+    }
+  };
+
+  listView = () => {
+    if (this.state.loading) {
+      return <Spinner color="black" />;
+    }
+
+    return (
+      <View style={{ flex: 1, flexDirection: "column" }}>
+        <FlatList
+          data={this.state.nooks}
+          enableEmptySections={true}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={{ paddingBottom: "5%", marginTop: 10 }}
+          renderItem={({ item, index }) => (
+            <View style={styles.container} key={index}>
+              <TouchableOpacity
+                style={styles.child}
+                onPress={() => {
+                  this.setState({ isDialogVisible: false });
+                  NavigationService.navigate("NookDetailScreen", item);
+                }}
+              >
+                <View style={styles.child}>
+                  <Image
+                    style={{ position: "absolute" }}
+                    source={require("./../../../../assets/feature.png")}
+                  />
+                  <Text
+                    style={{
+                      padding: 10,
+                      paddingStart: 20,
+                      paddingEnd: 20,
+                      alignSelf: "flex-end",
+                      color: Colors.white,
+                      fontWeight: "bold",
+                      backgroundColor: Colors.primaryColor,
+                      fontSize: 14,
+                      position: "absolute",
                     }}
-                        resizeMode="contain"
-                        source={require('./../../../../assets/close.png')}
-                    />
-                </TouchableOpacity>
-                <TitleText
-                    style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Filter</TitleText>
+                  >
+                    {item.type}
+                  </Text>
+                  <Text
+                    style={{
+                      marginTop: 12,
+                      alignSelf: "flex-start",
+                      color: Colors.white,
+                      fontSize: 14,
+                      transform: [{ rotate: "-40deg" }],
+                    }}
+                  >
+                    {item.status}
+                  </Text>
 
-
-                <Item picker style={styles.pickerStyle}>
-                    <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
-                        style={{ width: "100%" }}
-                        placeholder="Select Nook Type"
-                        placeholderStyle={{ color: "black" }}
-                        placeholderIconColor="#007aff"
-                        selectedValue={filter.type}
-                        onValueChange={type => this.setState({
-                            filter: { ...filter, type }
-                        }, () => {
-                            console.log('filter', this.state.filter);
-                        })}>
-                        <Picker.Item label="All Types" value="" />
-                        {Object.keys(filters.type)
-                            .filter(k => k)
-                            .map(k => <Picker.Item key={k} label={filters.type[k]} value={k} />)}
-                    </Picker>
-                </Item>
-                <Item picker style={styles.pickerStyle}>
-                    <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
-                        style={{ width: "100%" }}
-                        placeholder="Select Gender"
-                        placeholderStyle={{ color: "black" }}
-                        placeholderIconColor="#007aff"
-                        selectedValue={filter.gender}
-                        onValueChange={gender => this.setState({
-                            filter: { ...filter, gender }
-                        }, () => {
-                            console.log('filter', this.state.filter);
-                        })}>
-                        {Object.keys(filters.gender)
-                            .filter(k => k)
-                            .map(k => <Picker.Item key={k} label={filters.gender[k]} value={k} />)}
-                    </Picker>
-                </Item>
-                <Item picker style={styles.pickerStyle}>
-                    <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
-                        style={{ width: "100%" }}
-                        placeholder="Select Space Type"
-                        placeholderStyle={{ color: "black" }}
-                        placeholderIconColor="#007aff"
-                        selectedValue={filter.space_type}
-                        onValueChange={space_type => this.setState({
-                            filter: { ...filter, space_type }
-                        }, () => {
-                            console.log('filter', this.state.filter);
-                        })}>
-                        <Picker.Item label="All Space Type" value="" />
-                        {Object.keys(filters.space_type)
-                            .filter(k => k)
-                            .map(k => <Picker.Item key={k} label={filters.space_type[k]} value={k} />)}
-                    </Picker>
-                </Item>
-
-                <View style={{ justifyContent: 'center' }}>
-                    <Button onPress={this.applyFilter}>Apply Filter</Button>
-                </View>
-
-            </View>
-        );
-    }
-
-    render() {
-        return (
-            <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-                <Header backButton={false} optionButton={true} />
-                <ScrollView>
-
-                    <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Nook</TitleText>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <NativeButton warning style={{ marginStart: 25 }} onPress={() => { NavigationService.navigate("AddNookScreen") }}>
-                            <View style={{ margin: 10, flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={{ fontWeight: 'bold', color: Colors.white, fontSize: 16 }}>Add</Text>
-                                <Image style={{ width: 30, height: 30, marginStart: 5 }}
-                                    source={require('./../../../../assets/add.png')}
-                                />
-                            </View>
-                        </NativeButton>
-
-                        <TouchableOpacity onPress={() => {
-                            this.setState({ modalVisible: true })
-                        }} style={{ marginRight: 20 }}>
-                            <Image style={{
-                                width: 30,
-                                height: 30,
-                                marginBottom: 5,
-                                alignSelf: 'flex-end'
-                            }}
+                  <View style={{ margin: 20 }}>
+                    <Card>
+                      <View
+                        style={{
+                          padding: 10,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                          <Text></Text>
+                        <Text>
+                          PKR{" "}
+                          {item.rent && item.rent !== "0" && item.rent !== null
+                            ? item.rent
+                            : Math.min(
+                                ...item.rooms.map((r) =>
+                                  r.price_per_bed !== "0" &&
+                                  r.price_per_bed !== null
+                                    ? r.price_per_bed
+                                    : ""
+                                )
+                              )}
+                        </Text>
+                      </View>
+                      <CardItem cardBody>
+                        {item.medias.map((m, index) => {
+                          if (index === 0) {
+                            return (
+                              <Image
+                                key={index}
                                 resizeMode="contain"
-                                source={require('./../../../../assets/filter.png')}
-                            />
-                        </TouchableOpacity>
-                    </View>
+                                source={{
+                                  uri: m.path,
+                                }}
+                                style={{ height: 200, width: null, flex: 1 }}
+                              />
+                            );
+                          }
+                        })}
 
-
-                    <View style={styles.tabContainer}>
-                        {this.listView()}
-                    </View>
-                    {this.renderFilterView()}
-                </ScrollView>
+                        <View
+                          style={{
+                            position: "absolute",
+                            bottom: 8,
+                            left: 10,
+                          }}
+                        >
+                          <AirbnbRating showRating={false} size={15} />
+                        </View>
+                      </CardItem>
+                    </Card>
+                    <TitleText style={{ marginTop: 10, fontSize: 20 }}>
+                      {item.nookCode}
+                    </TitleText>
+                  </View>
+                </View>
+              </TouchableOpacity>
             </View>
-        );
+          )}
+          refreshControl={
+            <RefreshControl
+              //refresh control used for the Pull to Refresh
+              refreshing={this.state.loading}
+              onRefresh={this.onRefresh.bind(this)}
+            />
+          }
+        />
+      </View>
+    );
+  };
+
+  renderFilterView = () => {
+    const { modalVisible, filters, filter } = this.state;
+
+    if (!modalVisible) {
+      return;
     }
+
+    return (
+      <View
+        style={{
+          position: "absolute",
+          width: "70%",
+          height: "82%",
+          alignSelf: "flex-end",
+          backgroundColor: "white",
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            this.setState({ modalVisible: false });
+          }}
+        >
+          <Image
+            style={{
+              width: 20,
+              margin: 10,
+              marginTop: 15,
+              height: 20,
+              alignSelf: "flex-end",
+            }}
+            resizeMode="contain"
+            source={require("./../../../../assets/close.png")}
+          />
+        </TouchableOpacity>
+        <TitleText
+          style={{
+            alignSelf: "center",
+            fontWeight: "bold",
+            fontSize: 20,
+            marginBottom: 5,
+          }}
+        >
+          Filter
+        </TitleText>
+
+        <Item picker style={styles.pickerStyle}>
+          <Picker
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ width: "100%" }}
+            placeholder="Select Nook Type"
+            placeholderStyle={{ color: "black" }}
+            placeholderIconColor="#007aff"
+            selectedValue={filter.type}
+            onValueChange={(type) =>
+              this.setState(
+                {
+                  filter: { ...filter, type },
+                },
+                () => {
+                  console.log("filter", this.state.filter);
+                }
+              )
+            }
+          >
+            <Picker.Item label="All Types" value="" />
+            {Object.keys(filters.type)
+              .filter((k) => k)
+              .map((k) => (
+                <Picker.Item key={k} label={filters.type[k]} value={k} />
+              ))}
+          </Picker>
+        </Item>
+        <Item picker style={styles.pickerStyle}>
+          <Picker
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ width: "100%" }}
+            placeholder="Select Gender"
+            placeholderStyle={{ color: "black" }}
+            placeholderIconColor="#007aff"
+            selectedValue={filter.gender}
+            onValueChange={(gender) =>
+              this.setState(
+                {
+                  filter: { ...filter, gender },
+                },
+                () => {
+                  console.log("filter", this.state.filter);
+                }
+              )
+            }
+          >
+            {Object.keys(filters.gender)
+              .filter((k) => k)
+              .map((k) => (
+                <Picker.Item key={k} label={filters.gender[k]} value={k} />
+              ))}
+          </Picker>
+        </Item>
+        <Item picker style={styles.pickerStyle}>
+          <Picker
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ width: "100%" }}
+            placeholder="Select Space Type"
+            placeholderStyle={{ color: "black" }}
+            placeholderIconColor="#007aff"
+            selectedValue={filter.space_type}
+            onValueChange={(space_type) =>
+              this.setState(
+                {
+                  filter: { ...filter, space_type },
+                },
+                () => {
+                  console.log("filter", this.state.filter);
+                }
+              )
+            }
+          >
+            <Picker.Item label="All Space Type" value="" />
+            {Object.keys(filters.space_type)
+              .filter((k) => k)
+              .map((k) => (
+                <Picker.Item key={k} label={filters.space_type[k]} value={k} />
+              ))}
+          </Picker>
+        </Item>
+
+        <View style={{ justifyContent: "center" }}>
+          <Button onPress={this.applyFilter}>Apply Filter</Button>
+        </View>
+      </View>
+    );
+  };
+
+  render() {
+    return (
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
+        <Header backButton={false} optionButton={true} />
+        <ScrollView>
+          <TitleText
+            style={{ marginTop: 25, fontWeight: "bold", fontSize: 20 }}
+          >
+            Nook
+          </TitleText>
+
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <NativeButton
+              warning
+              style={{ marginStart: 25 }}
+              onPress={() => {
+                NavigationService.navigate("AddNookScreen");
+              }}
+            >
+              <View
+                style={{
+                  margin: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    color: Colors.white,
+                    fontSize: 16,
+                  }}
+                >
+                  Add
+                </Text>
+                <Image
+                  style={{ width: 30, height: 30, marginStart: 5 }}
+                  source={require("./../../../../assets/add.png")}
+                />
+              </View>
+            </NativeButton>
+
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({ modalVisible: true });
+              }}
+              style={{ marginRight: 20 }}
+            >
+              <Image
+                style={{
+                  width: 30,
+                  height: 30,
+                  marginBottom: 5,
+                  alignSelf: "flex-end",
+                }}
+                resizeMode="contain"
+                source={require("./../../../../assets/filter.png")}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.tabContainer}>{this.listView()}</View>
+          {this.renderFilterView()}
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
-const mapStateToProps = state => {
-    return {
-        nooks: state.NookReducer.nooks,
-        user: state.AuthReducer.user,
-        desiredLocation: state.NookReducer.desiredLocation,
-    };
+const mapStateToProps = (state) => {
+  return {
+    nooks: state.NookReducer.nooks,
+    user: state.AuthReducer.user,
+    desiredLocation: state.NookReducer.desiredLocation,
+  };
 };
 
-export default connect(
-    mapStateToProps, {
-    getPublicNooks: actions.getPublicNooks,
-},
-)(HomeScreen)
+export default connect(mapStateToProps, {
+  getPublicNooks: actions.getPublicNooks,
+})(HomeScreen);
