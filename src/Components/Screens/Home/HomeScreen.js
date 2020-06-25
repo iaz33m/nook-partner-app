@@ -9,7 +9,7 @@ import {
     FlatList
 } from 'react-native';
 
-import { Icon, CardItem, Spinner, Item, Picker, Button as NativeButton } from "native-base";
+import { Icon, CardItem,Card, Spinner, Item, Picker, Button as NativeButton } from "native-base";
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
 import * as NavigationService from '../../../NavigationService';
@@ -19,6 +19,7 @@ import { Marker } from 'react-native-maps';
 import Button from '../../SeperateComponents/Button';
 import * as actions from "../../../Store/Actions/NookActions";
 import { connect } from "react-redux";
+import { AirbnbRating } from 'react-native-ratings';
 
 class HomeScreen extends React.Component {
 
@@ -164,25 +165,40 @@ class HomeScreen extends React.Component {
                                 this.setState({ isDialogVisible: false });
                                 NavigationService.navigate("NookDetailScreen", item)
                             }}>
-                                <View style={{ padding: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text>{item.type} </Text>
-                                    <Text>PKR {item.rent && item.rent !== '0' && item.rent !== null ? item.rent : Math.min(...item.rooms.map(r => r.price_per_bed !== '0' && r.price_per_bed !== null ? r.price_per_bed:''))}</Text>
-                                </View>
-                                <CardItem cardBody>
-                                    {
-                                        item.medias.map((m, index) => {
-                                            if (index === 0) {
-                                                return <Image key={index} resizeMode="contain" source={{
-                                                    uri: m.path
+                                <View style={styles.child}>
+                                    <Image style={{ position: 'absolute',height: 80, width: 100 }}
+                                        source={require('./../../../../assets/feature.png')}
+                                    />
+                                    <Text style={{ padding: 10, paddingStart: 20, paddingEnd: 20, alignSelf: 'flex-end', color: Colors.white, fontWeight: 'bold', backgroundColor: Colors.primaryColor, fontSize: 14, position: 'absolute', }} >{item.type}</Text>
+                                    <Text style={{ marginTop: 20, alignSelf: 'flex-start', color: Colors.white, fontSize: 14, transform: [{ rotate: '-40deg' }] }} >{item.status}</Text>
+
+                                    <View style={{ margin: 20 ,marginTop: 35}}>
+                                        <Card >
+                                        <View style={{ padding: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                            <Text>{item.space_type}</Text>
+                                            <Text>PKR {item.rent && item.rent !== '0' && item.rent !== null ? item.rent : Math.min(...item.rooms.map(r => r.price_per_bed !== '0' && r.price_per_bed !== null ? r.price_per_bed:''))}</Text>
+                                        </View>
+                                        <CardItem cardBody>
+                                            {
+                                                item.medias.map((m, index) => {
+                                                    if (index === 0) {
+                                                        return <Image key={index} resizeMode="contain" source={{
+                                                            uri: m.path
+                                                        }
+                                                        } style={{ height: 200, width: null, flex: 1 }} />
+                                                    }
                                                 }
-                                                } style={{ height: 200, width: null, flex: 1 }} />
+                                                )
                                             }
-                                        }
-                                        )
-                                    }
-                                </CardItem>
-                                <TitleText
-                                    style={{ marginTop: 10, marginBottom: 10, fontSize: 20, }}>{item.nookCode}</TitleText>
+                                            {/* <View style={{ position: 'absolute', bottom: 8, left: 10 }}>
+                                            <AirbnbRating showRating={false} size={15} />
+                                            </View> */}
+                                        </CardItem>
+                                        </Card>
+                                        <TitleText style={{ marginTop: 10, fontSize: 20, }} >{item.nookCode}</TitleText>
+                                    </View>
+                                </View>
+                                
                             </TouchableOpacity>
                         </View>
                     )}

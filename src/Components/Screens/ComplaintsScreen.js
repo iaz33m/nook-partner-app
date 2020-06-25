@@ -246,7 +246,7 @@ class ComplaintsScreen extends React.Component {
                   <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
                     <TouchableOpacity
                       style={styles.addButton}
-                      onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, complainId: item.id }); }}
+                      onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, complainId: item.id, complainStatus: item.status_key }); }}
                     >
                       <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Update Complain </Text>
                     </TouchableOpacity>
@@ -268,7 +268,7 @@ class ComplaintsScreen extends React.Component {
     );
   };
   renderComplainsPopup = () => {
-    const { isSchedule, isDialogVisible, date, description, submitting, complainId } = this.state;
+    const { isSchedule, isDialogVisible, date, description, submitting, complainId, complainStatus, action } = this.state;
 
     if (isSchedule) {
       return (
@@ -294,9 +294,9 @@ class ComplaintsScreen extends React.Component {
                 selectedValue={this.state.complainStatus}
                 onValueChange={complainStatus => this.setState({ complainStatus })}>
                 <Picker.Item  label="Select Status" value=""/>
-                {Object.keys(this.state.action)
+                {Object.keys(action)
                   .filter(k => k)
-                  .map(k => <Picker.Item key={k} label={this.state.action[k]} value={k} />)}
+                  .map(k => <Picker.Item key={k} label={action[k]} value={k} />)}
               </Picker>
             </Item>
 

@@ -213,7 +213,7 @@ class NoticesScreen extends React.Component {
                   <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10,marginBottom:10 }}>
                     <TouchableOpacity
                       style={styles.addButton}
-                      onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, noticeId: item.id }); }}
+                      onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, noticeId: item.id, noticeStatus: item.status_key }); }}
                     >
                       <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Update Notice </Text>
                     </TouchableOpacity>

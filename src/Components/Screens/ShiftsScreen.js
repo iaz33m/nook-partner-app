@@ -250,7 +250,7 @@ class ShiftsScreen extends React.Component {
                   <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20,marginBottom:10 }}>
                     <TouchableOpacity
                       style={styles.addButton}
-                      onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, shiftId: item.id }); }}
+                      onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, shiftId: item.id, shiftStatus: item.status_key }); }}
                     >
                       <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Update Shift </Text>
                     </TouchableOpacity>
