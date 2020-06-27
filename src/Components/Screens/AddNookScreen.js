@@ -75,6 +75,26 @@ class AddNookScreen extends React.Component {
       Wifi: true,
       CCTV: true,
       UPS: true,
+      
+      Kitchen: true,
+      KitchenAccessories:true,
+      ElectronicIron: true,
+      GasBill :true,
+      WaterBill:true,
+      Parking:true,
+      Transport:true,
+      Oven :true,
+      Cable:true, 
+      Laundry:true,
+      Food:true,
+      Fridge :true, 
+      SecurityGuard :true,
+      WaterFilter :true,
+      Lounge:true,
+      HotWater : true,
+      HouseKeeping: true,
+      Generator : true,
+
       modalVisible: false,
       isDialogVisible: false,
       isSchedule: false,
@@ -187,6 +207,24 @@ class AddNookScreen extends React.Component {
       Wifi,
       CCTV,
       UPS,
+      Kitchen,
+      KitchenAccessories,
+      ElectronicIron,
+      GasBill,
+      WaterBill,
+      Parking,
+      Transport,
+      Oven,
+      Cable, 
+      Laundry,
+      Food,
+      Fridge , 
+      SecurityGuard,
+      WaterFilter,
+      Lounge,
+      HotWater ,
+      HouseKeeping,
+      Generator,
       rooms,
       profile,
       lat,
@@ -210,6 +248,60 @@ class AddNookScreen extends React.Component {
     }
     if (UPS) {
       facilities.push("UPS");
+    }
+    if (Kitchen) {
+      facilities.push("Kitchen");
+    }
+    if (KitchenAccessories) {
+      facilities.push("KitchenAccessories");
+    }
+    if (ElectronicIron) {
+      facilities.push("ElectronicIron");
+    }
+    if (GasBill) {
+      facilities.push("GasBill");
+    }
+    if (WaterBill) {
+      facilities.push("WaterBill");
+    }
+    if (Parking) {
+      facilities.push("Parking");
+    }
+    if (Transport) {
+      facilities.push("Transport");
+    }
+    if (Oven) {
+      facilities.push("Oven");
+    }
+    if (Cable) {
+      facilities.push("Cable");
+    }
+    if (Laundry) {
+      facilities.push("Laundry");
+    }
+    if (Food) {
+      facilities.push("Food");
+    }
+    if (Fridge) {
+      facilities.push("Fridge");
+    }
+    if (SecurityGuard) {
+      facilities.push("SecurityGuard");
+    }
+    if (WaterFilter) {
+      facilities.push("WaterFilter");
+    }
+    if (Lounge) {
+      facilities.push("Lounge");
+    }
+    if (HotWater) {
+      facilities.push("HotWater");
+    }
+    if (HouseKeeping) {
+      facilities.push("HouseKeeping");
+    }
+    if (Generator) {
+      facilities.push("Generator");
     }
     if (!type) {
       return alert("Type is required.");
@@ -990,6 +1082,190 @@ class AddNookScreen extends React.Component {
                               />
                             </View>
                           </View>
+
+
+                          <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                            <View style={styles.checkboxItem}>
+                              <Text>Kitchen</Text>
+                              <CheckBox
+                                checked={this.state.Kitchen}
+                                onPress={() =>
+                                  this.setState({ Kitchen: !this.state.Kitchen })
+                                }
+                              />
+                            </View>
+                            <View style={styles.checkboxItem}>
+                              <Text>Gas Bill</Text>
+                              <CheckBox
+                                checked={this.state.GasBill}
+                                onPress={() =>
+                                  this.setState({ GasBill: !this.state.GasBill })
+                                }
+                              />
+                            </View>
+                          </View>
+                          <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                            
+                            <View style={styles.checkboxItem}>
+                              <Text>Kitchen Accessories</Text>
+                              <CheckBox
+                                checked={this.state.KitchenAccessories}
+                                onPress={() =>
+                                  this.setState({ KitchenAccessories: !this.state.KitchenAccessories })
+                                }
+                              />
+                            </View>
+                          </View>
+                          <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                            <View style={styles.checkboxItem}>
+                              <Text>Electronic Iron</Text>
+                              <CheckBox
+                                checked={this.state.ElectronicIron}
+                                onPress={() =>
+                                  this.setState({ ElectronicIron: !this.state.ElectronicIron })
+                                }
+                              />
+                            </View>
+                            <View style={styles.checkboxItem}>
+                              <Text>Parking</Text>
+                              <CheckBox
+                                checked={this.state.Parking}
+                                onPress={() =>
+                                  this.setState({ Parking: !this.state.Parking })
+                                }
+                              />
+                            </View>
+                          </View>
+                          <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                            <View style={styles.checkboxItem}>
+                              <Text>Water Bill</Text>
+                              <CheckBox
+                                checked={this.state.WaterBill}
+                                onPress={() =>
+                                  this.setState({ WaterBill: !this.state.WaterBill })
+                                }
+                              />
+                            </View>
+                            <View style={styles.checkboxItem}>
+                              <Text>Transport</Text>
+                              <CheckBox
+                                checked={this.state.Transport}
+                                onPress={() =>
+                                  this.setState({ Transport: !this.state.Transport })
+                                }
+                              />
+                            </View>
+                          </View>
+                          <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                            <View style={styles.checkboxItem}>
+                              <Text>Cable</Text>
+                              <CheckBox
+                                checked={this.state.Cable}
+                                onPress={() =>
+                                  this.setState({ Cable: !this.state.Cable })
+                                }
+                              />
+                            </View>
+                            <View style={styles.checkboxItem}>
+                              <Text>Food</Text>
+                              <CheckBox
+                                checked={this.state.Food}
+                                onPress={() =>
+                                  this.setState({ Food: !this.state.Food })
+                                }
+                              />
+                            </View>
+                            <View style={styles.checkboxItem}>
+                              <Text>Fridge</Text>
+                              <CheckBox
+                                checked={this.state.Fridge}
+                                onPress={() =>
+                                  this.setState({ Fridge: !this.state.Fridge })
+                                }
+                              />
+                            </View>
+                          </View>
+                          <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                            <View style={styles.checkboxItem}>
+                              <Text>Security Guard</Text>
+                              <CheckBox
+                                checked={this.state.SecurityGuard}
+                                onPress={() =>
+                                  this.setState({ SecurityGuard: !this.state.SecurityGuard })
+                                }
+                              />
+                            </View>
+                            <View style={styles.checkboxItem}>
+                              <Text>Lounge</Text>
+                              <CheckBox
+                                checked={this.state.Lounge}
+                                onPress={() =>
+                                  this.setState({ Lounge: !this.state.Lounge })
+                                }
+                              />
+                            </View>
+                          </View>
+                          <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                            <View style={styles.checkboxItem}>
+                              <Text>Laundry</Text>
+                              <CheckBox
+                                checked={this.state.Laundry}
+                                onPress={() =>
+                                  this.setState({ Laundry: !this.state.Laundry })
+                                }
+                              />
+                            </View>
+                            <View style={styles.checkboxItem}>
+                              <Text>Water Filter</Text>
+                              <CheckBox
+                                checked={this.state.WaterFilter}
+                                onPress={() =>
+                                  this.setState({ WaterFilter: !this.state.WaterFilter })
+                                }
+                              />
+                            </View>
+                          </View>
+                          <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                            <View style={styles.checkboxItem}>
+                              <Text>Hot Water</Text>
+                              <CheckBox
+                                checked={this.state.HotWater}
+                                onPress={() =>
+                                  this.setState({ HotWater: !this.state.HotWater })
+                                }
+                              />
+                            </View>
+                            <View style={styles.checkboxItem}>
+                              <Text>Generator</Text>
+                              <CheckBox
+                                checked={this.state.Generator}
+                                onPress={() =>
+                                  this.setState({ Generator: !this.state.Generator })
+                                }
+                              />
+                            </View>
+                          </View>
+                          <View style={[styles.checkbox, { paddingTop: 0 }]}>
+                            <View style={styles.checkboxItem}>
+                              <Text>House Keeping</Text>
+                              <CheckBox
+                                checked={this.state.HouseKeeping}
+                                onPress={() =>
+                                  this.setState({ HouseKeeping: !this.state.HouseKeeping })
+                                }
+                              />
+                            </View>
+                            <View style={styles.checkboxItem}>
+                              <Text>Oven</Text>
+                              <CheckBox
+                                checked={this.state.Oven}
+                                onPress={() =>
+                                  this.setState({ Oven: !this.state.Oven })
+                                }
+                              />
+                            </View>
+                          </View>
+
                         </View>
                       </View>
 
