@@ -101,7 +101,7 @@ class HomeScreen extends React.Component {
       user: { access_token: token },
     } = this.props;
     const { filter } = this.state;
-
+    
     this.setState({ loading: true, modalVisible: false });
     getPublicNooks({
       onError: (error) => {
@@ -110,7 +110,9 @@ class HomeScreen extends React.Component {
       },
       onSuccess: () => {
         if (this.state.nooks.length == 0) {
-          return NavigationService.navigateAndResetStack("ManageNooks");
+          if (filter.space_type == '' && filter.type == '' && filter.gender == '') {
+            return NavigationService.navigateAndResetStack("ManageNooks");
+          }
         }
         this.setState({ loading: false });
       },
