@@ -26,7 +26,7 @@ class NookDetailScreen extends React.Component {
       tabIndex: 0,
       tabIndexUser: 0,
       isDialogVisible: false,
-      date: moment(),
+      date: new Date(),
       markers: {
         latlng: {
           latitude: 31.435076,
@@ -135,16 +135,19 @@ class NookDetailScreen extends React.Component {
       generateReceipt,
       user: { access_token: token },
     } = this.props;
-    this.setState({ submitting: true });
+    
+    if(this.state.status.length == 0){
+      return alert("Select Status First");
+    }
     const extras = {};
-
-    this.state.extras.map((ex) => {
-      extras[ex.name] = ex.value
-    });
-
-    const data = {
+    if(this.state.extras.length > 0){
+      this.state.extras.map((ex) => {
+        extras[ex.name] = ex.value
+      });
+    }    
+  const data = {
       "user_id": this.state.user_id,
-      "due_date": new Date(this.state.due_date).getTime() / 1000,
+      "due_date": moment(this.state.due_date, 'MMMM Do YYYY, h:mm a').unix(),
       "status": this.state.status || "0",
       "e_units": this.state.e_units || "0",
       "e_unit_cost": this.state.e_unit_cost || "0",
@@ -152,18 +155,19 @@ class NookDetailScreen extends React.Component {
       "late_day_fine": this.state.late_day_fine || "0",
       "extras": extras
     };
+
+    this.setState({ submitting: true });
     generateReceipt({
       data: data,
       token,
       onSuccess: () => {
-        this.setState({ submitting: false ,isDialogVisible: false});
+        this.setState({ submitting: false ,isDialogVisible: false, status:''});
         alert('Receipt Generated Successfully');
       },
       onError: (message) => {
         alert(message);
         this.setState({
-          isDialogVisible: false,
-          isSchedule:false,
+          submitting: false,
         });
       },
     });
@@ -179,7 +183,8 @@ class NookDetailScreen extends React.Component {
           onTouchOutside={this.togglePopup}>
           <View style={{ flex: 1, padding: 25, }}>
             <TouchableOpacity onPress={() => this.setState({
-              isDialogVisible: false
+              isDialogVisible: false,
+              status:"",
             })}>
               <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
             </TouchableOpacity>
@@ -231,11 +236,7 @@ class NookDetailScreen extends React.Component {
                     borderRadius: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingStart: 10, paddingEnd: 15,
                   }
                 }}
-                onDateChange={(due_date) => {
-                  this.setState({
-                    due_date
-                  })
-                }}
+                onDateChange={(due_date) => {this.setState({due_date})}}
               />
               <InputField onChangeText={(late_day_fine) => this.setState({ late_day_fine })} > Late Day Fine </InputField>
               <InputField onChangeText={(e_units) => this.setState({ e_units })} > Electricity units </InputField>
@@ -296,11 +297,14 @@ class NookDetailScreen extends React.Component {
     );
   }
   addExtra = () => {
-    let joined = this.state.extras.concat(this.state.extra);
-    this.setState({
-      extras: joined,
-      extra: { name: '', value: '' }
-    });
+    const {name, value} = this.state.extra;
+    if(name.length > 0 && value.length > 0){
+      let joined = this.state.extras.concat(this.state.extra);
+      this.setState({
+        extras: joined,
+        extra: { name: '', value: '' }
+      });
+    }
   };
   SearchFilterFunction(text) {
     const bookings = this.state.bookings;
