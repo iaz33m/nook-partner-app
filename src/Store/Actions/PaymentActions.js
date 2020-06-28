@@ -12,7 +12,7 @@ const getPayments = options => async dispatch => {
     });
     try {
 
-        const res = await axios.get(`${APIModel.HOST}/auth/user/transactions?${queryString}`, {
+        const res = await axios.get(`${APIModel.HOST}/admin/partner/transactions?${queryString}`, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -39,6 +39,30 @@ const getPayments = options => async dispatch => {
 };
 
 
+const updatePayment = options => async dispatch => {
+    const { data, id, token, onError,onSuccess } = options;
+    try {
+
+        const {data:{message}} = await axios.post(`${APIModel.HOST}/admin/partner/transactions/`+data.id, data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
 const addPayment = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     try {
@@ -69,4 +93,4 @@ const addPayment = options => async dispatch => {
     }
 };
 
-export { getPayments, addPayment };
+export { getPayments, addPayment, updatePayment };
