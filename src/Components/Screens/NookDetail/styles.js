@@ -94,6 +94,22 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         lineHeight: 22,
         paddingTop: 5,
-      }
+    },
+    Inputchild: {
+        marginTop:15,
+        paddingStart: 15,
+        paddingEnd: 15,
+        padding:15,
+        borderRadius: 30,
+        // To round image corners
+        overflow: 'hidden',
+        borderColor: '#999',
+        borderWidth: 0,
+        backgroundColor: '#FFF',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 5,
+        elevation: 3
+    },
 });
 export default styles;

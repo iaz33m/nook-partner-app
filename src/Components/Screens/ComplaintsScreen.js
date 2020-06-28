@@ -140,11 +140,11 @@ class ComplaintsScreen extends React.Component {
         <InputField
           iconName="md-phone-portrait"
           value={filter.number}
-          onChangeText={status => this.setState({ filter: { ...filter, number } })}
+          onChangeText={number => this.setState({ filter: { ...filter, number } })}
         >User Number</InputField>
         <InputField
           iconName="md-phone-portrait"
-          value={filter.emailemail}
+          value={filter.email}
           onChangeText={email => this.setState({ filter: { ...filter, email } })}
         >Email</InputField>
         <Item picker style={styles.pickerStyle}>

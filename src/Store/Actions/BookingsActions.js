@@ -12,7 +12,7 @@ const getBookings = options => async dispatch => {
     });
     try {
 
-        const res = await axios.get(`${APIModel.HOST}/auth/user/bookings?${queryString}`, {
+        const res = await axios.get(`${APIModel.HOST}/admin/partner/bookings?${queryString}`, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -68,5 +68,55 @@ const cancelBooking = options => async dispatch => {
         }
     }
 };
+const addSecurity = options => async dispatch => {
+    const { data, id, token, onError,onSuccess } = options;
+    
+    try {
 
-export { getBookings, cancelBooking };
+        const { data: { message } } = await axios.post(`${APIModel.HOST}/admin/partner/bookings/addSecurity/`+data.id, data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+const updateBooking = options => async dispatch => {
+    const { data, id, token, onError,onSuccess } = options;
+    
+    try {
+
+        const { data: { message } } = await axios.post(`${APIModel.HOST}/admin/partner/bookings/`+data.id, data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
+export { getBookings, cancelBooking,addSecurity, updateBooking };

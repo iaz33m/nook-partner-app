@@ -124,8 +124,8 @@ const customTabs = ({ navigation }) => ({
 const TabScreens = createBottomTabNavigator(
   {
     // other screens
-    Shifts: {
-      screen: ShiftsScreen,
+    Bookings: {
+      screen: BookingsScreen,
     },
     Receipts: {
       screen: ReceiptsScreen,

@@ -208,7 +208,9 @@ class NookDetailScreen extends React.Component {
                   <Picker.Item value="paid" label="paid" />
                 </Picker>
               </Item>
-              <InputField onChangeText={(fine) => this.setState({ fine })} > Fine </InputField>
+              <View style={styles.Inputchild}>
+                <TextInput style={{pending: 10 }} keyboardType='numeric' onChangeText={(fine) => this.setState({ fine })}  placeholder ="Fine"/> 
+              </View>
               <DatePicker
                 style={{
                   ...styles.container,
@@ -238,10 +240,15 @@ class NookDetailScreen extends React.Component {
                 }}
                 onDateChange={(due_date) => {this.setState({due_date})}}
               />
-              <InputField onChangeText={(late_day_fine) => this.setState({ late_day_fine })} > Late Day Fine </InputField>
-              <InputField onChangeText={(e_units) => this.setState({ e_units })} > Electricity units </InputField>
-              <InputField onChangeText={(e_unit_cost) => this.setState({ e_unit_cost })} > Electricity unit Cost </InputField>
-              
+              <View style={styles.Inputchild}>
+                <TextInput style={{pending: 10 }} keyboardType='numeric' onChangeText={(late_day_fine) => this.setState({ late_day_fine })}  placeholder ="Late Day Fine"/> 
+              </View>
+              <View style={styles.Inputchild}>
+                <TextInput style={{pending: 10 }} keyboardType='numeric' onChangeText={(e_units) => this.setState({ e_units })}  placeholder ="Electricity units"/> 
+              </View>
+              <View style={styles.Inputchild}>
+                <TextInput style={{pending: 10 }} keyboardType='numeric' onChangeText={(e_unit_cost) => this.setState({ e_unit_cost })}  placeholder ="Electricity unit Cost"/> 
+              </View>
               <Text style={{justifyContent: 'center', fontWeight: 'bold', margin: 20}}>Add Extras</Text>
               
                 {this.state.extras.map((extra) =>
@@ -277,14 +284,17 @@ class NookDetailScreen extends React.Component {
               }
             })
           }} > Name </InputField>
-        <InputField value={this.state.extra.value} onChangeText={value => {
-            this.setState({
-              extra: {
-                ...this.state.extra,
-                value: value
-              }
-            })
-          }} > Value </InputField>
+          <View style={styles.Inputchild}>
+            <TextInput style={{pending: 10 }} keyboardType='numeric' value={this.state.extra.value} 
+            onChangeText={value => {
+              this.setState({
+                extra: {
+                  ...this.state.extra,
+                  value: value
+                }
+              })
+            }}  placeholder ="Value"/> 
+          </View>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
             <TouchableOpacity
                 style={styles.addButton}

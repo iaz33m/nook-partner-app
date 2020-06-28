@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, Text, View, Platform, Image, TouchableOpacity, RefreshControl, FlatList, Linking } from 'react-native';
+import { StyleSheet, Text, View, Platform, ScrollView, Image, TouchableOpacity, RefreshControl, FlatList, Linking, TextInput } from 'react-native';
 import { Icon, Item, Picker, Spinner } from "native-base";
 import Colors from '../../helper/Colors';
 import Header from '../SeperateComponents/Header';
 import TitleText from '../SeperateComponents/TitleText';
 import Button from '../SeperateComponents/Button';
 import * as NavigationService from '../../NavigationService';
+import PopupDialog from "react-native-popup-dialog";
+import InputField from "../SeperateComponents/InputField";
 import * as actions from '../../Store/Actions/BookingsActions';
 
 class BookingsScreen extends React.Component {
@@ -21,10 +23,35 @@ class BookingsScreen extends React.Component {
                 "approved": "Approved",
                 "rejected": "Rejected",
             },
+            action: {
+                "pending": "Pending",
+                "in_progress": "In Progress",
+                "approved": "Approved",
+                "rejected": "Rejected",
+                "off-board":"Moved",
+                "cancelled":"Cancelled",
+            },
+            status:'',
+            oldSecuirty:'',
+            security: "",
+            paidSecurity:"",
+            installments: '1',
+            refunedSecurity: '',
+            bookingId:'',
+            isSchedule: false, 
+            isDialogVisible:false, 
+            isUpdateSchedule: false, 
+            isUpdateDialogVisible:false, 
+            submitting:false,
             loading: true,
             modalVisible: false,
             filter: {
+                id:'',
                 status: '',
+                nookCode: "",
+                space_type: "",
+                number: "",
+                email: "",
             },
             bookings: []
         };
@@ -69,13 +96,57 @@ class BookingsScreen extends React.Component {
     }
 
 
-    cancelBooking = (booking) => {
-        const { user: { access_token }, cancelBooking } = this.props;
-        cancelBooking({
-            onError: alert,
-            onSuccess: alert,
-            data: {
-                booking_id: booking.id
+    addSecurity() {
+        const { user: { access_token }, addSecurity } = this.props;
+        const {bookingId, security} = this.state;
+        
+        if(security == ''){
+            return alert('Enter Security Fee');
+        }
+        this.setState({ submitting: true });
+        const data = { "security":security, "id": bookingId};
+        const id = {bookingId};
+        addSecurity({
+            data: data,
+            id  : id,
+            onError: (error) => {
+              alert(error);
+              this.setState({ submitting: false });
+            },
+            onSuccess: () => {
+              this.setState({ submitting: false ,isDialogVisible: false});
+              alert('Security added successfully');
+              this.onRefresh();
+            },
+            token: access_token
+        });
+    }
+    updateBooking() {
+        const { user: { access_token }, updateBooking } = this.props;
+        const {bookingId, installments, refunedSecurity, status} = this.state;
+        
+        if(status == ''){
+            return alert('Select Status First');
+        }
+        if(status == "off-board"){
+            if(refunedSecurity == ''){
+                return alert('Select Status First');
+            }
+        }
+        this.setState({ submitting: true });
+        const data = { "installments":installments, "refunedSecurity":refunedSecurity, "status":status, "id": bookingId};
+        const id = {bookingId};
+        updateBooking({
+            data: data,
+            id  : id,
+            onError: (error) => {
+              alert(error);
+              this.setState({ submitting: false });
+            },
+            onSuccess: () => {
+              this.setState({ submitting: false ,isUpdateDialogVisible: false});
+              alert('Booking Updated Successfully');
+              this.onRefresh();
             },
             token: access_token
         });
@@ -113,60 +184,74 @@ class BookingsScreen extends React.Component {
                     />
                 </TouchableOpacity>
                 <TitleText
-                    style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Filter</TitleText>
-
-
-                <Item picker style={styles.pickerStyle}>
-                    <Picker
-                        mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
-                        style={{ width: "100%" }}
-                        placeholder="Room Catagories"
-                        placeholderStyle={{ color: "#bfc6ea" }}
-                        placeholderIconColor="#007aff"
-                        selectedValue={filter.status}
-                        onValueChange={status => this.setState({ filter: { ...filter, status } })}>
-                        <Picker.Item label="All Bookings" value="" />
-                        {Object.keys(statses)
-                            .filter(k => k)
-                            .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
-                    </Picker>
-                </Item>
-
-                <View style={{ justifyContent: 'center' }}>
-                    <Button onPress={this.applyFilter}>Apply Filter</Button>
-                </View>
-
+                    style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>Filter
+                </TitleText>
+                <ScrollView style={styles.scrollView}>
+                    <InputField
+                        iconName="md-phone-portrait"
+                        value={filter.id}
+                        onChangeText={id => this.setState({ filter: { ...filter, id } })}
+                    >
+                        ID
+                    </InputField>
+                    <InputField
+                        iconName="md-phone-portrait"
+                        value={filter.nookCode}
+                        onChangeText={nookCode => this.setState({ filter: { ...filter, nookCode } })}
+                    >
+                        Nook Code
+                    </InputField>
+                    <InputField
+                        iconName="md-phone-portrait"
+                        value={filter.number}
+                        onChangeText={number => this.setState({ filter: { ...filter, number } })}
+                    >
+                        User Number
+                    </InputField>
+                    <InputField
+                        iconName="md-phone-portrait"
+                        value={filter.email}
+                        onChangeText={email => this.setState({ filter: { ...filter, email } })}
+                    >
+                        Email
+                    </InputField>
+                    <Item picker style={styles.pickerStyle}>
+                        <Picker
+                            mode="dropdown"
+                            iosIcon={<Icon name="arrow-down" />}
+                            style={{ width: "100%" }}
+                            placeholder="Room Catagories"
+                            placeholderStyle={{ color: "#bfc6ea" }}
+                            placeholderIconColor="#007aff"
+                            selectedValue={filter.status}
+                            onValueChange={status => this.setState({ filter: { ...filter, status } })}>
+                            <Picker.Item label="All Bookings" value="" />
+                            {Object.keys(statses)
+                                .filter(k => k)
+                                .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
+                        </Picker>
+                    </Item>
+                    <Item picker style={styles.pickerStyle}>
+                        <Picker
+                            mode="dropdown"
+                            iosIcon={<Icon name="arrow-down" />}
+                            style={{ width: "100%" }}
+                            placeholder="Nook Type"
+                            placeholderStyle={{ color: "#bfc6ea" }}
+                            placeholderIconColor="#007aff"
+                            selectedValue={filter.space_type}
+                            onValueChange={space_type => this.setState({ filter: { ...filter, space_type } })}>
+                            <Picker.Item label="All Nook Type" value="" />
+                            <Picker.Item label="Shared" value="shared" />
+                            <Picker.Item label="Independent" value="independent" />
+                        </Picker>
+                    </Item>
+                    <View style={{ justifyContent: 'center' }}>
+                        <Button onPress={this.applyFilter}>Apply Filter</Button>
+                    </View>
+                </ScrollView>
             </View>
         );
-    }
-
-
-    openGps = ({ lat, lng }, address) => {
-        const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
-        const latLng = `${lat},${lng}`;
-        const url = Platform.select({
-            ios: `${scheme}${address}@${latLng}`,
-            android: `${scheme}${latLng}(${address})`
-        });
-
-        this.openExternalApp(url)
-    }
-
-    openExternalApp = (url) => {
-        Linking.canOpenURL(url).then(supported => {
-            if (supported) {
-                Linking.openURL(url);
-            } else {
-                Alert.alert(
-                    'ERROR',
-                    'Unable to open: ' + url,
-                    [
-                        { text: 'OK' },
-                    ]
-                );
-            }
-        });
     }
 
     renderBookings = () => {
@@ -192,7 +277,10 @@ class BookingsScreen extends React.Component {
                                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
                                     <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
-                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Type</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Security</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Paid Security</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Refuned Security</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Rent</TitleText>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -200,14 +288,21 @@ class BookingsScreen extends React.Component {
                                         <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
                                     </TouchableOpacity>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
-                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{(item.room) ? `${item.room.capacity} Person(s)` : ''}</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.security} PKR</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.paidSecurity} PKR</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.refunedSecurity} PKR</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.rent} PKR</TitleText>
                                 </View>
                             </View>
 
                             <View style={{ justifyContent: 'center', marginBottom: 10 }}>
-                                <Button onPress={() => this.openGps(item.nook.location, item.nook.address)}>Get Direction</Button>
-                                {(item.status === 'Pending') && <Button onPress={() => this.cancelBooking(item)}>Cancel Booking</Button>}
+                                <Button 
+                                    onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, bookingId: item.id, oldSecuirty: item.security, paidSecurity:item.paidSecurity }); }}
+                                >Collect Security</Button>
+                                <Button
+                                    onPress={() => { this.setState({ isUpdateDialogVisible: true, isUpdateSchedule: true, bookingId: item.id, oldSecuirty: item.security, paidSecurity:item.paidSecurity, status:item.status_key }); }}
+                                >Update</Button>
                             </View>
                         </View>
                     </View>
@@ -222,7 +317,129 @@ class BookingsScreen extends React.Component {
             />
         );
     }
+    renderCollectSecurityPopup = () => {
+        const { isSchedule, isDialogVisible, submitting, oldSecuirty,paidSecurity,bookingId} = this.state;
+    
+        if (isSchedule) {
+          return (
+            <PopupDialog
+              width={0.9} height={0.7}
+              visible={isDialogVisible}
+              onTouchOutside={this.togglePopup}>
+              <View style={{ flex: 1, padding: 25, }}>
+                <TouchableOpacity onPress={() => this.setState({
+                  isDialogVisible: false,
+                })}>
+                  <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+                </TouchableOpacity>
+                <Text style={{justifyContent: 'center', fontWeight: 'bold', fontSize: 18}}>Collect Security</Text>
+                <View style={{ flexDirection: 'row', margin: 15,}}>
+                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Booking ID</TitleText>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Total Security</TitleText>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Paid Security</TitleText>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{bookingId}</TitleText>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{oldSecuirty} PKR</TitleText>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{paidSecurity} PKR</TitleText>
+                    </View>
+                </View>
+                <View style={styles.Inputchild}>
+                    <TextInput style={{pending: 10 }} keyboardType='numeric' value={this.state.security} onChangeText={(security) => this.setState({ security })}  placeholder ="Enter Security"/> 
+                </View>
+                <Button disabled={submitting} onPress={() => { this.addSecurity() }} >{submitting ? 'Please wait...' : 'Add Security'}</Button>
+              </View>
+            </PopupDialog>
+          );
+        }
+    }
+    renderUpdateBookingPopup = () => {
+        const { isUpdateSchedule, isUpdateDialogVisible, submitting, oldSecuirty,paidSecurity,bookingId, status, action, refunedSecurity, installments, security} = this.state;
+        let collectedSecuirty = Math.round(oldSecuirty / installments);
+        if (isUpdateSchedule) {
+          return (
+            <PopupDialog
+              width={0.9} height={0.9}
+              visible={isUpdateDialogVisible}
+              onTouchOutside={this.togglePopup}>
+              <View style={{ flex: 1, padding: 25, }}>
+                <TouchableOpacity onPress={() => this.setState({
+                  isUpdateDialogVisible: false,
+                })}>
+                  <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+                </TouchableOpacity>
+                <Text style={{justifyContent: 'center', fontWeight: 'bold', fontSize: 18}}>Collect Security</Text>
+                <View style={{ flexDirection: 'row', margin: 15,}}>
+                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Booking ID</TitleText>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Total Security</TitleText>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Paid Security</TitleText>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{bookingId}</TitleText>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{oldSecuirty} PKR</TitleText>
+                        <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{paidSecurity} PKR</TitleText>
+                    </View>
+                </View>
+                <Item picker style={styles.pickerStyle}>
+                <Picker
+                    mode="dropdown"
+                    iosIcon={<Icon name="arrow-down" />}
+                    style={{ width: "100%" }}
+                    placeholder="Select Status"
+                    placeholderStyle={{ color: "#bfc6ea" }}
+                    placeholderIconColor="#007aff"
+                    selectedValue={this.state.status}
+                    onValueChange={status => this.setState({ status })}>
+                    <Picker.Item  label="Select Status" value=""/>
+                    {Object.keys(action)
+                    .filter(k => k)
+                    .map(k => <Picker.Item key={k} label={action[k]} value={k} />)}
+                </Picker>
+                </Item>
+                {
+                    (status === 'off-board') && (
+                        <View style={styles.Inputchild}>
+                            <TextInput style={{pending: 10 }} keyboardType='numeric' value={this.state.refunedSecurity} onChangeText={(refunedSecurity) => this.setState({ refunedSecurity })}  placeholder ="Refuned Security"/> 
+                        </View>
+                    )
+                }
 
+                {
+                    status === 'approved' && (
+                        <View>
+                            <Picker
+                                mode="dropdown"
+                                iosIcon={<Icon name="arrow-down" />}
+                                style={{ width: "100%" }}
+                                placeholder="Select Status"
+                                placeholderStyle={{ color: "#bfc6ea" }}
+                                placeholderIconColor="#007aff"
+                                selectedValue={this.state.installments}
+                                onValueChange={installments => this.setState({ installments })}>
+                                <Picker.Item  label="1 Installment" value="1"/>
+                                <Picker.Item  label="2 Installment" value="2"/>
+                                <Picker.Item  label="3 Installment" value="3"/>
+                                <Picker.Item  label="4 Installment" value="4"/>
+                            </Picker>
+                            <View style={{ flexDirection: 'row', margin: 15,}}>
+                                <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Collected Security</TitleText>
+                                </View>
+                                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{collectedSecuirty}</TitleText>
+                                </View>
+                            </View>
+                        </View>
+                    )
+                }
+                <Button disabled={submitting} onPress={() => { this.updateBooking() }} >{submitting ? 'Please wait...' : 'Update'}</Button>
+              </View>
+            </PopupDialog>
+          );
+        }
+    }
     render() {
 
 
@@ -254,6 +471,8 @@ class BookingsScreen extends React.Component {
                     {this.renderBookings()}
                 </View>
                 {this.renderFilterView()}
+                {this.renderCollectSecurityPopup()}
+                {this.renderUpdateBookingPopup()}
             </View>
         );
     }
@@ -326,7 +545,22 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         // Android shadow
         elevation: 3
-    }
+    },
+    Inputchild: {
+        paddingStart: 15,
+        paddingEnd: 15,
+        padding:15,
+        borderRadius: 30,
+        // To round image corners
+        overflow: 'hidden',
+        borderColor: '#999',
+        borderWidth: 0,
+        backgroundColor: '#FFF',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.10,
+        shadowRadius: 5,
+        elevation: 3
+    },
 });
 
 
@@ -341,6 +575,8 @@ export default connect(
     mapStateToProps,
     {
         getBookings: actions.getBookings,
-        cancelBooking: actions.cancelBooking,
+        addSecurity:actions.addSecurity,
+        updateBooking:actions.updateBooking,
+        
     },
 )(BookingsScreen);
