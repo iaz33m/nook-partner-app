@@ -12,7 +12,7 @@ const getVisits = options => async dispatch => {
     });
     try {
 
-        const res = await axios.get(`${APIModel.HOST}/auth/user/visits?${queryString}`, {
+        const res = await axios.get(`${APIModel.HOST}/admin/partner/visits?${queryString}`, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -37,7 +37,31 @@ const getVisits = options => async dispatch => {
         }
     }
 };
+const update = options => async dispatch => {
+    const { data, id, token, onError,onSuccess } = options;
+    
+    try {
 
+        const { data: { message } } = await axios.post(`${APIModel.HOST}/admin/partner/visits/`+data.id, data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
 const cancelVisit = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     try {
@@ -68,4 +92,4 @@ const cancelVisit = options => async dispatch => {
     }
 };
 
-export { getVisits, cancelVisit };
+export { getVisits, cancelVisit, update };
