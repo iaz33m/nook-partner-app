@@ -165,20 +165,20 @@ class VisitsScreen extends React.Component {
                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
                   <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
-                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Date</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Time</TitleText>
-                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Updated At</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User Name</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User Number</TitleText>
                 </View>
                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
                   <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen", item.nook)}>
                     <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
                   </TouchableOpacity>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
-                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.date}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.time}</TitleText>
-                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.updated_at}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.number}</TitleText>      
                 </View>
               </View>
               <View style={{ justifyContent: 'center' }}>
