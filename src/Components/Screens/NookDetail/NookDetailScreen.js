@@ -172,6 +172,39 @@ class NookDetailScreen extends React.Component {
       },
     });
   };
+
+
+  publishReceipt = (receiptData = {}) => {
+
+    const {
+      publishReceipt,
+      user: { access_token: token, id },
+    } = this.props;
+    
+
+    const data = {
+        user_id: id,
+        ...receiptData,
+    };
+
+    this.setState({ submitting: true });
+    publishReceipt({
+      data: data,
+      token,
+      onSuccess: (message) => {
+        this.setState({ submitting: false});
+        alert(message);
+      },
+      onError: (message) => {
+        alert(message);
+        this.setState({
+          submitting: false,
+        });
+      },
+    });
+  };
+
+
    renderReceiptGeneraterPopup = () => {
     const { isSchedule, isDialogVisible, submitting,status,fine,late_day_fine,e_units,e_unit_cost,due_date } = this.state;
 
@@ -335,10 +368,15 @@ class NookDetailScreen extends React.Component {
   }
   bookings(){
     const bookings = this.state.bookings;
+    const {submitting} = this.state;
     return(
         <View>
-        {bookings.map((b, bI) =>
-                      <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
+        {bookings.map((b, bI) => {
+          const {receipts} = b;
+          console.log('receipts................',receipts);
+          const singleReceipt = receipts ? receipts : null; 
+          return (
+            <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
                         <View style={{ flexDirection: "row" }}>
                           <View style={{ flex: 1 }}>
                             <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>{b.user.name}</Text>
@@ -348,7 +386,7 @@ class NookDetailScreen extends React.Component {
                           </View>
                         </View>
 
-                        {/* <View style={{ flexDirection: "row",  }}>
+                        <View style={{ flexDirection: "row",  }}>
                           <View style={{ flex: 1 }}>
                             <Text style={{ marginBottom: 15, fontSize: 16, }}>Rent</Text>
                           </View>
@@ -371,28 +409,43 @@ class NookDetailScreen extends React.Component {
                           <View style={{ flex: 1, alignItems: 'flex-end', }}>
                             <Text style={{ marginBottom: 15, fontSize: 16, }}>{b.security} PKR</Text>
                           </View>
-                        </View> */}
+                        </View>
+                        {(singleReceipt && singleReceipt.received_amount) && (
                         <View style={{ flexDirection: "row",  }}>
                           <View style={{ flex: 1 }}>
                             <Text style={{ marginBottom: 15, fontSize: 16, }}>Receivable</Text>
                           </View>
-                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{(b.receipts)? b.receipts.received_amount :"0" } PKR</Text>
-                          </View>
+                            <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                              <Text style={{ marginBottom: 15, fontSize: 16, }}>{singleReceipt.received_amount} PKR</Text>
+                           </View>
                         </View>
+                        )}
                         <View style={{ flex: 1, alignContent: "center" }}>
-                          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                            
+                          {(!singleReceipt) && (
+                            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
                             <TouchableOpacity
                               style={styles.addButton}
                               onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, user_id: b.user.id}); }}
                             >
-                              <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>GENERATE RECEIPT </Text>
+                              <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Generate Receipt</Text>
                             </TouchableOpacity>
                           </View>
+                          )}
+                          {(singleReceipt) && (
+                            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+                            <TouchableOpacity
+                              style={styles.addButton}
+                              onPress={() => this.publishReceipt({receipt_id: singleReceipt.id, user_id: b.user.id})}
+                              disabled={submitting}
+                            >
+                              <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>{submitting ? "Please wait..." : "Publish Receipt"}</Text>
+                            </TouchableOpacity>
+                          </View>
+                          )}
                         </View>
                       </View>
-                    )
+          );
+        } )
                   }
         </View>
     );
@@ -728,7 +781,7 @@ class NookDetailScreen extends React.Component {
                    {this.bookings()}
                     <View style={{ flex: 1, alignContent: "center" }}>
                       <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
-                        <Button disabled={submitting} >
+                        <Button disabled={submitting} onPress={() => this.publishReceipt()} >
                           {submitting ? "Please wait..." : "PUBLISH ALL RECEIPTS"}
                         </Button>
                       </View>
@@ -763,6 +816,7 @@ export default connect(
   mapStateToProps,
   {
     generateReceipt: actions.generateReceipt,
+    publishReceipt: actions.publishReceipt,
   },
   
 )

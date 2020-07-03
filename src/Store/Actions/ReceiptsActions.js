@@ -37,6 +37,7 @@ const getReceipts = options => async dispatch => {
         }
     }
 };
+
 const generateReceipt = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     
@@ -62,7 +63,62 @@ const generateReceipt = options => async dispatch => {
         }
     }
 };
+
+const publishReceipt = options => async dispatch => {
+    const { data, token, onError,onSuccess } = options;
+    
+    try {
+
+        const {data:{message}} = await axios.post(`${APIModel.HOST}/admin/partner/receipts/publish`,data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
+const payReceipt = options => async dispatch => {
+    const { data, id, token, onError,onSuccess } = options;
+    
+    try {
+
+        const {data:{message}} = await axios.post(`${APIModel.HOST}/admin/partner/receipts/pay/${id}`,data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
+
 export { 
     getReceipts ,
-    generateReceipt
+    generateReceipt,
+    publishReceipt,
+    payReceipt,
 };

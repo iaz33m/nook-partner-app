@@ -10,7 +10,6 @@ import InputField from './../../SeperateComponents/InputField';
 import Button from '../../SeperateComponents/Button';
 import * as NavigationService from '../../../NavigationService';
 import * as actions from "../../../Store/Actions/ReceiptsActions";
-import * as paymentActions from "../../../Store/Actions/PaymentActions";
 
 class ReceiptsScreen extends React.Component {
 
@@ -31,8 +30,8 @@ class ReceiptsScreen extends React.Component {
       modalVisible: false,
       loading: true,
       filter: {
-        status: '',
-        id: "",
+        status: 'in_progress',
+        id: '',
         nookCode: "",
         space_type: "",
         number: "",
@@ -88,12 +87,11 @@ class ReceiptsScreen extends React.Component {
 
   submitPayment = () => {
     this.toggleSubmitting();
-    const { user: { access_token }, addPayment } = this.props;
-    const { selectedReciept, details, amount } = this.state;
-    addPayment({
+    const { user: { access_token }, payReceipt } = this.props;
+    const { selectedReciept, amount } = this.state;
+    payReceipt({
+      id: selectedReciept.id,
       data: {
-        receipt_id: selectedReciept.id,
-        details,
         amount
       },
       onError: message => {
@@ -117,10 +115,10 @@ class ReceiptsScreen extends React.Component {
 
   renderAddPaymentModal = () => {
 
-    const { addPaymentModal, details, amount, submitting } = this.state;
+    const { addPaymentModal, amount, submitting } = this.state;
     return (
       <PopupDialog
-        width={0.9} height={0.50}
+        width={0.9} height={0.4}
         visible={addPaymentModal}
         onTouchOutside={this.togglePaymentModal}>
         <View style={{ flex: 1, padding: 25, }}>
@@ -130,18 +128,9 @@ class ReceiptsScreen extends React.Component {
 
           <InputField
             value={amount}
-
             onChangeText={amount => this.setState({ amount })}
           >Paymet Amount</InputField>
 
-          <Textarea
-            rowSpan={4}
-            bordered
-            placeholder="Payment Details"
-            value={details}
-            marginTop={10}
-            onChangeText={details => this.setState({ details })}
-          />
           <Button disabled={submitting} onPress={this.submitPayment} >{submitting ? 'Please wait...' : 'Submit'}</Button>
         </View>
       </PopupDialog>
@@ -191,11 +180,17 @@ class ReceiptsScreen extends React.Component {
 
                 {
                   (!item.transaction) && 
-                  <View style={{ justifyContent: 'center', marginBottom: 10 }}>
+                  <View style={{ justifyContent: 'center' }}>
                   <Button onPress={() => {
                     NavigationService.navigate("ReceiptDetailsScreen", item)
                   }}>View Details</Button>
                 </View>
+                }
+                {
+                  (item.status === 'In Progress') && 
+                  <View style={{ justifyContent: 'center', marginBottom: 10 }}>
+                    <Button onPress={() => {this.setState({selectedReciept: item}); this.togglePaymentModal();}}>Receive Payment</Button>
+                  </View>
                 }
 
               </View>
@@ -441,6 +436,6 @@ export default connect(
   mapStateToProps,
   {
     getReceipts: actions.getReceipts,
-    addPayment: paymentActions.addPayment,
+    payReceipt: actions.payReceipt,
   },
 )(ReceiptsScreen);

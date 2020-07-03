@@ -577,6 +577,5 @@ export default connect(
         getBookings: actions.getBookings,
         addSecurity:actions.addSecurity,
         updateBooking:actions.updateBooking,
-        
     },
 )(BookingsScreen);

@@ -127,8 +127,11 @@ const TabScreens = createBottomTabNavigator(
     Bookings: {
       screen: BookingsScreen,
     },
-    Payment: {
-      screen: PaymentsScreen,
+    // Shifts: {
+    //   screen: ShiftsScreen,
+    // },
+    Receipts: {
+      screen: ReceiptsScreen,
     },
     Home: {
       screen: HomeScreen
