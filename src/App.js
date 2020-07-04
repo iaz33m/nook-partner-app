@@ -124,26 +124,32 @@ const customTabs = ({ navigation }) => ({
 const TabScreens = createBottomTabNavigator(
   {
     // other screens
-    Bookings: {
-      screen: BookingsScreen,
-    },
-    // Shifts: {
-    //   screen: ShiftsScreen,
-    // },
-    // Receipts: {
-    //   screen: ReceiptsScreen,
-    // },
-    Visits: {
-      screen: VisitsNookScreen
-    },
-    Home: {
-      screen: HomeScreen
+    Profile: {
+      screen: ProfileScreen
     },
     Complaints: {
       screen: ComplaintsScreen
     },
-    Notices: {
-      screen: NoticesScreen
+    // Shifts: {
+    //   screen: ShiftsScreen,
+    // },
+    // Payment: {
+    //   screen: PaymentScreen,
+    // },
+    // Receipts: {
+    //   screen: ReceiptsScreen,
+    // },
+    // Notices: {
+    //   screen: NoticesScreen
+    // },
+    Home: {
+      screen: HomeScreen
+    },
+    Bookings: {
+      screen: BookingsScreen,
+    },
+    Visits: {
+      screen: VisitsNookScreen
     },
   },
   {

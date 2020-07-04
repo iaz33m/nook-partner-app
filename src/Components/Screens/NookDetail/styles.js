@@ -20,6 +20,19 @@ const styles = StyleSheet.create({
         marginStart: 5,
         marginEnd: 5, height: 40
       },
+      bigButton: {
+        alignItems: 'center',
+        backgroundColor: '#E59413',
+        paddingTop: 10,
+        paddingBottom: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        borderRadius: 5,
+        marginStart: 5,
+        marginEnd: 5,
+        height: 65, width: '45%'
+    },
+
     tabButton: {
         justifyContent: 'center',
         height: 35,
@@ -87,6 +100,42 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         // Android shadow
         elevation: 3
+    },
+    ScreenButtonContainer: {
+        flex: 1, 
+        // padding: 25,
+        paddingTop: 15,
+        paddingBottom: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.10,
+        shadowRadius: 5,
+    },
+    ScreenButtonChild: {
+        borderRadius: 15,
+        // To round image corners
+        overflow: 'hidden',
+        borderColor: '#999',
+        borderWidth: 0,
+        backgroundColor: '#FFF',
+        // Android shadow
+        elevation: 3,
+        paddingTop: 5,
+        paddingBottom: 20,
+    },
+    shiftButton: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: '#E59413',
+        alignSelf: 'stretch',
+        alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 10,
+        flexDirection: 'column',
+        borderRadius: 5,
+        marginStart: 5,
+        marginEnd: 5,
+        height: 65, marginTop: 10, marginBottom: 10
     },
     buttonTextStyle: {
         fontSize: 20,

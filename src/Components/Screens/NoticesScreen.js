@@ -40,7 +40,7 @@ class NoticesScreen extends React.Component {
       filter: {
         status: '',
         id: "",
-        nookCode: "",
+        nookCode: this.props.navigation.state.params,
         space_type: "",
         number: "",
         email: "",

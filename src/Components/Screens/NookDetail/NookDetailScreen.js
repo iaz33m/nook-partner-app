@@ -716,6 +716,74 @@ class NookDetailScreen extends React.Component {
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
               <Text style={{ margin: 15, fontSize: 16, }}>{nook.number}</Text>
             </View>
+            
+            <View style={styles.ScreenButtonContainer}>
+                <View style={styles.ScreenButtonChild}>
+                    <ScrollView contentContainerStyle={{
+                        alignSelf: 'center', flexDirection: 'column',
+                        alignItems: 'center', padding: 20
+                    }}>
+                        <View style={{
+                            flexDirection: 'row', alignSelf: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <TouchableOpacity
+                                style={styles.bigButton}
+                                onPress={() => NavigationService.navigate('ShiftsScreen',nook.nookCode)}
+                            >
+                                <Image style={{
+                                    width: 25,
+                                    height: 25,
+                                    alignSelf: 'center',
+                                    alignItems: 'center', tintColor: 'white'
+                                }}
+                                    resizeMode="contain"
+                                    source={require('./../../../../assets/shift.png')}
+                                />
+                                <Text style={{
+                                    color: 'white'
+                                }}>Shifts </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.bigButton}
+                                onPress={() => NavigationService.navigate('ReceiptsScreen',nook.nookCode)}
+                            >
+                                <Image style={{
+                                    width: 25,
+                                    height: 25,
+                                    alignSelf: 'center',
+                                    alignItems: 'center', tintColor: 'white'
+                                }}
+                                    resizeMode="contain"
+                                    source={require('../../../../assets/receipts.png')}
+                                />
+                                <Text style={{
+                                    color: 'white'
+                                }}>Receipts </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity
+                            style={styles.shiftButton}
+                            onPress={() => NavigationService.navigate('NoticesScreen',nook.nookCode)}
+                        >
+                            <Image style={{
+                                width: 25,
+                                height: 25,
+                                alignSelf: 'center',
+                                alignItems: 'center', tintColor: 'white'
+                            }}
+                                resizeMode="contain"
+                                source={require('./../../../../assets/notices.png')}
+                            />
+                            <Text style={{
+                                color: 'white'
+                            }}>Notices </Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+
+                </View>
+            </View>
+
 
             {/* Rooms and user data tab */}
             <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 30, marginBottom: 10, }}>
@@ -791,6 +859,7 @@ class NookDetailScreen extends React.Component {
             }
           {this.renderReceiptGeneraterPopup()}
           </View>
+          
         </ScrollView>
       </View >
     );

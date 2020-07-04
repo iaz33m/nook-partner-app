@@ -1319,7 +1319,8 @@ class AddNookScreen extends React.Component {
                       {this.subAreaLocation()}
                       {this.areaBlockLocation()}
                       {this.areaLatLngLocation()}
-                      <View style={styles.container}>
+                      {
+                        this.state.space_type =="shared" && <View style={styles.container}>
                         <View
                           style={[
                             styles.child,
@@ -1358,7 +1359,8 @@ class AddNookScreen extends React.Component {
                             />
                           </TouchableOpacity>
                         </View>
-                      </View>
+                      </View> 
+                      }
                       {this.roomList()}
                       {this.renderRoomPopup()}
                     </View>

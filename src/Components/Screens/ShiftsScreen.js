@@ -40,7 +40,7 @@ class ShiftsScreen extends React.Component {
         status: '',
         price_per_bed:'',
         id: "",
-        nookCode: "",
+        nookCode: this.props.navigation.state.params,
         space_type: "",
         room_type:"",
         number: "",
