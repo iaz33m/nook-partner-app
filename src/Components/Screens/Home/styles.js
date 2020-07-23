@@ -17,7 +17,16 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         alignItems: 'center',
     },
-
+    deleteButton: {
+        alignItems: 'center',
+        backgroundColor: '#ff3333',
+        padding: 10,
+        
+        borderRadius: 5,
+        marginStart: 5,
+        marginEnd: 5, 
+        height: 40
+    },
     imageContainer: {
         height: 160,
         width: 160,

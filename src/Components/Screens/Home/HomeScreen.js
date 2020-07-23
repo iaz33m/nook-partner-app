@@ -7,6 +7,7 @@ import {
   Image,
   RefreshControl,
   FlatList,
+  Alert,
 } from "react-native";
 
 import { AirbnbRating } from 'react-native-ratings';
@@ -53,7 +54,10 @@ class HomeScreen extends React.Component {
         gender: "",
       },
       loading: true,
+      submitting:false,
+      isCancel:false,
       modalVisible: false,
+      nookId:'',
       nooks: [],
       filters: {
         type: {
@@ -150,8 +154,49 @@ class HomeScreen extends React.Component {
       return <Marker title="Desired Location" coordinate={point} />;
     }
   };
-
+  deleteNookAlert(id){
+    this.setState({ submitting: true });
+    Alert.alert(
+      "Delete Nook",
+      "Are you sure, you want to delete nook?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => { this.setState({ submitting: false }) },
+          style: "cancel"
+        },
+        { 
+          text: "Yes! Delete It",
+          onPress: () => { this.deleteNook(id) } 
+        }
+      ],
+      { cancelable: false }
+    );
+  }
+  deleteNook(id){
+    const { deleteNook, user: { access_token: token } } = this.props;
+    
+    const { submitting,isCancel} = this.state;
+    
+    this.setState({ submitting: true });
+    
+    const data = { "id":id };
+    deleteNook({
+      onError: (error) => {
+        alert(error);
+        this.setState({ submitting:false });
+      },
+      onSuccess: () => {
+        this.setState({ submitting:false });
+        alert('Nook Deleted Successfully');
+        this.onRefresh();
+      },
+      data,
+      token,
+    });
+  }
   listView = () => {
+
     if (this.state.loading) {
       return <Spinner color="black" />;
     }
@@ -164,15 +209,14 @@ class HomeScreen extends React.Component {
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ paddingBottom: "5%", marginTop: 10 }}
           renderItem={({ item, index }) => (
-            <View style={styles.container} key={index}>
-              <TouchableOpacity
-                style={styles.child}
-                onPress={() => {
-                  this.setState({ isDialogVisible: false });
-                  NavigationService.navigate("NookDetailScreen", item);
-                }}
-              >
-                <View style={styles.child}>
+            <View style={styles.container} key={index}>              
+              <View style={styles.child}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({ isDialogVisible: false });
+                      NavigationService.navigate("NookDetailScreen", item);
+                    }}
+                  >
                   <Image
                     style={{ position: "absolute", height:80, width:100 }}
                     source={require("./../../../../assets/feature.png")}
@@ -255,12 +299,29 @@ class HomeScreen extends React.Component {
                         </View>
                       </CardItem>
                     </Card>
-                    <TitleText style={{ marginTop: 10, fontSize: 20 }}>
-                      {item.nookCode}
-                    </TitleText>
+                    { 
+                      (item.nookCode) && 
+                      <TitleText style={{ marginTop: 10, fontSize: 20 }}>
+                        {item.nookCode}
+                      </TitleText>
+                    }
                   </View>
+                  </TouchableOpacity>
+                  {
+                    (item.status === "Pending") &&
+                    <View style={{ justifyContent: 'center' ,marginRight: 30, marginLeft: 30,}}>
+                      <View style={{ paddingBottom:10 }}>
+                        <View style={{justifyContent: 'center'}}>
+                          <View style={{ paddingStart: 15, paddingEnd: 15 }}>
+                            <NativeButton onPress={() => { this.deleteNookAlert(item.id) }} danger full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
+                              <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Delete Nook'}</Text>
+                            </NativeButton>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  }
                 </View>
-              </TouchableOpacity>
             </View>
           )}
           refreshControl={
@@ -492,4 +553,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   getPublicNooks: actions.getPublicNooks,
+  deleteNook: actions.deleteNook,
+  
 })(HomeScreen);

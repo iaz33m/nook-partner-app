@@ -46,6 +46,7 @@ class AddNookScreen extends React.Component {
       number: "",
       description: "",
       space_type: "",
+      gender_type: "",
       capacity: "",
       noOfBeds: "",
       price_per_bed: "",
@@ -75,7 +76,6 @@ class AddNookScreen extends React.Component {
       Wifi: true,
       CCTV: true,
       UPS: true,
-      
       Kitchen: true,
       KitchenAccessories:true,
       ElectronicIron: true,
@@ -94,7 +94,6 @@ class AddNookScreen extends React.Component {
       HotWater : true,
       HouseKeeping: true,
       Generator : true,
-
       modalVisible: false,
       isDialogVisible: false,
       isSchedule: false,
@@ -159,6 +158,16 @@ class AddNookScreen extends React.Component {
       isDialogVisible: false,
     }));
   };
+  removeRoom = (index) => {
+    const { rooms } = this.state;
+    const updateRooms = rooms.filter((v, i) => i !== index);
+    this.setState({ rooms: updateRooms });
+};
+  onValueChange3(value) {
+    this.setState({
+      gender_type: value,
+    });
+  }
   onValueChange2(value) {
     this.setState({
       space_type: value,
@@ -200,6 +209,7 @@ class AddNookScreen extends React.Component {
       description,
       type,
       space_type,
+      gender_type,
       review,
       Fernished,
       AC,
@@ -329,6 +339,7 @@ class AddNookScreen extends React.Component {
       description,
       type,
       space_type,
+      gender_type,
       facilities,
       review,
       rooms,
@@ -464,7 +475,7 @@ class AddNookScreen extends React.Component {
                     marginBottom: 15,
                   }}
                 >
-                  <Image
+                   <Image
                     resizeMode="contain"
                     source={require("./../../../assets/bed-icon.png")}
                     style={{ marginRight: 15 }}
@@ -487,6 +498,17 @@ class AddNookScreen extends React.Component {
                 </View>
               </View>
             </View>
+            <View style={{ justifyContent: 'center' ,marginRight: 30, marginLeft: 30,}}>
+                <View style={{ paddingBottom:10 }}>
+                  <View style={{justifyContent: 'center'}}>
+                      <View style={{ paddingStart: 15, paddingEnd: 15 }}>
+                          <NativeButton onPress={() => { this.removeRoom(rI) }} danger full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
+                            <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Delete room'}</Text>
+                          </NativeButton>
+                        </View>
+                      </View>
+                  </View>
+              </View>
           </View>
         ))}
       </View>
@@ -921,13 +943,32 @@ class AddNookScreen extends React.Component {
                           mode="dropdown"
                           iosIcon={<Icon name="arrow-down" />}
                           style={{ width: "100%" }}
-                          placeholder="Room Catagories"
+                          placeholder="Nook Catagory"
+                          placeholderStyle={{ color: "#bfc6ea" }}
+                          placeholderIconColor="#007aff"
+                          selectedValue={this.state.space_type}
+                          onValueChange={this.onValueChange2.bind(this)}
+                        >
+                          <Picker.Item label="Nook Catagory" value="" />
+                          <Picker.Item label="Shared" value="shared" />
+                          <Picker.Item
+                            label="Independent"
+                            value="independent"
+                          />
+                        </Picker>
+                      </Item>
+                      <Item picker style={styles.pickerStyle}>
+                        <Picker
+                          mode="dropdown"
+                          iosIcon={<Icon name="arrow-down" />}
+                          style={{ width: "100%" }}
+                          placeholder="Nook Type"
                           placeholderStyle={{ color: "#bfc6ea" }}
                           placeholderIconColor="#007aff"
                           selectedValue={this.state.type}
                           onValueChange={this.onValueChange1.bind(this)}
                         >
-                          <Picker.Item label="Room Catagories" value="" />
+                          <Picker.Item label="Nook Type" value="" />
                           <Picker.Item label="House" value="house" />
                           <Picker.Item label="Flat" value="flat" />
                           <Picker.Item
@@ -957,21 +998,18 @@ class AddNookScreen extends React.Component {
                           mode="dropdown"
                           iosIcon={<Icon name="arrow-down" />}
                           style={{ width: "100%" }}
-                          placeholder="Nook Type"
+                          placeholder="Select Gender Type"
                           placeholderStyle={{ color: "#bfc6ea" }}
                           placeholderIconColor="#007aff"
-                          selectedValue={this.state.space_type}
-                          onValueChange={this.onValueChange2.bind(this)}
+                          selectedValue={this.state.gender_type}
+                          onValueChange={this.onValueChange3.bind(this)}
                         >
-                          <Picker.Item label="Nook Type" value="" />
-                          <Picker.Item label="Shared" value="shared" />
-                          <Picker.Item
-                            label="Independent"
-                            value="independent"
-                          />
+                          <Picker.Item label="Select Gender Type" value="" />
+                          <Picker.Item label="Male" value="male" />
+                          <Picker.Item label="Female" value="female"/>
+                          <Picker.Item label="Both" value="both"/>
                         </Picker>
                       </Item>
-
                       <Textarea
                         style={{ marginTop: 20, margin: 10 }}
                         rowSpan={5}

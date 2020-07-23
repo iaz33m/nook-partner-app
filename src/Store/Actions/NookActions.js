@@ -39,7 +39,30 @@ const getPublicNooks = options => async dispatch => {
         }
     }
 };
+const deleteNook = options => async dispatch => {
+    const { data, id, token, onError,onSuccess } = options;
+    try {
 
+        const {data:{message}} = await axios.get(`${APIModel.HOST}/admin/partner/delete_nook/`+data.id, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+}
 const getMyNookDetails = options => async dispatch => {
     const { token, onError,onSuccess } = options;
     try {
@@ -228,5 +251,6 @@ export {
     getArea,
     addNookRoom,
     setDesiredLocation,
-    addNookSchedule
+    addNookSchedule,
+    deleteNook
 };

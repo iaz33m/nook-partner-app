@@ -594,7 +594,7 @@ class NookDetailScreen extends React.Component {
             </View>
 
             {
-              (nook.space_type === 'Independent') &&
+              (nook.space_type === 'Independent' && nook.inner_details) &&
               <View style={[styles.container, { marginBottom: 10, padding: 0 }]}>
                 <View style={styles.child}>
                   <View style={{ padding: 20, }}>
@@ -691,10 +691,12 @@ class NookDetailScreen extends React.Component {
                 </View>
               </Card>
             }
-
-            <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >
-              Facilities
-            </TitleText>
+            {
+              (nook.facilities.length > 0) &&
+              <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >
+                Facilities
+              </TitleText>
+            }
 
             {this.facilities(nook.facilities)}
               {(nook.location)?
