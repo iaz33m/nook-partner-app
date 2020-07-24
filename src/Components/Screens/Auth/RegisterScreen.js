@@ -168,7 +168,7 @@ class RegisterScreen extends React.Component {
 
                 {processing && <Spinner color='black' />}
                 
-                {/* {
+                {
                   !processing &&
                   <>
                     <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
@@ -182,7 +182,7 @@ class RegisterScreen extends React.Component {
                       />
                     </TouchableOpacity>
                   </>
-                } */}
+                }
 
               </View>
             </KeyboardAwareScrollView>

@@ -52,7 +52,8 @@
         "googleMaps": {
           "apiKey": "AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw"
         }
-      }
+      },
+      "googleServicesFile": "./google-services.json"
     },
     "description": ""
   }

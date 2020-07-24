@@ -226,6 +226,7 @@ const getSocialUser = async (provider) => {
         reject(new Error('User Canceled Login Process'));
 
       } catch (error) {
+        
         reject(error)
       }
     });
