@@ -55,6 +55,8 @@ class RegisterScreen extends React.Component {
 
     const { name, number, password, confirmPassword } = this.state;
 
+    let role = "Partner";
+
     if (name.length < 5 || name.length > 50) {
       return this.setState({
         nameError: "Name must be greater than 5 and less than 50."
@@ -80,7 +82,7 @@ class RegisterScreen extends React.Component {
     }
     this.toggleSubmitting();
     register({
-      data: { name, number, password },
+      data: { name, number, password, role },
       onSuccess: () => {
         NavigationService.navigateAndResetStack("NumberVerificationScreen");
       },

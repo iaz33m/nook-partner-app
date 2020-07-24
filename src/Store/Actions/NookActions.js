@@ -93,8 +93,6 @@ const getMyNookDetails = options => async dispatch => {
     }
 };
 
-
-
 const addReview = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     try {
