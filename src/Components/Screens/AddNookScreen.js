@@ -47,6 +47,16 @@ class AddNookScreen extends React.Component {
       description: "",
       space_type: "",
       gender_type: "",
+      independent_area: '',
+      area_unit: '',
+      inner_details:'',
+      other:'',
+      furnished:'',
+      rent: 0,
+      security: 0,
+      agreementCharges: 0,
+      agreementTenure: 0,
+      address: "",
       capacity: "",
       noOfBeds: "",
       price_per_bed: "",
@@ -162,7 +172,18 @@ class AddNookScreen extends React.Component {
     const { rooms } = this.state;
     const updateRooms = rooms.filter((v, i) => i !== index);
     this.setState({ rooms: updateRooms });
-};
+  };
+  editRoom = (index, capacity, noOfBeds, price_per_bed) => {
+    const { rooms } = this.state;
+    const room = rooms.filter((v, i) => i !== index);
+    this.setState({ 
+      rooms: room,
+      capacity: capacity, 
+      noOfBeds: noOfBeds, 
+      price_per_bed: price_per_bed, 
+      isDialogVisible: true
+    });
+  };
   onValueChange3(value) {
     this.setState({
       gender_type: value,
@@ -203,6 +224,63 @@ class AddNookScreen extends React.Component {
       OriginalLatLng:{ latitude: value.lat, longitude: value.lng }
     });
   }
+  Fernished(value){
+    this.setState({ Fernished: !value });
+    if(value === true){
+      this.setState({ 
+      AC : false,
+      TV : false,
+      Wifi : false,
+      CCTV : false,
+      UPS : false,
+      Kitchen : false,
+      KitchenAccessories : false,
+      ElectronicIron : false,
+      GasBill : false,
+      WaterBill : false,
+      Parking : false,
+      Transport : false,
+      Oven : false,
+      Cable : false, 
+      Laundry : false,
+      Food : false,
+      Fridge : false, 
+      SecurityGuard : false,
+      WaterFilter : false,
+      Lounge : false,
+      HotWater : false,
+      HouseKeeping : false,
+      Generator : false, 
+      });
+    }
+    if(value === false){
+      this.setState({ 
+      AC : true,
+      TV : true,
+      Wifi : true,
+      CCTV : true,
+      UPS : true,
+      Kitchen : true,
+      KitchenAccessories : true,
+      ElectronicIron : true,
+      GasBill : true,
+      WaterBill : true,
+      Parking : true,
+      Transport : true,
+      Oven : true,
+      Cable : true, 
+      Laundry : true,
+      Food : true,
+      Fridge : true, 
+      SecurityGuard : true,
+      WaterFilter : true,
+      Lounge : true,
+      HotWater : true,
+      HouseKeeping : true,
+      Generator : true, 
+      });
+    }
+  }
   create = () => {
     const {
       number,
@@ -239,6 +317,16 @@ class AddNookScreen extends React.Component {
       profile,
       lat,
       lng,
+      independent_area,
+      area_unit,
+      inner_details,
+      other,
+      furnished,
+      rent,
+      security,
+      agreementCharges,
+      agreementTenure,
+      address,
     } = this.state;
     var facilities = [];
     if (Fernished) {
@@ -326,7 +414,7 @@ class AddNookScreen extends React.Component {
     if (!description) {
       return alert("description is required.");
     }
-
+    
     const {
       addNook,
       user: { access_token: token },
@@ -346,6 +434,16 @@ class AddNookScreen extends React.Component {
       images: {...profile},
       lat,
       lng,
+      independent_area,
+      area_unit,
+      inner_details,
+      other,
+      furnished,
+      rent,
+      security,
+      agreementCharges,
+      agreementTenure,
+      address,
     };
 
     addNook({
@@ -416,7 +514,8 @@ class AddNookScreen extends React.Component {
               </Picker>
             </Item>
             <InputField
-              iconName="md-phone-portrait"
+              iconName="md-phone-portrait" 
+              value = {this.state.noOfBeds}
               onChangeText={(noOfBeds) => this.setState({ noOfBeds })}
             >
               No of Bads
@@ -424,6 +523,7 @@ class AddNookScreen extends React.Component {
 
             <InputField
               iconName="md-phone-portrait"
+              value = {this.state.price_per_bed}
               onChangeText={(price_per_bed) => this.setState({ price_per_bed })}
             >
               Price Per Bed
@@ -435,7 +535,7 @@ class AddNookScreen extends React.Component {
     }
   };
   roomList() {
-    const { rooms } = this.state;
+    const { rooms , capacity, noOfBeds, price_per_bed } = this.state;
     if (rooms.length == 0) {
       return true;
     }
@@ -497,18 +597,19 @@ class AddNookScreen extends React.Component {
                   <Text style={{ fontSize: 16 }}>{r.capacity}</Text>
                 </View>
               </View>
-            </View>
-            <View style={{ justifyContent: 'center' ,marginRight: 30, marginLeft: 30,}}>
-                <View style={{ paddingBottom:10 }}>
-                  <View style={{justifyContent: 'center'}}>
-                      <View style={{ paddingStart: 15, paddingEnd: 15 }}>
-                          <NativeButton onPress={() => { this.removeRoom(rI) }} danger full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
-                            <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Delete room'}</Text>
-                          </NativeButton>
-                        </View>
-                      </View>
-                  </View>
+            </View> 
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ flex: 1 }}>
+                <NativeButton onPress={() => { this.editRoom( rI, r.capacity, r.noOfBeds, r.price_per_bed) }} warning full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
+                  <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Update'}</Text>
+                </NativeButton>
               </View>
+              <View style={{ flex: 1, alignItems: "flex-end" }}>
+                <NativeButton onPress={() => { this.removeRoom(rI) }} danger full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
+                  <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Delete'}</Text>
+                </NativeButton>
+              </View>
+            </View>
           </View>
         ))}
       </View>
@@ -914,6 +1015,123 @@ class AddNookScreen extends React.Component {
       </>
     );
   }
+  renderFamilyNooks = () => {
+    const {
+      space_type,
+      independent_area,
+      area_unit,
+      inner_details,
+      other,
+      furnished,
+      rent,
+      security,
+      agreementCharges,
+      agreementTenure,
+    } = this.state;
+    if (space_type == 'independent') {
+      return (
+        <View> 
+          <InputField
+            iconName="md-phone-portrait"
+            value={this.state.independent_area}
+            onChangeText={(independent_area) => this.setState({ independent_area })}
+            >
+            Area
+          </InputField>
+          <Item picker style={styles.pickerStyle}>
+            <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                style={{ width: "100%" }}
+                placeholder="Select Area Unit"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.area_unit}
+                onValueChange={(area_unit) => this.setState({ area_unit })}
+            >
+              <Picker.Item label="Select Area Unit" value="" />
+              <Picker.Item label="Marla" value="Marla" />
+              <Picker.Item label="Sq feet" value="Sq feet"/>
+            </Picker>
+          </Item>
+          <Item picker style={styles.pickerStyle}>
+            <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                style={{ width: "100%" }}
+                placeholder="Select Furnished"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.furnished}
+                onValueChange={(furnished) => this.setState({ furnished })}
+            >
+              <Picker.Item label="Select Furnished" value="" />
+              <Picker.Item label="Yes" value="1" />
+              <Picker.Item label="No" value="0"/>
+            </Picker>
+          </Item>
+          <InputField
+            iconName="md-phone-portrait"
+            value={this.state.rent}
+            onChangeText={(rent) => this.setState({ rent })}
+            >
+            Rent
+          </InputField>
+          <InputField
+            iconName="md-phone-portrait"
+            value={this.state.security}
+            onChangeText={(security) => this.setState({ security })}
+            >
+            Security
+          </InputField>
+          <InputField
+            iconName="md-phone-portrait"
+            value={this.state.agreementCharges}
+            onChangeText={(agreementCharges) => this.setState({ agreementCharges })}
+            >
+            Agreement Charges
+          </InputField>
+
+          <Item picker style={styles.pickerStyle}>
+            <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                style={{ width: "100%" }}
+                placeholder="Agreement Tenure"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.agreementTenure}
+                onValueChange={(agreementTenure) => this.setState({ agreementTenure })}
+            >
+              <Picker.Item label="Agreement Tenure" value="" />
+              <Picker.Item label="6 Monhts" value="6 Monhts" />
+              <Picker.Item label="1 Year" value="1 Year"/>
+              <Picker.Item label="1.5 Years" value="1.5 Years" />
+              <Picker.Item label="2 Years" value="2 Years" />
+              <Picker.Item label="2.5 Years" value="2.5 Years" />
+              <Picker.Item label="3 Years" value="3 Years" />
+            </Picker>
+          </Item>
+          <Textarea
+              style={{ marginTop: 20, margin: 10 }}
+              rowSpan={5}
+              bordered
+              placeholder="Inner Details"
+              value={this.state.inner_details}
+              onChangeText={(inner_details) =>this.setState({ inner_details })}
+          />
+          <Textarea
+              style={{ marginTop: 20, margin: 10 }}
+              rowSpan={5}
+              bordered
+              placeholder="Other Details"
+              value={this.state.other}
+              onChangeText={(other) => this.setState({ other }) }
+          />
+        </View> 
+      );
+    }
+  }
   render() {
     const { submitting, processing, review, profile, images } = this.state;
 
@@ -1010,6 +1228,7 @@ class AddNookScreen extends React.Component {
                           <Picker.Item label="Both" value="both"/>
                         </Picker>
                       </Item>
+                      {this.renderFamilyNooks()}
                       <Textarea
                         style={{ marginTop: 20, margin: 10 }}
                         rowSpan={5}
@@ -1065,11 +1284,7 @@ class AddNookScreen extends React.Component {
                               <Text>Furnished</Text>
                               <CheckBox
                                 checked={this.state.Fernished}
-                                onPress={() =>
-                                  this.setState({
-                                    Fernished: !this.state.Fernished,
-                                  })
-                                }
+                                onPress={() => this.Fernished(this.state.Fernished) }
                               />
                             </View>
                             <View style={styles.checkboxItem}>
@@ -1357,6 +1572,14 @@ class AddNookScreen extends React.Component {
                       {this.subAreaLocation()}
                       {this.areaBlockLocation()}
                       {this.areaLatLngLocation()}
+                      <Textarea
+                        style={{ marginTop: 20, margin: 10 }}
+                        rowSpan={5}
+                        bordered
+                        placeholder="Address"
+                        value={this.state.address}
+                        onChangeText={(address) => this.setState({ address })}
+                      />
                       {
                         this.state.space_type =="shared" && <View style={styles.container}>
                         <View
@@ -1399,7 +1622,7 @@ class AddNookScreen extends React.Component {
                         </View>
                       </View> 
                       }
-                      {this.roomList()}
+                      { this.state.space_type =="shared" && this.roomList()}
                       {this.renderRoomPopup()}
                     </View>
                   </View>
