@@ -49,7 +49,7 @@ class NookDetailScreen extends React.Component {
       details: '',
       dateText: '',
       e_unit_cost:null,
-      status:"",
+      status:"draft",
       late_day_fine:null,
       e_units:null,
       user_id:null,
@@ -223,7 +223,7 @@ class NookDetailScreen extends React.Component {
             </TouchableOpacity>
             <Text style={{justifyContent: 'center', fontWeight: 'bold'}}>Generate Receipt</Text>
             <ScrollView style={{ marginTop: 10 }}>
-              <Item picker style={styles.pickerStyle}>
+              {/* <Item picker style={styles.pickerStyle}>
                 <Picker
                   mode="dropdown"
                   iosIcon={<Icon name="arrow-down" />}
@@ -240,7 +240,7 @@ class NookDetailScreen extends React.Component {
                   <Picker.Item value="in_progress" label="In Progress" />
                   <Picker.Item value="paid" label="paid" />
                 </Picker>
-              </Item>
+              </Item> */}
               <View style={styles.Inputchild}>
                 <TextInput style={{pending: 10 }} keyboardType='numeric' onChangeText={(fine) => this.setState({ fine })}  placeholder ="Fine"/> 
               </View>
@@ -813,9 +813,11 @@ class NookDetailScreen extends React.Component {
                     <View key={rI} style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
                       <View style={{ flexDirection: "row" }}>
                         <View style={{ flex: 1 }}>
+                          <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Room Numner</Text>
                           <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Price Per Bed</Text>
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                          <Text style={{ marginBottom: 15, fontSize: 16, }}>{r.room_number}</Text>
                           <Text style={{ marginBottom: 15, fontSize: 16, }}>{r.price_per_bed} PKR</Text>
                           <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
                             <Image resizeMode="contain" source={require('./../../../../assets/bed-icon.png')} style={{ marginRight: 15, }} />

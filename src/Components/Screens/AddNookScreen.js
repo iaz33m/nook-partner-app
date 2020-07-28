@@ -57,9 +57,12 @@ class AddNookScreen extends React.Component {
       agreementCharges: 0,
       agreementTenure: 0,
       address: "",
+
       capacity: "",
       noOfBeds: "",
       price_per_bed: "",
+      room_number: "",
+      
       profile: [],
       image: "",
       setImage: "",
@@ -153,14 +156,15 @@ class AddNookScreen extends React.Component {
     });
   };
   updateRooms = () => {
-    const { capacity, noOfBeds, price_per_bed, rooms } = this.state;
-    var room = { capacity, noOfBeds, price_per_bed };
+    const { capacity, noOfBeds, price_per_bed, room_number,rooms } = this.state;
+    var room = { capacity, noOfBeds, price_per_bed,room_number };
     this.setState((prevState) => ({
       rooms: [
         {
           capacity: capacity,
           noOfBeds: noOfBeds,
           price_per_bed: price_per_bed,
+          room_number:room_number,
         },
         ...prevState.rooms,
       ],
@@ -173,7 +177,7 @@ class AddNookScreen extends React.Component {
     const updateRooms = rooms.filter((v, i) => i !== index);
     this.setState({ rooms: updateRooms });
   };
-  editRoom = (index, capacity, noOfBeds, price_per_bed) => {
+  editRoom = (index, capacity, noOfBeds, price_per_bed, room_number) => {
     const { rooms } = this.state;
     const room = rooms.filter((v, i) => i !== index);
     this.setState({ 
@@ -181,6 +185,7 @@ class AddNookScreen extends React.Component {
       capacity: capacity, 
       noOfBeds: noOfBeds, 
       price_per_bed: price_per_bed, 
+      room_number:room_number,
       isDialogVisible: true
     });
   };
@@ -466,13 +471,14 @@ class AddNookScreen extends React.Component {
       capacity,
       noOfBeds,
       price_per_bed,
+      room_number,
     } = this.state;
 
     if (isSchedule) {
       return (
         <PopupDialog
           width={0.9}
-          height={0.7}
+          height={0.9}
           visible={isDialogVisible}
           onTouchOutside={this.togglePopup}
         >
@@ -494,6 +500,7 @@ class AddNookScreen extends React.Component {
             <Text style={{ justifyContent: "center", fontWeight: "bold" }}>
               Rooms
             </Text>
+            <ScrollView style={{ marginTop: 10 }}>
             <Item picker style={styles.pickerStyle}>
               <Picker
                 mode="dropdown"
@@ -528,14 +535,22 @@ class AddNookScreen extends React.Component {
             >
               Price Per Bed
             </InputField>
+            <InputField
+              iconName="md-phone-portrait"
+              value = {this.state.room_number}
+              onChangeText={(room_number) => this.setState({ room_number })}
+            >
+              Room Number
+            </InputField>
             <Button onPress={this.updateRooms}>Add Room</Button>
+            </ScrollView>
           </View>
         </PopupDialog>
       );
     }
   };
   roomList() {
-    const { rooms , capacity, noOfBeds, price_per_bed } = this.state;
+    const { rooms , capacity, noOfBeds, price_per_bed, room_number } = this.state;
     if (rooms.length == 0) {
       return true;
     }
@@ -561,10 +576,18 @@ class AddNookScreen extends React.Component {
                 <Text
                   style={{ marginBottom: 15, fontSize: 18, fontWeight: "bold" }}
                 >
+                  Room Number
+                </Text>
+                <Text
+                  style={{ marginBottom: 15, fontSize: 18, fontWeight: "bold" }}
+                >
                   Price Per Bed
                 </Text>
               </View>
               <View style={{ flex: 1, alignItems: "flex-end" }}>
+                <Text style={{ marginBottom: 15, fontSize: 16 }}>
+                  {r.room_number}
+                </Text>
                 <Text style={{ marginBottom: 15, fontSize: 16 }}>
                   {r.price_per_bed} PKR
                 </Text>
@@ -600,7 +623,7 @@ class AddNookScreen extends React.Component {
             </View> 
             <View style={{ flexDirection: "row" }}>
               <View style={{ flex: 1 }}>
-                <NativeButton onPress={() => { this.editRoom( rI, r.capacity, r.noOfBeds, r.price_per_bed) }} warning full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
+                <NativeButton onPress={() => { this.editRoom( rI, r.capacity, r.noOfBeds, r.price_per_bed,r.room_number) }} warning full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
                   <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Update'}</Text>
                 </NativeButton>
               </View>
