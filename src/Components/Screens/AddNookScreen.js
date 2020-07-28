@@ -51,7 +51,7 @@ class AddNookScreen extends React.Component {
       area_unit: '',
       inner_details:'',
       other:'',
-      furnished:'',
+      independent_furnished:1,
       rent: 0,
       security: 0,
       agreementCharges: 0,
@@ -169,6 +169,9 @@ class AddNookScreen extends React.Component {
         ...prevState.rooms,
       ],
       capacity: "",
+      noOfBeds:'',
+      price_per_bed:'',
+      room_number:'',
       isDialogVisible: false,
     }));
   };
@@ -326,7 +329,7 @@ class AddNookScreen extends React.Component {
       area_unit,
       inner_details,
       other,
-      furnished,
+      independent_furnished,
       rent,
       security,
       agreementCharges,
@@ -443,7 +446,7 @@ class AddNookScreen extends React.Component {
       area_unit,
       inner_details,
       other,
-      furnished,
+      furnished:independent_furnished,
       rent,
       security,
       agreementCharges,
@@ -1085,8 +1088,8 @@ class AddNookScreen extends React.Component {
                 placeholder="Select Furnished"
                 placeholderStyle={{ color: "#bfc6ea" }}
                 placeholderIconColor="#007aff"
-                selectedValue={this.state.furnished}
-                onValueChange={(furnished) => this.setState({ furnished })}
+                selectedValue={this.state.independent_furnished}
+                onValueChange={(independent_furnished) => this.setState({ independent_furnished })}
             >
               <Picker.Item label="Select Furnished" value="" />
               <Picker.Item label="Yes" value="1" />

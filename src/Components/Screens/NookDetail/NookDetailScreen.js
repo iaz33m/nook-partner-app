@@ -519,7 +519,7 @@ class NookDetailScreen extends React.Component {
               </View>
               <View style={[styles.child, { marginTop: 10, borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
                 <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Rent</Text>
-                <Text style={{ margin: 15, fontSize: 16, }}>{(nook.rent && nook.rent !== '0') ? nook.rent : Math.min(nook.rooms.map(r => r.price_per_bed))} PKR / Month</Text>
+                <Text style={{ margin: 15, fontSize: 16, }}>{(nook.rent && nook.rent !== '0') ? nook.rent : Math.min(...nook.rooms.map(r => r.price_per_bed))} PKR / Month</Text>
               </View>
             </TouchableOpacity>
             {this.state.tabIndex === 0 ?

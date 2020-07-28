@@ -263,7 +263,7 @@ class HomeScreen extends React.Component {
                           {item.rent && item.rent !== "0" && item.rent !== null
                             ? item.rent
                             : Math.min(
-                                item.rooms.map((r) =>
+                                ...item.rooms.map((r) =>
                                   r.price_per_bed !== "0" &&
                                   r.price_per_bed !== null
                                     ? r.price_per_bed
