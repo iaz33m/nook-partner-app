@@ -26,6 +26,8 @@ class NookDetailScreen extends React.Component {
       tabIndex: 0,
       tabIndexUser: 0,
       isDialogVisible: false,
+      roomUserDialogVisible:false,
+      users:[],
       date: new Date(),
       markers: {
         latlng: {
@@ -289,6 +291,52 @@ class NookDetailScreen extends React.Component {
                 )}
                 { this.ExtrasField()}
               <Button disabled={submitting} onPress={() => { this.generateReceipt() }} >{submitting ? 'Please wait...' : 'Generate Receipt'}</Button>
+            </ScrollView>
+          </View>
+        </PopupDialog>
+      );
+    }
+  }
+  renderRoomUserPopup =()=>{
+    const { roomUserDialogVisible, users } = this.state;
+    if(users.length == 0 && roomUserDialogVisible == true){
+      this.setState({
+        roomUserDialogVisible: false,
+        users: [],
+      });
+      alert('There is no user')
+    }
+    if(users.length > 0){
+      return (
+        <PopupDialog
+          width={0.9} height={0.7}
+          visible={roomUserDialogVisible}
+          onTouchOutside={this.togglePopup}>
+          <View style={{ flex: 1, padding: 25, }}>
+            <TouchableOpacity onPress={() => this.setState({
+              roomUserDialogVisible: false,
+              users: [],
+            })}>
+              <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+            </TouchableOpacity>
+            <Text style={{justifyContent: 'center', fontWeight: 'bold'}}>Room Users</Text>
+            <ScrollView style={{ marginTop: 10 }}>
+              {
+                users.map((u, uI) =>
+                  <View key={uI} style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>      
+                        <View style={{ flexDirection: "row" }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>User Name</Text>
+                            <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>User Number</Text>
+                          </View>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{u.name}</Text>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{u.number}</Text>
+                          </View>
+                        </View>   
+                  </View>
+                )
+              }
             </ScrollView>
           </View>
         </PopupDialog>
@@ -811,24 +859,28 @@ class NookDetailScreen extends React.Component {
                 {
                   nook.rooms.map((r, rI) =>
                     <View key={rI} style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
-                      <View style={{ flexDirection: "row" }}>
-                        <View style={{ flex: 1 }}>
-                          <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Room Numner</Text>
-                          <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Price Per Bed</Text>
-                        </View>
-                        <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                          <Text style={{ marginBottom: 15, fontSize: 16, }}>{r.room_number}</Text>
-                          <Text style={{ marginBottom: 15, fontSize: 16, }}>{r.price_per_bed} PKR</Text>
-                          <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
-                            <Image resizeMode="contain" source={require('./../../../../assets/bed-icon.png')} style={{ marginRight: 15, }} />
-                            <Text style={{ fontSize: 16, }}>{r.noOfBeds}</Text>
+                      <TouchableOpacity onPress={() => {
+                        this.setState({ users: r.users, roomUserDialogVisible:true })
+                        }} >      
+                        <View style={{ flexDirection: "row" }}>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Room Numner</Text>
+                            <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Price Per Bed</Text>
                           </View>
-                          <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
-                            <Image resizeMode="contain" source={require('./../../../../assets/user-icon.png')} style={{ marginRight: 15, }} />
-                            <Text style={{ fontSize: 16, }}>{r.capacity}</Text>
+                          <View style={{ flex: 1, alignItems: 'flex-end', }}>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{r.room_number}</Text>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>{r.price_per_bed} PKR</Text>
+                            <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
+                              <Image resizeMode="contain" source={require('./../../../../assets/bed-icon.png')} style={{ marginRight: 15, }} />
+                              <Text style={{ fontSize: 16, }}>{r.noOfBeds}</Text>
+                            </View>
+                            <View style={{ flexDirection: "row", alignItems: 'center', marginBottom: 15, }}>
+                              <Image resizeMode="contain" source={require('./../../../../assets/user-icon.png')} style={{ marginRight: 15, }} />
+                              <Text style={{ fontSize: 16, }}>{r.capacity}</Text>
+                            </View>
                           </View>
-                        </View>
-                      </View>   
+                        </View>   
+                      </TouchableOpacity>
                    </View>    
                   )
                 } 
@@ -862,6 +914,7 @@ class NookDetailScreen extends React.Component {
                 </View>  
             }
           {this.renderReceiptGeneraterPopup()}
+          {this.renderRoomUserPopup()}
           </View>
           
         </ScrollView>
