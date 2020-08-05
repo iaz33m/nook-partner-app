@@ -7,6 +7,7 @@ import NookListScreen from "./Components/Screens/NookListScreen";
 import VisitsScreen from "./Components/Screens/Visits/VisitsScreen";
 import ComplaintsScreen from "./Components/Screens/ComplaintsScreen";
 import ShiftsScreen from "./Components/Screens/ShiftsScreen";
+import RoomShiftsScreen from "./Components/Screens/RoomShiftsScreen";
 import BookingsScreen from "./Components/Screens/BookingsScreen";
 import NoticesScreen from "./Components/Screens/NoticesScreen";
 import MyNookScreen from "./Components/Screens/MyNookScreen";
@@ -197,6 +198,7 @@ const AppNavigator = createStackNavigator(
     PaymentsScreen,
     NoticesScreen,
     ShiftsScreen,
+    RoomShiftsScreen,
     PaymentScreen,
     AddNookScreen,
     ManageNooks,

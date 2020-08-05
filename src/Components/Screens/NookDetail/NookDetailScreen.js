@@ -812,8 +812,13 @@ class NookDetailScreen extends React.Component {
                                 }}>Receipts </Text>
                             </TouchableOpacity>
                         </View>
+                        <View style={{
+                            flexDirection: 'row', alignSelf: 'center',
+                            alignItems: 'center', marginTop:10
+                        }}>
                         <TouchableOpacity
-                            style={styles.shiftButton}
+                            // style={styles.shiftButton}
+                            style={styles.bigButton}
                             onPress={() => NavigationService.navigate('NoticesScreen',nook.nookCode)}
                         >
                             <Image style={{
@@ -829,6 +834,24 @@ class NookDetailScreen extends React.Component {
                                 color: 'white'
                             }}>Notices </Text>
                         </TouchableOpacity>
+                        <TouchableOpacity
+                                style={styles.bigButton}
+                                onPress={() => NavigationService.navigate('RoomShiftsScreen',nook.nookCode)}
+                            >
+                                <Image style={{
+                                    width: 25,
+                                    height: 25,
+                                    alignSelf: 'center',
+                                    alignItems: 'center', tintColor: 'white'
+                                }}
+                                    resizeMode="contain"
+                                    source={require('./../../../../assets/shift.png')}
+                                />
+                                <Text style={{
+                                    color: 'white'
+                                }}>Room Shifts</Text>
+                            </TouchableOpacity>
+                        </View>
                     </ScrollView>
 
                 </View>
