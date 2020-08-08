@@ -545,7 +545,7 @@ class AddNookScreen extends React.Component {
             >
               Room Number
             </InputField>
-            <Button onPress={this.updateRooms}>Add Room</Button>
+            <Button onPress={this.updateRooms}>Save</Button>
             </ScrollView>
           </View>
         </PopupDialog>
@@ -625,12 +625,12 @@ class AddNookScreen extends React.Component {
               </View>
             </View> 
             <View style={{ flexDirection: "row" }}>
-              <View style={{ flex: 1 }}>
+              <View style={{ flex: 1, margin: 2 }}>
                 <NativeButton onPress={() => { this.editRoom( rI, r.capacity, r.noOfBeds, r.price_per_bed,r.room_number) }} warning full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
                   <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Update'}</Text>
                 </NativeButton>
               </View>
-              <View style={{ flex: 1, alignItems: "flex-end" }}>
+              <View style={{ flex: 1, alignItems: "flex-end", margin: 2 }}>
                 <NativeButton onPress={() => { this.removeRoom(rI) }} danger full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
                   <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Delete'}</Text>
                 </NativeButton>

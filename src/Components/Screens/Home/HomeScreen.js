@@ -195,6 +195,22 @@ class HomeScreen extends React.Component {
       token,
     });
   }
+
+  getPrice = (item) => {
+    const price = item.rent && item.rent !== "0" && item.rent !== null
+    ? item.rent
+    : Math.min(
+        ...item.rooms.map((r) =>
+          r.price_per_bed !== "0" &&
+          r.price_per_bed !== null ? r.price_per_bed : "0"
+        )
+      );
+    if(price !== Infinity){
+      return price;
+    }
+    return 0;
+  }
+
   listView = () => {
 
     if (this.state.loading) {
@@ -260,17 +276,7 @@ class HomeScreen extends React.Component {
                           <Text></Text>
                         <Text>
                           PKR{" "}
-                          {item.rent && item.rent !== "0" && item.rent !== null
-                            ? item.rent
-                            : Math.min(
-                                ...item.rooms.map((r) =>
-                                  r.price_per_bed !== "0" &&
-                                  r.price_per_bed !== null
-                                    ? r.price_per_bed
-                                    : ""
-                                )
-                              )
-                            }
+                          {this.getPrice(item)}
                         </Text>
                       </View>
                       <CardItem cardBody>
