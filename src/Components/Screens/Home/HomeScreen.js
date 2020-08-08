@@ -262,14 +262,15 @@ class HomeScreen extends React.Component {
                           PKR{" "}
                           {item.rent && item.rent !== "0" && item.rent !== null
                             ? item.rent
-                            : Math.min(
+                            : (item.rooms.length != 0 )? Math.min(
                                 ...item.rooms.map((r) =>
                                   r.price_per_bed !== "0" &&
                                   r.price_per_bed !== null
                                     ? r.price_per_bed
                                     : ""
                                 )
-                              )
+                              ):
+                              ""
                             }
                         </Text>
                       </View>

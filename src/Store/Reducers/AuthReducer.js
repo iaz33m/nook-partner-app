@@ -3,6 +3,7 @@ import { AsyncStorage } from 'react-native';
 const initSate = {
   user: undefined,
   skiped: 'false',
+  welcome: 'false',
 };
 
 const AuthReducer = (state = initSate, action) => {
@@ -30,10 +31,11 @@ const AuthReducer = (state = initSate, action) => {
     }
 
     case actions.SYNC_WITH_ASYNC_STORAGE: {
-      const { user,skiped } = action.payload;
+      const { user,  welcome, skiped } = action.payload;
       return {
         ...state,
         user,
+        welcome,
         skiped
       };
     }

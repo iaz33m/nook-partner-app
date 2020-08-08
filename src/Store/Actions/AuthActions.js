@@ -179,6 +179,7 @@ const syncWithAsyncStorage = options => async dispatch => {
     const { onSuccess, onError } = options;
     let user = await AsyncStorage.getItem('user');
     let skiped = await AsyncStorage.getItem('skiped');
+    let welcome = await AsyncStorage.getItem('welcome');
 
     user = JSON.parse(user);
 
@@ -186,13 +187,13 @@ const syncWithAsyncStorage = options => async dispatch => {
     dispatch({
       type: actions.SYNC_WITH_ASYNC_STORAGE,
       payload: {
-        user, skiped
+        user, skiped, welcome
       },
     });
 
     if (onSuccess) {
       onSuccess({
-        user, skiped
+        user, skiped, welcome
       });
     }
   } catch (error) {

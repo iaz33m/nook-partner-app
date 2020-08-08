@@ -7,6 +7,7 @@ import Constants from 'expo-constants';
 
 import * as NavigationService from '../../NavigationService'
 import * as actions from '../../Store/Actions/AuthActions';
+import { AsyncStorage } from 'react-native';
 
 class SplashScreen extends React.Component {
 
@@ -20,10 +21,16 @@ class SplashScreen extends React.Component {
     // await this.registerForPushNotificationsAsync();
     // this._notificationSubscription = Notifications.addListener(this._handleNotification);
     syncWithAsyncStorage({
-      onSuccess: ({user, skiped}) => {
+      onSuccess: ({user, skiped, welcome}) => {
         if(user !== undefined){
-          let screen = (user || skiped === 'true') ? "GuideScreen" : "LoginScreen";
-          NavigationService.navigateAndResetStack(screen);
+          if(welcome === 'true' ){
+            let screen = (user || skiped === 'true') ? "TabScreens" : "LoginScreen";
+            NavigationService.navigateAndResetStack(screen);
+          }else{
+            AsyncStorage.setItem('welcome','true');
+            let screen = (welcome === 'true') ? "TabScreens" : "GuideScreen";
+            NavigationService.navigateAndResetStack(screen);
+          }
         }
       }
     });
@@ -89,6 +96,7 @@ const mapStateToProps = state => {
   return {
     user: state.AuthReducer.user,
     skiped: state.AuthReducer.skiped,
+    welcome: state.AuthReducer.welcome,
   };
 };
 

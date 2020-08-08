@@ -8,11 +8,20 @@ import TitleText from '../SeperateComponents/TitleText'
 import * as NavigationService from '../../NavigationService'
 import Swiper from 'react-native-swiper'
 import Colors from '../../helper/Colors';
+import * as actions from '../../Store/Actions/AuthActions';
 
 class GuideScreen extends React.Component {
 
   movetoHome = () => {
-    NavigationService.navigateAndResetStack('TabScreens');
+    const { syncWithAsyncStorage } = this.props;
+    syncWithAsyncStorage({
+      onSuccess: ({user, skiped}) => {
+        if(user !== undefined){
+            let screen = (user || skiped === 'true') ? "TabScreens" : "LoginScreen";
+            NavigationService.navigateAndResetStack(screen);
+        }
+      }
+    });
   }
 
   render() {
@@ -125,5 +134,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  null
+  { syncWithAsyncStorage: actions.syncWithAsyncStorage }
 )(GuideScreen);
