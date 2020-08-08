@@ -22,14 +22,13 @@ class SplashScreen extends React.Component {
     // this._notificationSubscription = Notifications.addListener(this._handleNotification);
     syncWithAsyncStorage({
       onSuccess: ({user, skiped, welcome}) => {
-        if(user !== undefined){
-          if(welcome !== 'true'){
-            AsyncStorage.setItem('welcome','true');
-            return NavigationService.navigateAndResetStack('GuideScreen');
-          }
-          let screen = (user || skiped === 'true') ? "TabScreens" : "LoginScreen";
-          NavigationService.navigateAndResetStack(screen);
+        if(welcome !== 'true'){
+          AsyncStorage.setItem('welcome','true');
+          return NavigationService.navigateAndResetStack('GuideScreen');
         }
+
+        let screen = (user || skiped === 'true') ? "TabScreens" : "LoginScreen";
+        NavigationService.navigateAndResetStack(screen);
       }
     });
   }
