@@ -315,7 +315,6 @@ class NookDetailScreen extends React.Component {
           <View style={{ flex: 1, padding: 25, }}>
             <TouchableOpacity onPress={() => this.setState({
               roomUserDialogVisible: false,
-              users: [],
             })}>
               <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
             </TouchableOpacity>
@@ -323,8 +322,8 @@ class NookDetailScreen extends React.Component {
             <ScrollView style={{ marginTop: 10 }}>
               {
                 users.map((u, uI) =>
-                  <View key={uI} style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>      
-                        <View style={{ flexDirection: "row" }}>
+                  <View key={uI} style={[styles.child, { marginTop: 15, marginBottom: 15,  marginRight: 10,  marginLeft: 10, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>      
+                        <View style={{ flexDirection: "row"  }}>
                           <View style={{ flex: 1 }}>
                             <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>User Name</Text>
                             <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>User Number</Text>
