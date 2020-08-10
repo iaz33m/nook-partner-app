@@ -70,11 +70,13 @@ class LoginScreen extends React.Component {
     if (!password) {
       return alert('Password is required.');
     }
-
+   
+    let is_partner = '1';
+   
     this.toggleSubmitting();
 
     login({
-      data: { number, password },
+      data: { number, password, is_partner },
       onSuccess: () => {
         this.moveToHome();
       },
