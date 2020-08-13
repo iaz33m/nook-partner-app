@@ -32,9 +32,10 @@ class LoginScreen extends React.Component {
 
   socialLogin = (provider) => {
     const { socialLogin } = this.props;
+    let role = "Partner";
     this.toggleProcessing();
     socialLogin({
-      data: { provider },
+      data: { provider, role },
       onSuccess: () => {
         this.moveToHome();
       },
