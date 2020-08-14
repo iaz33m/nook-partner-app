@@ -268,6 +268,7 @@ class BookingsScreen extends React.Component {
                 contentContainerStyle={{ paddingBottom: "45%" }}
                 renderItem={({ item, index }) => (
                     <View key={index} style={[styles.container]}>
+                        {item.status != "Cancelled" &&
                         <View style={styles.child}>
                             <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
                                 source={require('./../../../assets/feature.png')}
@@ -278,6 +279,7 @@ class BookingsScreen extends React.Component {
                                     <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Room</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Security</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Paid Security</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Refuned Security</TitleText>
@@ -289,6 +291,7 @@ class BookingsScreen extends React.Component {
                                     </TouchableOpacity>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{(item.user.room)?item.user.room.room_number:''}</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.security} PKR</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.paidSecurity} PKR</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.refunedSecurity} PKR</TitleText>
@@ -305,6 +308,7 @@ class BookingsScreen extends React.Component {
                                 >Update</Button>
                             </View>
                         </View>
+                    }
                     </View>
                 )}
                 refreshControl={

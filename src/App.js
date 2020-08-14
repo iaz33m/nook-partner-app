@@ -192,6 +192,7 @@ const AppNavigator = createStackNavigator(
     ComplainsDetailScreen,
     SplashScreen,
     LoginScreen,
+    ProfileScreen,
     TabScreens,
     ComplaintsScreen,
     ReceiptsScreen,

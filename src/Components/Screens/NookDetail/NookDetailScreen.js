@@ -765,7 +765,7 @@ class NookDetailScreen extends React.Component {
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>
               <Text style={{ margin: 15, fontSize: 16, }}>{nook.number}</Text>
             </View>
-            
+            {nook.status ==="Approved" && 
             <View style={styles.ScreenButtonContainer}>
                 <View style={styles.ScreenButtonChild}>
                     <ScrollView contentContainerStyle={{
@@ -855,7 +855,7 @@ class NookDetailScreen extends React.Component {
 
                 </View>
             </View>
-
+            }
 
             {/* Rooms and user data tab */}
             <View style={{ backgroundColor: Colors.white, borderRadius: 30, flexDirection: "row", marginTop: 30, marginBottom: 10, }}>
