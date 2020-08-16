@@ -329,6 +329,15 @@ class HomeScreen extends React.Component {
                           </View>
                         </View>
                       </View>
+                      <View style={{ paddingBottom:10 }}>
+                        <View style={{justifyContent: 'center'}}>
+                          <View style={{ paddingStart: 15, paddingEnd: 15 }}>
+                            <NativeButton onPress={() => { NavigationService.navigate("UpdateNookScreen", item)}} warning full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
+                              <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Update Nook'}</Text>
+                            </NativeButton>
+                          </View>
+                        </View>
+                      </View>
                     </View>
                   }
                 </View>

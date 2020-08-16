@@ -278,7 +278,8 @@ class BookingsScreen extends React.Component {
                                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
                                     <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
-                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User Name</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User Number</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Room</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Security</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Paid Security</TitleText>
@@ -291,7 +292,8 @@ class BookingsScreen extends React.Component {
                                     </TouchableOpacity>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
-                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{(item.user.room)?item.user.room.room_number:''}</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.number}</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{(item.user.room)?item.user.room.room_number: (item.room)? item.room.room_number : ''}</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.security} PKR</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.paidSecurity} PKR</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.refunedSecurity} PKR</TitleText>
