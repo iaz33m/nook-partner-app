@@ -32,9 +32,10 @@ class LoginScreen extends React.Component {
 
   socialLogin = (provider) => {
     const { socialLogin } = this.props;
+    let role = "Partner";
     this.toggleProcessing();
     socialLogin({
-      data: { provider },
+      data: { provider, role },
       onSuccess: () => {
         this.moveToHome();
       },
@@ -70,11 +71,13 @@ class LoginScreen extends React.Component {
     if (!password) {
       return alert('Password is required.');
     }
-
+   
+    let is_partner = '1';
+   
     this.toggleSubmitting();
 
     login({
-      data: { number, password },
+      data: { number, password, is_partner },
       onSuccess: () => {
         this.moveToHome();
       },

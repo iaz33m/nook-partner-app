@@ -227,12 +227,12 @@ class HomeScreen extends React.Component {
           renderItem={({ item, index }) => (
             <View style={styles.container} key={index}>              
               <View style={styles.child}>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     onPress={() => {
                       this.setState({ isDialogVisible: false });
                       NavigationService.navigate("NookDetailScreen", item);
                     }}
-                  >
+                  > */}
                   <Image
                     style={{ position: "absolute", height:80, width:100 }}
                     source={require("./../../../../assets/feature.png")}
@@ -265,6 +265,12 @@ class HomeScreen extends React.Component {
                   </Text>
 
                   <View style={{ margin: 20, marginTop:30 }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.setState({ isDialogVisible: false });
+                        NavigationService.navigate("NookDetailScreen", item);
+                      }}
+                    >
                     <Card>
                       <View
                         style={{
@@ -279,6 +285,7 @@ class HomeScreen extends React.Component {
                           {this.getPrice(item)}
                         </Text>
                       </View>
+                      
                       <CardItem cardBody>
                         {item.medias.map((m, index) => {
                           if (index === 0) {
@@ -312,8 +319,9 @@ class HomeScreen extends React.Component {
                         {item.nookCode}
                       </TitleText>
                     }
+                    </TouchableOpacity>
                   </View>
-                  </TouchableOpacity>
+                  {/* </TouchableOpacity> */}
                   {
                     (item.status === "Pending") &&
                     <View style={{ justifyContent: 'center' ,marginRight: 30, marginLeft: 30,}}>
@@ -322,6 +330,15 @@ class HomeScreen extends React.Component {
                           <View style={{ paddingStart: 15, paddingEnd: 15 }}>
                             <NativeButton onPress={() => { this.deleteNookAlert(item.id) }} danger full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
                               <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Delete Nook'}</Text>
+                            </NativeButton>
+                          </View>
+                        </View>
+                      </View>
+                      <View style={{ paddingBottom:10 }}>
+                        <View style={{justifyContent: 'center'}}>
+                          <View style={{ paddingStart: 15, paddingEnd: 15 }}>
+                            <NativeButton onPress={() => { NavigationService.navigate("UpdateNookScreen", item)}} warning full rounded style={{color: '#ff3333'}}  disabled={this.state.submitting}>
+                              <Text style={{ color: 'white', alignSelf: 'center' }}>{this.state.submitting ? 'Please wait...' : 'Update Nook'}</Text>
                             </NativeButton>
                           </View>
                         </View>

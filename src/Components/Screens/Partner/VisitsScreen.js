@@ -156,6 +156,7 @@ class VisitsScreen extends React.Component {
         contentContainerStyle={{ paddingBottom: "50%" }}
         renderItem={({ item, index }) => (
           <View key={index} style={[styles.container]}>
+            {item.status != "Canceled" && 
             <View style={styles.child}>
               <Image resizeMode="cover" style={{ position: 'absolute', height: 80, width: 90 }}
                 source={require('./../../../../assets/feature.png')}
@@ -196,6 +197,7 @@ class VisitsScreen extends React.Component {
                 </View>
               </View>
             </View>
+          }
           </View>
         )}
         refreshControl={

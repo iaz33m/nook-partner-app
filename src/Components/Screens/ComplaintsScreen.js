@@ -31,6 +31,9 @@ class ComplaintsScreen extends React.Component {
       },
       loading: true,
       modalVisible: false,
+      isMediaVisible:false,
+      media:'',
+      isMedia:false,
       filter: {
         status: '',
         type: '',
@@ -226,7 +229,9 @@ class ComplaintsScreen extends React.Component {
                 <View style={{ flex: 1, alignItems: 'flex-start' }}>
                   <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >Nook Code</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >ID</TitleText>
-                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User Name</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User Number</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Room</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Type</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Submited At</TitleText>
                 </View>
@@ -236,6 +241,8 @@ class ComplaintsScreen extends React.Component {
                   </TouchableOpacity>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.number}</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{(item.user.room)?item.user.room.room_number:''}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.type}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.created_at}</TitleText>
                 </View>
@@ -251,7 +258,16 @@ class ComplaintsScreen extends React.Component {
                       <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Update Complain </Text>
                     </TouchableOpacity>
                   </View>
-                  
+                  {item.media && 
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+                      <TouchableOpacity
+                        style={styles.addButton}
+                        onPress={() => { this.setState({ isMediaVisible: true, isMedia: true, media: item.media }); }}
+                      >
+                        <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>View Attachment </Text>
+                      </TouchableOpacity>
+                    </View>
+                  }
                 </View>
               </View>
             </View>
@@ -267,6 +283,31 @@ class ComplaintsScreen extends React.Component {
       />
     );
   };
+  renderComplainsMediaPopup = () => {
+    const { isMedia, isMediaVisible , media} = this.state;
+
+    if (isMedia) {
+      return (
+        <PopupDialog
+          width={0.9} height={0.5}
+          visible={isMediaVisible}
+          onTouchOutside={this.togglePopup}>
+          
+          <View style={{ flex: 1, padding: 25, }}>
+            
+            <TouchableOpacity onPress={() => this.setState({ isMediaVisible: false })}> 
+              <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+            </TouchableOpacity>
+            
+            <Image resizeMode="contain" source={{uri: media}} style={{ height: 200, width: null, flex: 1 }} />
+          
+          </View>
+        
+        </PopupDialog>
+      );
+    }
+
+  }
   renderComplainsPopup = () => {
     const { isSchedule, isDialogVisible, date, description, submitting, complainId, complainStatus, action } = this.state;
 
@@ -339,6 +380,7 @@ class ComplaintsScreen extends React.Component {
           {this.renderComplains()}
         </View>
         {this.renderComplainsPopup()}
+        {this.renderComplainsMediaPopup()}
         {this.renderFilterView()}
       </View >
     );

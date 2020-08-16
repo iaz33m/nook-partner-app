@@ -12,6 +12,7 @@ import BookingsScreen from "./Components/Screens/BookingsScreen";
 import NoticesScreen from "./Components/Screens/NoticesScreen";
 import MyNookScreen from "./Components/Screens/MyNookScreen";
 import AddNookScreen from "./Components/Screens/AddNookScreen";
+import UpdateNookScreen from "./Components/Screens/UpdateNookScreen";
 import PaymentsScreen from "./Components/Screens/Payments/PaymentsScreen";
 import ReceiptsScreen from "./Components/Screens/Receipts/ReceiptsScreen";
 import ReceiptDetailsScreen from "./Components/Screens/Receipts/ReceiptDetailsScreen";
@@ -192,6 +193,7 @@ const AppNavigator = createStackNavigator(
     ComplainsDetailScreen,
     SplashScreen,
     LoginScreen,
+    ProfileScreen,
     TabScreens,
     ComplaintsScreen,
     ReceiptsScreen,
@@ -201,6 +203,7 @@ const AppNavigator = createStackNavigator(
     RoomShiftsScreen,
     PaymentScreen,
     AddNookScreen,
+    UpdateNookScreen,
     ManageNooks,
     ForgotPasswordScreen,
     NumberVerificationScreen,

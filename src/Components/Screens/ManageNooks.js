@@ -30,7 +30,16 @@ class ManageNooks extends React.Component {
       selected2: value
     });
   }
-
+profileCheck(){
+  const { user } = this.props;
+  const { aggreedToTerms } = user;
+    if (aggreedToTerms) {
+      NavigationService.navigateAndResetStack('AddNookScreen');
+    }else{
+      alert('You can not create nook, please complete your profile first.');
+      NavigationService.navigateAndResetStack('ProfileScreen');
+    }
+}
   render() {
 
     return (
@@ -48,7 +57,7 @@ class ManageNooks extends React.Component {
                     <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, }} >
                       Add Nook
                     </TitleText>
-                    <TouchableOpacity style={{borderRadius: 15}} onPress={() => { NavigationService.navigate("AddNookScreen") }}>
+                    <TouchableOpacity style={{borderRadius: 15}} onPress={() => this.profileCheck() }>
                         <Image style={{ width: 30, height: 30, }}
                             source={require('./../../../assets/add.png')}
                         />
@@ -71,7 +80,7 @@ class ManageNooks extends React.Component {
                     <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, }} >
                       Manage Nooks
                       </TitleText>
-                      <TouchableOpacity style={{borderRadius: 15}} onPress={() => { NavigationService.navigate("AddNookScreen") }}>
+                      <TouchableOpacity style={{borderRadius: 15}} onPress={() => this.profileCheck() }>
                         <Image style={{ width: 30, height: 30, }}
                             source={require('./../../../assets/add.png')}
                         />

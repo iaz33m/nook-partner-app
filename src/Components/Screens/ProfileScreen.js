@@ -122,6 +122,7 @@ class ProfileScreen extends React.Component {
       onSuccess: message => {
         alert(message);
         this.toggleSubmitting();
+        return NavigationService.navigateAndResetStack("ManageNooks");
       },
       onError: message => {
         alert(message);

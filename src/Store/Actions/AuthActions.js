@@ -206,28 +206,27 @@ const syncWithAsyncStorage = options => async dispatch => {
   }
 };
 
-const getSocialUser = async (provider) => {
+const getSocialUser = async (provider, role) => {
   if (provider === 'google') {
     return new Promise(async (resolve, reject) => {
       try {
-        
         await GoogleSignIn.initAsync();
         await GoogleSignIn.askForPlayServicesAsync();
+        
         const result = await GoogleSignIn.signInAsync();
-
         if (result.type === "success") {
           const user = await GoogleSignIn.signInSilentlyAsync();
           const {
             uid: provider_user_id,
             displayName:name,
           } = user;
-          return resolve({ provider_user_id, name, provider });
+          return resolve({ provider_user_id, name, provider, role });
         }
 
         reject(new Error('User Canceled Login Process'));
 
       } catch (error) {
-        
+        // alert('GoogleSignIn.initAsync(): ' + error);
         reject(error)
       }
     });
@@ -256,13 +255,14 @@ const getSocialUser = async (provider) => {
           name
         } = await response.json();
         return resolve({
-          provider_user_id,name,provider
+          provider_user_id, name, provider, role
         });
       }
 
       return reject(new Error('User Canceled Login Process'));
 
     } catch (error) {
+      // alert('Facebook Erroe(): ' + error);
       reject(error)
     }
   });
@@ -271,7 +271,7 @@ const socialLogin = options => async dispatch => {
   const { data, onSuccess, onError } = options;
   try {
 
-    let socialUser = await getSocialUser(data.provider);
+    let socialUser = await getSocialUser(data.provider, data.role);
     const { data: user } = await axios.post(`${APIModel.HOST}/auth/socialLogin`, socialUser, {
       'headers': {
         'Content-Type': 'application/json',

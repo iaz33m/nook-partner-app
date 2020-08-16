@@ -148,7 +148,31 @@ const addNook = options => async dispatch => {
         }
     }
 };
+const updateNook = options => async dispatch => {
+    const { data, token, onError,onSuccess } = options;
+    
+    try {
 
+        const {data:{message}} = await axios.put(`${APIModel.HOST}/admin/partner/nooks/`+data.id,data, {
+            'headers': {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(onSuccess){
+            onSuccess(message);
+        }
+
+    } catch (error) {
+        const { data } = error.response;
+        const message = data.message || error.message || fallBackErrorMessage;
+        if (onError) {
+            onError(message);
+        }
+    }
+};
 const getArea = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     
@@ -243,9 +267,10 @@ const setDesiredLocation = options => async dispatch => {
 
 export {
     getMyNookDetails,
-    addReview ,
+    addReview,
     getPublicNooks,
     addNook,
+    updateNook,
     getArea,
     addNookRoom,
     setDesiredLocation,
