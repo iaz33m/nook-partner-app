@@ -420,7 +420,6 @@ class NookDetailScreen extends React.Component {
         <View>
         {bookings.map((b, bI) => {
           const {receipts} = b;
-          console.log('receipts................',receipts);
           const singleReceipt = receipts ? receipts : null; 
           return (
             <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
@@ -886,7 +885,7 @@ class NookDetailScreen extends React.Component {
                         }} >      
                         <View style={{ flexDirection: "row" }}>
                           <View style={{ flex: 1 }}>
-                            <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Room Numner</Text>
+                            <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Room Number</Text>
                             <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>Price Per Bed</Text>
                           </View>
                           <View style={{ flex: 1, alignItems: 'flex-end', }}>

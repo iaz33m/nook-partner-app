@@ -27,7 +27,7 @@ class SplashScreen extends React.Component {
           return NavigationService.navigateAndResetStack('GuideScreen');
         }
 
-        let screen = (user || skiped === 'true') ? "TabScreens" : "LoginScreen";
+        let screen = (user) ? "TabScreens" : "LoginScreen";
         NavigationService.navigateAndResetStack(screen);
       }
     });
