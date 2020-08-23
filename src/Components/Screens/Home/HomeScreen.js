@@ -214,7 +214,8 @@ class HomeScreen extends React.Component {
   listView = () => {
 
     if (this.state.loading) {
-      return <Spinner color="black" />;
+      return true;
+      // return <Spinner color="black" />;
     }
 
     return (
@@ -500,7 +501,13 @@ class HomeScreen extends React.Component {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
         <Header backButton={false} optionButton={true} />
-        <ScrollView>
+        <ScrollView
+          refreshControl={<RefreshControl
+              refreshing={this.state.loading}
+              onRefresh={this.onRefresh.bind(this)}
+            />
+          }
+        >
           <TitleText
             style={{ marginTop: 25, fontWeight: "bold", fontSize: 20 }}
           >
