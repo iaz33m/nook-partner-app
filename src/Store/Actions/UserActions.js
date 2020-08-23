@@ -59,6 +59,34 @@ const changePassword = options => async dispatch => {
         onError(message);
       }
     }
-  };
+};
 
-export { updateUser,changePassword };
+
+const registerDevice = options => async dispatch => {
+  const { token,user_id, onSuccess, onError } = options;
+  try {
+
+    const { data: {message} } = await axios.post(`https://expopush.applet.solutions/api/v1/en/user/pushNotifications`, {
+      token,
+      user_id,
+      app_id: "1",
+    }, {
+      'headers': {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+    if (onSuccess) {
+      onSuccess(message);
+    }
+  } catch (error) {
+    const { data } = error.response;
+    const message = data.message || error.message || fallBackErrorMessage;
+
+    if (onError) {
+      onError(message);
+    }
+  }
+};
+
+export { updateUser,changePassword, registerDevice };

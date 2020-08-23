@@ -281,10 +281,10 @@ class BookingsScreen extends React.Component {
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User Name</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >User Number</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Room</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Rent</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Security</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Paid Security</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Refuned Security</TitleText>
-                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Rent</TitleText>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
                                     <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen", item.nook)}>
@@ -294,10 +294,10 @@ class BookingsScreen extends React.Component {
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.number}</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{(item.user.room)?item.user.room.room_number: (item.room)? item.room.room_number : ''}</TitleText>
+                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.rent} PKR</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.security} PKR</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.paidSecurity} PKR</TitleText>
                                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.refunedSecurity} PKR</TitleText>
-                                    <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.rent} PKR</TitleText>
                                 </View>
                             </View>
 

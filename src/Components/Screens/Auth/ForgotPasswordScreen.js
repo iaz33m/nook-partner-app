@@ -40,7 +40,7 @@ class ForgotPasswordScreen extends React.Component {
       data: { number },
       onSuccess: (data) => {
         const { token } = data;
-        this.setState({ view: 'changePassword', code: JSON.stringify(token), submitting: false, });
+        this.setState({ view: 'changePassword', code: token, submitting: false, });
         
         if(userAction){
           alert('Code was sent Successfully.');

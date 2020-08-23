@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Button, Vibration, Platform } from 'react-native';
+import { StyleSheet, View, Vibration, Platform } from 'react-native';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
-
 import * as NavigationService from '../../NavigationService'
 import * as actions from '../../Store/Actions/AuthActions';
+import * as usersActions from '../../Store/Actions/UserActions';
 import { AsyncStorage } from 'react-native';
 
 class SplashScreen extends React.Component {
@@ -18,13 +18,16 @@ class SplashScreen extends React.Component {
 
   async componentDidMount() {
     const { syncWithAsyncStorage } = this.props;
-    // await this.registerForPushNotificationsAsync();
-    // this._notificationSubscription = Notifications.addListener(this._handleNotification);
     syncWithAsyncStorage({
       onSuccess: ({user, skiped, welcome}) => {
         if(welcome !== 'true'){
           AsyncStorage.setItem('welcome','true');
           return NavigationService.navigateAndResetStack('GuideScreen');
+        }
+
+        if(user){
+          await this.registerForPushNotificationsAsync(user);
+          this._notificationSubscription = Notifications.addListener(this._handleNotification);
         }
 
         let screen = (user) ? "TabScreens" : "LoginScreen";
@@ -36,7 +39,6 @@ class SplashScreen extends React.Component {
   
   _handleNotification = notification => {
     Vibration.vibrate();
-    console.log(notification);
     this.setState({ notification: notification });
   };
   
@@ -53,7 +55,20 @@ class SplashScreen extends React.Component {
         return;
       }
       token = await Notifications.getExpoPushTokenAsync();
-      console.log({token});
+      
+      const {registerDevice} = this.props;
+
+      registerDevice({
+        user_id: user.id,
+        token,
+        onSuccess: (message) => {
+          console.log(message);
+        },
+        onError: (message) => {
+          alert(message);
+        }
+      });
+
       this.setState({ expoPushToken: token });
     } else {
       alert('Must use physical device for Push Notifications');
@@ -72,8 +87,7 @@ class SplashScreen extends React.Component {
   render() {
     
     return (
-      <View style={styles.container}>
-      </View>
+      <View style={styles.container}/>
     );
   }
 }
@@ -85,8 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-
+  }
 });
 
 const mapStateToProps = state => {
@@ -99,5 +112,8 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { syncWithAsyncStorage: actions.syncWithAsyncStorage }
+  { 
+    syncWithAsyncStorage: actions.syncWithAsyncStorage,
+    registerDevice: usersActions.registerDevice,
+  }
 )(SplashScreen);

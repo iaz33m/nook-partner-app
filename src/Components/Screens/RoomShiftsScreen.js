@@ -309,7 +309,6 @@ class RoomShiftsScreen extends React.Component {
                   .map(k => <Picker.Item key={k} label={this.state.action[k]} value={k} />)}
               </Picker>
             </Item>
-              {(this.state.shiftStatus === 'approved')? <View style={{ justifyContent: 'center', marginBottom: 10 }}><InputField value={refunedSecurity} onChangeText={refunedSecurity => this.setState({ refunedSecurity })}>Refuned Security</InputField></View>: <Text></Text>}
             <Button disabled={submitting} onPress={() => { this.sendShift() }} >{submitting ? 'Please wait...' : 'Update Shift'}</Button>
           </View>
         </PopupDialog>
@@ -352,12 +351,14 @@ class RoomShiftsScreen extends React.Component {
       </View >
     );
   }
+  
   toggleSubmitting = () => {
     const { submitting } = this.state;
     this.setState({
       submitting: !submitting,
     });
   }
+
   sendShift() {
     this.toggleSubmitting();
     const { filter, shiftId, shiftStatus, refunedSecurity  } = this.state;
