@@ -42,7 +42,7 @@ class SplashScreen extends React.Component {
     this.setState({ notification: notification });
   };
   
-  registerForPushNotificationsAsync = async () => {
+  registerForPushNotificationsAsync = async (user) => {
     if (Constants.isDevice) {
       const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
       let finalStatus = existingStatus;
