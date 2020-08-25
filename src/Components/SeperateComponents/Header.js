@@ -100,6 +100,11 @@ const Header = (props) => {
             <Icon name='arrow-back' />
         </TouchableOpacity>
     }
+    if (props.homeButton) {
+        backButton = <TouchableOpacity onPress={() => { NavigationService.navigateAndResetStack("TabScreens") }} style={styles.buttonStyle} transparent>
+            <Icon name='arrow-back' />
+        </TouchableOpacity>
+    }
     return (
         <View style={styles.container}>
 

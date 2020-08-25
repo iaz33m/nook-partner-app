@@ -58,9 +58,9 @@ class AddNookScreen extends React.Component {
       agreementTenure: 0,
       address: "",
 
-      capacity: "",
-      noOfBeds: "",
-      price_per_bed: "",
+      capacity: 0,
+      noOfBeds: 0,
+      price_per_bed: 0,
       room_number: "",
       
       profile: [],
@@ -168,9 +168,9 @@ class AddNookScreen extends React.Component {
         },
         ...prevState.rooms,
       ],
-      capacity: "",
-      noOfBeds:'',
-      price_per_bed:'',
+      capacity: 0,
+      noOfBeds:0,
+      price_per_bed:0,
       room_number:'',
       isDialogVisible: false,
     }));

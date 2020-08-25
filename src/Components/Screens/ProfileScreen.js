@@ -30,7 +30,11 @@ class ProfileScreen extends React.Component {
     oldPassword: '',
     password: '',
     confirmPassword: '',
+    numberVerified:'',
     shouldDisableFields: false,
+    disableNameFields: false,
+    disableGenderFields: false,
+    disablePhoneFields: false,
   };
 
   componentDidMount() {
@@ -39,11 +43,18 @@ class ProfileScreen extends React.Component {
       return NavigationService.navigateAndResetStack('LoginScreen');
     }
     const shouldDisableFields = user.aggreedToTerms;
+    const gender = (user.gender)? true : false ;
+    const phone = (user.number)? true : false ;
+    const name = (user.name)?  true : false ;
 
     this.setState({
       user,
       ...user,
-      shouldDisableFields
+      shouldDisableFields,
+      numberVerified:user.numberVerified,
+      disablePhoneFields:phone,
+      disableNameFields:name,
+      disableGenderFields:gender,
     });
   }
 
@@ -153,7 +164,7 @@ class ProfileScreen extends React.Component {
   }
 
   render() {
-    let { name, number, gender, profile, address, oldPassword, password, confirmPassword, submitting, city, occupation, aggreedToTerms, shouldDisableFields } = this.state;
+    let { name, number, gender, profile, address, oldPassword, password, confirmPassword, submitting, city, occupation, aggreedToTerms, shouldDisableFields , numberVerified, disablePhoneFields, disableNameFields, disableGenderFields,} = this.state;
 
     // image is not coming from internet
     if (!profile.includes('http')) {
@@ -184,11 +195,19 @@ class ProfileScreen extends React.Component {
                 Personal Information
               </TitleText>
               <View style={{ marginTop: 15, marginBottom: 5, }}>
-                <InputField value={name} iconName="person"
+                <InputField value={name} inputProps={{ disabled: disableNameFields }} iconName="person"
                   onChangeText={name => this.setState({ name })}
                 >Name</InputField>
-                <InputField inputProps={{ disabled: shouldDisableFields }} value={number} iconName="call" onChangeText={number => this.setState({ number })}
+                <InputField inputProps={{ disabled: disablePhoneFields }} value={number} iconName="call" onChangeText={number => this.setState({ number })}
                 >Phone</InputField>
+                {
+                  numberVerified == 0 && 
+                  <TouchableOpacity onPress={() => {NavigationService.navigateAndResetStack("NumberVerificationScreen")}}>
+                    <TitleText containerStyle={{alignItems: 'flex-start',}} style={{ marginStart: 15, marginTop: 10, fontSize: 16, color:Colors.orange }}>
+                      Number Verification Is Required
+                    </TitleText>
+                  </TouchableOpacity>
+                }
                 <InputField value={city} onChangeText={city => this.setState({ city })}>City i.e Lahore</InputField>
 
                 <Item picker style={styles.pickerStyle}>
@@ -222,7 +241,7 @@ class ProfileScreen extends React.Component {
                     source={require('./../../../assets/male.png')}
                   />
                   <Text>Male</Text>
-                  <CheckBox color={Colors.orange} checked={gender === 'Male'} onPress={() => this.setState({ gender: 'Male' })} />
+                  <CheckBox color={Colors.orange} checked={gender === 'Male'} disabled={disableGenderFields} onPress={() => this.setState({ gender: 'Male' })} />
                 </View>
                 <View style={styles.checkboxItem}>
                   <Image style={{
@@ -232,7 +251,7 @@ class ProfileScreen extends React.Component {
                     source={require('./../../../assets/female.png')}
                   />
                   <Text>Female</Text>
-                  <CheckBox color={Colors.orange} checked={gender === 'Female'} onPress={() => this.setState({ gender: 'Female' })} />
+                  <CheckBox color={Colors.orange} checked={gender === 'Female'} disabled={disableGenderFields} onPress={() => this.setState({ gender: 'Female' })} />
                 </View>
               </View>
               <Textarea
@@ -403,7 +422,21 @@ shiftButton: {
     backgroundColor: '#FFF',
     // Android shadow
     elevation: 3
-  }
+  },
+  downloadButton: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#E59413',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
+    flexDirection: 'column',
+    borderRadius: 5,
+    marginStart: 5,
+    marginEnd: 5,
+    height: 60, marginTop: 10, marginBottom: 10
+  },
 })
 
 
