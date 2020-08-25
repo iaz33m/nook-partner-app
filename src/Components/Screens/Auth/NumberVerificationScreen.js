@@ -92,7 +92,7 @@ class NumberVerificationScreen extends React.Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
-        <Header backButton={true} />
+        <Header homeButton={true} />
         <View style={styles.container}>
           <View style={styles.child}>
             <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >Verify Number!</TitleText>
