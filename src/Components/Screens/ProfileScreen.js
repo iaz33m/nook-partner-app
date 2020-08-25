@@ -204,7 +204,7 @@ class ProfileScreen extends React.Component {
                   numberVerified == 0 && 
                   <TouchableOpacity onPress={() => {NavigationService.navigateAndResetStack("NumberVerificationScreen")}}>
                     <TitleText containerStyle={{alignItems: 'flex-start',}} style={{ marginStart: 15, marginTop: 10, fontSize: 16, color:Colors.orange }}>
-                      Number Veerification Is Required
+                      Number Verification Is Required
                     </TitleText>
                   </TouchableOpacity>
                 }
