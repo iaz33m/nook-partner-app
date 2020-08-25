@@ -3,27 +3,15 @@ import React from 'react';
 import { connect } from "react-redux";
 import { Button, Text as NativeText } from 'native-base';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import Header from '../SeperateComponents/Header'
-import TitleText from '../SeperateComponents/TitleText'
 import * as NavigationService from '../../NavigationService'
 import Swiper from 'react-native-swiper'
 import Colors from '../../helper/Colors';
-import * as actions from '../../Store/Actions/AuthActions';
 
 class GuideScreen extends React.Component {
 
   movetoHome = () => {
-    const { syncWithAsyncStorage } = this.props;
-    syncWithAsyncStorage({
-      onSuccess: ({user, skiped}) => {
-        if(user !== undefined){
-            let screen = (user || skiped === 'true') ? "TabScreens" : "LoginScreen";
-            NavigationService.navigateAndResetStack(screen);
-        }
-      }
-    });
+    NavigationService.navigateAndResetStack('LoginScreen');
   }
-
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
@@ -31,30 +19,24 @@ class GuideScreen extends React.Component {
         </View>
         <View style={styles.container}>
           <View style={styles.child}>
+            
+
             <Swiper style={styles.wrapper} showsButtons={false}>
               <View style={styles.slide}>
-                <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Welcome Nook</TitleText>
-                <TitleText style={{ marginTop: 10, marginBottom: 30, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
                 <Image style={styles.slideItem}
-                  source={require('./../../../assets/logo.png')}
+                  source={require('./../../../assets/welcome/1.png')}
                 />
               </View>
               <View style={styles.slide}>
-                <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Heading 2</TitleText>
-                <TitleText style={{ marginTop: 10, marginBottom: 30, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
-                <Image style={styles.slideItem}
-                  source={require('./../../../assets/logo.png')}
+              <Image style={styles.slideItem}
+                  source={require('./../../../assets/welcome/2.png')}
                 />
               </View>
               <View style={styles.slide}>
-                <TitleText style={{ marginTop: 30, fontWeight: 'bold', fontSize: 20, }} >Heading 3</TitleText>
-                <TitleText style={{ marginTop: 10, marginBottom: 30, fontSize: 16, }}>Ut enim ad minim veniam, quis nostrud exercitant ullamco laboris nisi ut aliquip ex ea commodo consequat ut enim ad minim veniam.</TitleText>
-                <Image style={styles.slideItem}
-                  source={require('./../../../assets/logo.png')}
+              <Image style={styles.slideItem}
+                  source={require('./../../../assets/welcome/3.png')}
                 />
-
-                <Button style={{alignSelf: 'center', marginTop: 50, backgroundColor: Colors.orange }} primary onPress={this.movetoHome}><NativeText> Get Started </NativeText></Button>
-
+                <Button style={{alignSelf: 'center', backgroundColor: Colors.orange }} primary onPress={this.movetoHome}><NativeText> Get Started </NativeText></Button>
               </View>
             </Swiper>
           </View>
@@ -69,11 +51,8 @@ const styles = StyleSheet.create({
   wrapper: {
   },
   slide: {
-    width: '80%',
-    alignSelf: 'center',
-    alignContent: 'center',
-    height: '90%',
-    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
   header: {
     paddingStart: 25,
@@ -97,8 +76,8 @@ const styles = StyleSheet.create({
     elevation: 3
   },
   slideItem: {
-    width: '60%',
-    height: '30%',
+    width: '100%',
+    height: '80%',
   },
   text: {
     color: '#000',
@@ -134,5 +113,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { syncWithAsyncStorage: actions.syncWithAsyncStorage }
+  null
 )(GuideScreen);
