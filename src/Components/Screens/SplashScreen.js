@@ -21,6 +21,7 @@ class SplashScreen extends React.Component {
     syncWithAsyncStorage({
       onSuccess: async ({user, skiped, welcome}) => {
         if(welcome !== 'true'){
+        // if(true){
           AsyncStorage.setItem('welcome','true');
           return NavigationService.navigateAndResetStack('GuideScreen');
         }

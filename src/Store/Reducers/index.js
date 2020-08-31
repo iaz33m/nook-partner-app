@@ -9,6 +9,7 @@ import RoomShiftsReducer from './RoomShiftsReducer';
 import VisitsReducer from "./VisitsReducer";
 import ReceiptReducer from "./ReceiptReducer";
 import PaymentReducer from "./PaymentReducer";
+import NotificationsReducer from "./NotificationsReducer";
 
 const rootReducers = combineReducers({
   AuthReducer,
@@ -21,6 +22,7 @@ const rootReducers = combineReducers({
   VisitsReducer,
   ReceiptReducer,
   PaymentReducer,
+  NotificationsReducer
 });
 
 export default rootReducers;

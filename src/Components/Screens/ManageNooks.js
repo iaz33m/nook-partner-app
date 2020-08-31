@@ -71,7 +71,9 @@ profileCheck(){
                   />
                   <Text
                     style={{ color: Colors.textGray,  fontSize: 15, marginTop:10 }}>
-                    Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
+                      By filling simple information about your property, you are one step closer to market your property at nooks. Once we received your property information, your property will go live after verification and legal process. Wait for company response. 
+                      (Fill accurate information about your property)
+                  </Text>
                 </View>
               </View>
               <View style={styles.child}>
@@ -94,7 +96,7 @@ profileCheck(){
                   />
                   <Text
                     style={{ color: Colors.textGray,  fontSize: 15, marginTop:10 }}>
-                    Non in in labore fugiat ullamco. Irure laboris magna dolor esse nisi dolore. Elit commodo amet officia esse pariatur dolor minim non excepteur exercitation proident esse. Minim culpa ut est exercitation labore amet do laborum non. Lorem dolore eu non ea ullamco aliqua officia do adipisicing culpa incididunt voluptate.</Text>
+                    By using nooks property management system you can manage your property like never before. Have better experience with your tenants by using nooks. Easy billing , maintenance services and better communication with your tenants.</Text>
                 </View>
               </View>
             </View>
