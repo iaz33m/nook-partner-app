@@ -428,7 +428,7 @@ class NookDetailScreen extends React.Component {
                             <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>{b.user.name}</Text>
                           </View>
                           <View style={{ flex: 1, alignItems: 'flex-end', }}>
-                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Room {b.room.room_number}</Text>
+                            <Text style={{ marginBottom: 15, fontSize: 16, }}>Room {(b.room)? ((b.room.room_number !== null)? b.room.room_number :b.room.id):''}</Text>
                           </View>
                         </View>
 
