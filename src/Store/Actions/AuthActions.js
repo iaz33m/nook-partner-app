@@ -271,17 +271,29 @@ const socialLogin = options => async dispatch => {
   const { data, onSuccess, onError } = options;
   try {
 
-    let socialUser = await getSocialUser(data.provider, data.role);
+    let socialUser = null;
+
+    try {
+      socialUser = await getSocialUser(data.provider, data.role);
+    } catch (error) {
+      alert(JSON.stringify(error));
+    }
+    
+    if(!socialUser){
+      if (onError) {
+        onError('Something went wrong while social login');
+      }
+      return;
+    }
+
     const { data: user } = await axios.post(`${APIModel.HOST}/auth/socialLogin`, socialUser, {
       'headers': {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       }
     });
-
     const message = user.message;
     delete user.message;
-
     dispatch({
       type: actions.LOGIN,
       payload: {

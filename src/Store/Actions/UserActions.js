@@ -1,7 +1,7 @@
 import * as actions from './type';
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
-import APIModel from '../../Models/APIModal';
+import APIModel, {app_id} from '../../Models/APIModal';
 
 const fallBackErrorMessage = 'Something went wrong, please try again later!';
 
@@ -69,7 +69,7 @@ const registerDevice = options => async dispatch => {
     const { data: {message} } = await axios.post(`https://expopush.applet.solutions/api/v1/en/user/pushNotifications`, {
       token,
       user_id,
-      app_id: "1",
+      app_id,
     }, {
       'headers': {
         'Content-Type': 'application/json',
