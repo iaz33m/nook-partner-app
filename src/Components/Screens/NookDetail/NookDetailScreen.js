@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert,ScrollView, Image, TextInput } from 'react-native';
 import { Input, Icon, Card, Textarea, Picker, Item } from "native-base";
 import Header from '../../SeperateComponents/Header';
 import TitleText from '../../SeperateComponents/TitleText';
@@ -14,7 +14,9 @@ import InputField from "../../SeperateComponents/InputField";
 import DatePicker from 'react-native-datepicker'
 import * as NavigationService from '../../../NavigationService';
 import * as actions from "../../../Store/Actions/ReceiptsActions";
-
+import * as complainaActions from "../../../Store/Actions/ComplainsActions";
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions'
 import moment from 'moment';
 
 class NookDetailScreen extends React.Component {
@@ -26,6 +28,7 @@ class NookDetailScreen extends React.Component {
       tabIndex: 0,
       tabIndexUser: 0,
       isDialogVisible: false,
+      isDialogComplainVisible: false,
       roomUserDialogVisible:false,
       users:[],
       date: new Date(),
@@ -62,10 +65,58 @@ class NookDetailScreen extends React.Component {
       extra: {
         name: '',
         value: ''
-      }
+      },
+      type: '',
+      types: {
+        'other': 'Other'
+      },
+      image:'',
+      profile:'',
     }
   }
 
+  pickImage = async (driver) => {
+
+    const { status } = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL);
+
+    if (status === 'granted') {
+
+      let src = ImagePicker.launchImageLibraryAsync;
+
+      if (driver == "camera") {
+        src = ImagePicker.launchCameraAsync;
+      }
+
+      let result = await src({
+        allowsEditing: true,
+        aspect: [4, 3],
+        base64: true,
+        quality: 0.5
+      });
+
+      if (!result.cancelled) {
+        const base64 = result.base64.replace(/\n/g, "");
+        this.setState({ image: result.uri, profile: base64 });
+      }
+
+    } else {
+      return alert("Permission not granted");
+    }
+
+  };
+
+  selectImageSrc = () => {
+
+    Alert.alert(
+      'Image Source',
+      'Select Image From', [
+      { text: 'Camera', onPress: () => this.pickImage("camera") },
+      { text: 'Gallery', onPress: () => this.pickImage("gallary") },
+    ],
+      { cancelable: true },
+    );
+
+  }
 
   Map = () => {
 
@@ -205,7 +256,127 @@ class NookDetailScreen extends React.Component {
       },
     });
   };
+  toggleSubmitting = () => {
+    const { submitting } = this.state;
+    this.setState({
+      submitting: !submitting,
+    });
+  };
+  sendComplains() {
 
+    this.toggleSubmitting();
+    
+    const { filter, user_id } = this.state;
+    const { user: { access_token }, addComplain } = this.props;
+    
+    const data = { "description": this.state.description, "type": this.state.type, "media":this.state.profile,"user_id":this.state.user_id };
+    
+    addComplain({
+      data: data,
+      onError: (error) => {
+        this.toggleSubmitting();
+        alert(error);
+      },
+      onSuccess: () => {
+        alert('Complain has been sent successfully');
+        this.setState({ submitting:false, isDialogComplainVisible:false, profile:'', image:'' });
+      },
+      filter,
+      token: access_token
+    })
+  }
+
+  renderComplainsPopup = () => {
+    const { isDialogComplainVisible, description, submitting, profile, image } = this.state;
+    
+      return (
+        <PopupDialog
+          width={0.9} height={0.8}
+          visible={this.state.isDialogComplainVisible}
+          onTouchOutside={this.togglePopup}>
+          <View style={{ flex: 1, padding: 25, }}>
+          {/* <ScrollView> */}
+            <TouchableOpacity onPress={() => this.setState({
+              isDialogComplainVisible: false
+            })}>
+              <Image resizeMode="contain" source={require('./../../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
+            </TouchableOpacity>
+            <Item picker style={styles.pickerStyle}>
+              <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                style={{ width: "100%" }}
+                placeholder="Select Type"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.type}
+                onValueChange={type => this.setState({ type })}>
+                <Picker.Item label="All Types" value="" />
+                {Object.keys(this.state.types)
+                  .filter(k => k)
+                  .map(k => <Picker.Item key={k} label={this.state.types[k]} value={k} />)}
+              </Picker>
+            </Item>
+
+            <Textarea
+              rowSpan={4}
+              bordered
+              placeholder="Description"
+              value={description}
+              onChangeText={description => this.setState({ description })}
+            /> 
+            { image !='' && 
+              <>
+              <TouchableOpacity onPress={() => this.setState({image:'', profile:''})}>
+              <Text
+                style={{
+                  marginRight: 0,
+                  width: 100,
+                  flex: 1,
+                  color: "red",
+                }}
+              >
+                x
+              </Text>
+            </TouchableOpacity>
+            <Image
+              resizeMode="cover"
+              resizeMode="contain"
+              source={{
+                uri: image,
+              }}
+              style={{
+                borderRadius: 10,
+                height: 100,
+                width: null,
+                flex: 1,
+              }}
+            />
+            </> 
+            }
+            { !image && 
+              <View style={styles.container} >
+                <View style={[styles.child, { height: 150, justifyContent: 'center', alignContent: 'center', alignItems: 'center' }]}>
+                  <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20 }} >
+                    Select Image
+                  </TitleText>
+                  <TouchableOpacity onPress={this.selectImageSrc}>
+                    <Image style={{
+                      width: 40,
+                      height: 40,
+                    }}
+                      source={require('./../../../../assets/add.png')}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            }
+            <Button disabled={submitting} onPress={() => { this.sendComplains() }} >{submitting ? 'Please wait...' : 'Add Complain'}</Button>
+            {/* </ScrollView> */}
+          </View>
+        </PopupDialog>
+      );
+  }
 
    renderReceiptGeneraterPopup = () => {
     const { isSchedule, isDialogVisible, submitting,status,fine,late_day_fine,e_units,e_unit_cost,due_date } = this.state;
@@ -466,28 +637,34 @@ class NookDetailScreen extends React.Component {
                            </View>
                         </View>
                         )}
-                        <View style={{ flex: 1, alignContent: "center" }}>
-                          {(!singleReceipt) && (
-                            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                            <TouchableOpacity
-                              style={styles.addButton}
-                              onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, user_id: b.user.id}); }}
-                            >
-                              <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Generate Receipt</Text>
-                            </TouchableOpacity>
-                          </View>
-                          )}
-                          {(singleReceipt) && (
-                            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                            <TouchableOpacity
-                              style={styles.addButton}
-                              onPress={() => this.publishReceipt({receipt_id: singleReceipt.id, user_id: b.user.id})}
-                              disabled={submitting}
-                            >
+                        <View style={{ flex: 1 }}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+                            {(!singleReceipt) && (
+                              <TouchableOpacity
+                                style={styles.addButton}
+                                onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, user_id: b.user.id}); }}
+                              >
+                                <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Generate Receipt</Text>
+                              </TouchableOpacity>
+                            
+                            )}
+                            {(singleReceipt) && (
+                              <TouchableOpacity
+                                style={styles.addButton}
+                                onPress={() => this.publishReceipt({receipt_id: singleReceipt.id, user_id: b.user.id})}
+                                disabled={submitting}
+                              >
                               <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>{submitting ? "Please wait..." : "Publish Receipt"}</Text>
                             </TouchableOpacity>
-                          </View>
-                          )}
+                            )}
+                              <TouchableOpacity
+                                style={styles.addButton}
+                                onPress={() => { this.setState({ isDialogComplainVisible: true, user_id: b.user.id}); }}
+                              >
+                                <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Add Complain</Text>
+                              </TouchableOpacity>
+                            </View>
+                          
                         </View>
                       </View>
           );
@@ -935,6 +1112,7 @@ class NookDetailScreen extends React.Component {
                 </View>  
             }
           {this.renderReceiptGeneraterPopup()}
+          {this.renderComplainsPopup()}
           {this.renderRoomUserPopup()}
           </View>
           
@@ -964,6 +1142,7 @@ export default connect(
   {
     generateReceipt: actions.generateReceipt,
     publishReceipt: actions.publishReceipt,
+    addComplain:complainaActions.addComplain,
   },
   
 )

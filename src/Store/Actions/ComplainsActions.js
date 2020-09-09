@@ -70,7 +70,7 @@ const addComplain = options => async dispatch => {
     const { data, token, onError,onSuccess } = options;
     try {
 
-        const {data:{review,message}} = await axios.post(`${APIModel.HOST}/auth/user/complains`,data, {
+        const {data:{review,message}} = await axios.post(`${APIModel.HOST}/admin/partner/complaints`,data, {
             'headers': {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
