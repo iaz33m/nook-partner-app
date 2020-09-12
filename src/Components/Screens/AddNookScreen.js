@@ -68,6 +68,7 @@ class AddNookScreen extends React.Component {
       setImage: "",
       lng: 10,
       lat: 10,
+      radius:1000,
       blockName: {
         lat: 10,
         lng: 10,
@@ -225,9 +226,11 @@ class AddNookScreen extends React.Component {
     });
   }
   onValueChangeLocation(value) {
+    let radius = (value.radius)?value.radius:1000;
     this.setState({
       lat: value.lat,
       lng: value.lng,
+      radius: radius,
       blockName: value,
       OriginalLatLng:{ latitude: value.lat, longitude: value.lng }
     });
@@ -780,7 +783,8 @@ class AddNookScreen extends React.Component {
   }
 
   Map = () => {
-    const { areaLocation, mainArea, blockName } = this.state;
+    const { areaLocation, mainArea, blockName, radius} = this.state;
+    
     if (this.state.loading) {
       return true;
     }
@@ -799,6 +803,7 @@ class AddNookScreen extends React.Component {
     if (!this.state.blockName.lat) {
       return true;
     }
+
     let lat = this.state.lat;
     let lng = this.state.lng;
 
@@ -835,12 +840,12 @@ class AddNookScreen extends React.Component {
             />
           )}
           <MapView.Circle
-                key = { (this.state.OriginalLatLng.latitude + this.state.OriginalLatLng.longitude + 1000).toString() }
+                key = { (this.state.OriginalLatLng.latitude + this.state.OriginalLatLng.longitude + Number(radius)).toString() }
                 center = {{
                   latitude: Number(this.state.OriginalLatLng.latitude),
                   longitude: Number(this.state.OriginalLatLng.longitude),
                 }}
-                radius = { 1000 }
+                radius = {Number(radius)}
                 strokeWidth = { 1 }
                 strokeColor = { '#1a66ff' }
                 fillColor = { 'rgba(230,238,255,0.9)' }
@@ -883,13 +888,15 @@ class AddNookScreen extends React.Component {
   };
 
   onRegionChangeComplete = (value) => {
+    let {radius} = this.state;
+    let r = radius/1000;
     const haversine = require('haversine')
-    let distance = '';
-     
+    let distance = '';  
     if (this.state.isDraggingMap) {
 
       distance = haversine(value, this.state.OriginalLatLng);
-      if(distance < 1){
+      
+      if(distance < r){
         this.setState({
           isDraggingMap: false,
           lat: value.latitude,
