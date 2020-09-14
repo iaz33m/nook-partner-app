@@ -584,16 +584,19 @@ class NookDetailScreen extends React.Component {
       });
     }
   }
-  bookings(){
+  bookings = () =>{
     const bookings = this.state.bookings;
     const {submitting} = this.state;
+    if(bookings.length == 0 ){
+      return true;
+    }
     return(
         <View>
         {bookings.map((b, bI) => {
           const {receipts} = b;
           const singleReceipt = receipts ? receipts : null; 
           return (
-            <View style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
+            <View key={bI} style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
                         <View style={{ flexDirection: "row" }}>
                           <View style={{ flex: 1 }}>
                             <Text style={{ marginBottom: 15, fontSize: 18, fontWeight: 'bold' }}>{b.user.name}</Text>
@@ -778,7 +781,6 @@ class NookDetailScreen extends React.Component {
                     source={{ uri: `https://www.youtube.com/embed/${this.getYoutubeIDFromURL(nook.video_url)}?autoplay=1&theme=light&color=white&disablekb=1` }}
                     scalesPageToFit={true}
                     bounces={false}
-                    javaScriptEnabled
                     automaticallyAdjustContentInsets={false}
                   />
                 }
@@ -1099,7 +1101,7 @@ class NookDetailScreen extends React.Component {
                     </View>
                   </View>
 
-                  <View >
+                  <View>
                    {this.bookings()}
                     <View style={{ flex: 1, alignContent: "center" }}>
                       <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
