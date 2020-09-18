@@ -32,9 +32,9 @@ class ReceiptsScreen extends React.Component {
       filter: {
         status: 'in_progress',
         id: '',
-        nookCode: this.props.navigation.state.params,
+        nookCode: this.props.navigation.state.params.nookCode,
         space_type: "",
-        number: "",
+        number: this.props.navigation.state.params.number,
         email: "",
         month: "",
       },

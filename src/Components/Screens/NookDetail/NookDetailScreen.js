@@ -189,9 +189,6 @@ class NookDetailScreen extends React.Component {
       user: { access_token: token },
     } = this.props;
     
-    if(this.state.status.length == 0){
-      return alert("Select Status First");
-    }
     const extras = {};
     if(this.state.extras.length > 0){
       this.state.extras.map((ex) => {
@@ -201,7 +198,8 @@ class NookDetailScreen extends React.Component {
   const data = {
       "user_id": this.state.user_id,
       "due_date": moment(this.state.due_date, 'MMMM Do YYYY, h:mm a').unix(),
-      "status": this.state.status || "0",
+      // "status": this.state.status || "0",
+      "status": "draft" || "0",
       "e_units": this.state.e_units || "0",
       "e_unit_cost": this.state.e_unit_cost || "0",
       "fine": this.state.fine || "0",
@@ -586,6 +584,7 @@ class NookDetailScreen extends React.Component {
   }
   bookings = () =>{
     const bookings = this.state.bookings;
+    const nook = this.props.navigation.state.params;
     const {submitting} = this.state;
     if(bookings.length == 0 ){
       return true;
@@ -595,6 +594,7 @@ class NookDetailScreen extends React.Component {
         {bookings.map((b, bI) => {
           const {receipts} = b;
           const singleReceipt = receipts ? receipts : null; 
+          if(b.status =="Approved"){
           return (
             <View key={bI} style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
                         <View style={{ flexDirection: "row" }}>
@@ -645,7 +645,7 @@ class NookDetailScreen extends React.Component {
                             {(!singleReceipt) && (
                               <TouchableOpacity
                                 style={styles.addButton}
-                                onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, user_id: b.user.id}); }}
+                                onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, user_id: b.user.id, extras:[] }); }}
                               >
                                 <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Generate Receipt</Text>
                               </TouchableOpacity>
@@ -666,13 +666,20 @@ class NookDetailScreen extends React.Component {
                               >
                                 <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Add Complain</Text>
                               </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.addButton}
+                                onPress={() => NavigationService.navigate('ReceiptsScreen',{"nookCode":nook.nookCode,"number":b.user.number})}
+                              >
+                                <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Receipt</Text>
+                              </TouchableOpacity>
                             </View>
                           
                         </View>
                       </View>
-          );
-        } )
+                    );
                   }
+                })
+          }
         </View>
     );
   }
@@ -973,7 +980,7 @@ class NookDetailScreen extends React.Component {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.bigButton}
-                                onPress={() => NavigationService.navigate('ReceiptsScreen',nook.nookCode)}
+                                onPress={() => NavigationService.navigate('ReceiptsScreen',{"nookCode":nook.nookCode,"number":""})}
                             >
                                 <Image style={{
                                     width: 25,
