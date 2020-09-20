@@ -81,7 +81,7 @@ const Header = (props) => {
                 </MenuTrigger>
                 <MenuOptions>
                     {renderAuthLinks(props)}
-                    <MenuOption onSelect={() => BackHandler.exitApp()} >
+                    {/* <MenuOption onSelect={() => BackHandler.exitApp()} >
                         <View style={{ flexDirection: 'row', marginTop: 10, marginBottom: 10, marginStart: 5 }}>
                             <Image resizeMode="contain" style={{ height: 20, width: 20, }}
                                 source={require('./../../../assets/exit.png')}
@@ -90,7 +90,7 @@ const Header = (props) => {
                                 Exit
                             </TitleText>
                         </View>
-                    </MenuOption>
+                    </MenuOption> */}
 
                 </MenuOptions>
             </Menu>
