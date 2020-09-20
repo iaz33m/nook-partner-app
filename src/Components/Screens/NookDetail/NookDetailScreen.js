@@ -807,7 +807,7 @@ class NookDetailScreen extends React.Component {
                 <TouchableOpacity onPress={() => {
                   this.setState({ tabIndex: 1 })
                 }} style={[styles.tabButton, { backgroundColor: tab2Color }]} >
-                  <Text style={{ color: tab1Color }}>Video</Text>
+                  <Text style={{ color: tab1Color }}>Virtual Visit</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -1056,7 +1056,7 @@ class NookDetailScreen extends React.Component {
                 <TouchableOpacity onPress={() => {
                   this.setState({ tabIndexUser: 1 })
                 }} style={[styles.tabButton, { backgroundColor: tab4Color }]} >
-                  <Text style={{ color: tab3Color }}>Users</Text>
+                  <Text style={{ color: tab3Color }}>Tenants</Text>
                 </TouchableOpacity>
               </View>
             </View>
