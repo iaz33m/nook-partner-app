@@ -596,6 +596,7 @@ class NookDetailScreen extends React.Component {
           const singleReceipt = receipts ? receipts : null; 
           if(b.status =="Approved"){
           return (
+            <>
             <View key={bI} style={[styles.child, { marginTop: 15, padding: 15, borderRadius: 10, backgroundColor: Colors.white, }]}>
                         <View style={{ flexDirection: "row" }}>
                           <View style={{ flex: 1 }}>
@@ -676,6 +677,14 @@ class NookDetailScreen extends React.Component {
                           
                         </View>
                       </View>
+                      <View style={{ flex: 1, alignContent: "center" }}>
+                        <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
+                          <Button disabled={submitting} onPress={() => this.publishReceipt()} >
+                            {submitting ? "Please wait..." : "PUBLISH ALL RECEIPTS"}
+                          </Button>
+                        </View>
+                      </View>
+                    </>
                     );
                   }
                 })
@@ -1110,13 +1119,7 @@ class NookDetailScreen extends React.Component {
 
                   <View>
                    {this.bookings()}
-                    <View style={{ flex: 1, alignContent: "center" }}>
-                      <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
-                        <Button disabled={submitting} onPress={() => this.publishReceipt()} >
-                          {submitting ? "Please wait..." : "PUBLISH ALL RECEIPTS"}
-                        </Button>
-                      </View>
-                    </View>
+                    
                   </View>
                 </View>  
             }
