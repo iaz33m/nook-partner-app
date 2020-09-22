@@ -31,8 +31,8 @@ class ManageNooks extends React.Component {
   }
 profileCheck(){
   const { user } = this.props;
-  const { aggreedToTerms } = user;
-    if (aggreedToTerms) {
+  const { aggreedToTerms, numberVerified} = user;
+    if (aggreedToTerms && numberVerified) {
       NavigationService.navigateAndResetStack('AddNookScreen');
     }else{
       alert('You can not create nook, please complete your profile first.');

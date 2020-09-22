@@ -115,20 +115,25 @@ const sendNumberVerificationCode = options => async () => {
   }
 };
 
-const verifyNumber = options => async () => {
+const verifyNumber = options => async dispatch => {
   const { data, onSuccess, onError, token } = options;
   try {
 
-    const { data: response } = await axios.post(`${APIModel.HOST}/auth/user/numberVerification/verify`, data, {
+    const { data: {user,message} } = await axios.post(`${APIModel.HOST}/auth/user/numberVerification/verify`, data, {
       'headers': {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': `Bearer ${token}`
       }
     });
-
+    dispatch({
+      type: actions.SET_USER,
+      payload: {
+        user,
+      },
+  });
     if (onSuccess) {
-      onSuccess(response.message);
+      onSuccess(message);
     }
   } catch (error) {
     const message = error.message || fallBackErrorMessage;

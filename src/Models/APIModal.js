@@ -1,5 +1,5 @@
-const env = 'production';
-// const env = 'dev';
+// const env = 'production';
+const env = 'dev';
 
 let host = 'https://nookapis.howbiotech.com/api/v1/en';
 let app_id = 4;
