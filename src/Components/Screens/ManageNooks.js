@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView,TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, ScrollView,TouchableOpacity, Platform } from 'react-native';
 import { Text, Button as NativeButton } from 'native-base';
 import Header from '../SeperateComponents/Header'
 import TitleText from '../SeperateComponents/TitleText'
 import Colors from '../../helper/Colors'
-import { IconButton } from 'react-native-paper';
 import * as NavigationService from '../../NavigationService';
 
 class ManageNooks extends React.Component {
@@ -45,7 +44,7 @@ profileCheck(){
     return (
 
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, }}>
-        <Header backButton={true} optionButton={true} />
+        <Header backButton={false} optionButton={true} />
         <ScrollView style={{ flex: 1 }}>
           <View style={{ flex: 1, padding: 25 }}>
             <View style={[styles.container, {
