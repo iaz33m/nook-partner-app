@@ -266,6 +266,11 @@ class NookDetailScreen extends React.Component {
     
     const { filter, user_id } = this.state;
     const { user: { access_token }, addComplain } = this.props;
+    if(this.state.type.length == 0){
+      alert('Select Type First');
+      this.setState({ submitting:false });
+      return true;
+    }
     
     const data = { "description": this.state.description, "type": this.state.type, "media":this.state.profile,"user_id":this.state.user_id };
     

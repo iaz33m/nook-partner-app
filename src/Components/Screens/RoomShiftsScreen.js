@@ -141,7 +141,7 @@ class RoomShiftsScreen extends React.Component {
         <InputField
           iconName="md-phone-portrait"
           value={filter.number}
-          onChangeText={status => this.setState({ filter: { ...filter, number } })}
+          onChangeText={number => this.setState({ filter: { ...filter, number } })}
         >User Number</InputField>
         <InputField
           iconName="md-phone-portrait"
@@ -232,6 +232,7 @@ class RoomShiftsScreen extends React.Component {
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >Current Room</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >Current Room Type</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >Room Type</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >Room Number</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >Price Per bed</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >Submited At</TitleText>
                 </View>
@@ -244,6 +245,7 @@ class RoomShiftsScreen extends React.Component {
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >{(item.current_room)? item.current_room.room_number:''}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >{(item.current_room)?item.current_room.capacity:''} Person(s) Sharing</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >{item.room_type} Person(s) Sharing</TitleText>
+                  <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >{(item.room)?item.room.room_number:''}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >{item.price_per_bed} PKR</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 15, }} >{item.created_at}</TitleText>
                 </View>

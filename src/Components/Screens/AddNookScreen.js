@@ -57,6 +57,8 @@ class AddNookScreen extends React.Component {
       agreementCharges: 0,
       agreementTenure: 0,
       address: "",
+      areaName: "",
+      subAreaName: "",
 
       capacity: 0,
       noOfBeds: 0,
@@ -212,6 +214,7 @@ class AddNookScreen extends React.Component {
     const { blockName,OriginalLatLng } = this.state;
     this.setState({
       mainArea: value,
+      areaName:value.area,
       areaLocation: [],
       blockName: { ...blockName },
       OriginalLatLng: { ...OriginalLatLng },
@@ -221,16 +224,22 @@ class AddNookScreen extends React.Component {
     const { name, lat, lng } = this.state.blockName;
     this.setState({
       areaLocation: value,
+      subAreaName:value.name,
       blockName: { name: "", lat: "", lng: "" },
       OriginalLatLng: { latitude: "", longitude: "" },
     });
   }
   onValueChangeLocation(value) {
+   
+    const {areaName, subAreaName} = this.state;
+    const a = value.name+', '+subAreaName+', '+areaName;
+
     let radius = (value.radius)?value.radius:1000;
     this.setState({
       lat: value.lat,
       lng: value.lng,
       radius: radius,
+      address:a,
       blockName: value,
       OriginalLatLng:{ latitude: value.lat, longitude: value.lng }
     });
@@ -669,7 +678,7 @@ class AddNookScreen extends React.Component {
             >
               <Picker.Item label="Select Area" value="" />
               {area.data.map((k) => (
-                <Picker.Item key={k.id} label={k.area} value={k.sub_area} />
+                <Picker.Item key={k.id} label={k.area} value={k} />
               ))}
             </Picker>
           </Item>
@@ -701,8 +710,8 @@ class AddNookScreen extends React.Component {
               onValueChange={this.onValueChangeSubArea.bind(this)}
             >
               <Picker.Item label="Select Sub Area" value="" />
-              {mainArea.map((k) => (
-                <Picker.Item label={k.name} value={k.locations} />
+              {mainArea.sub_area.map((k) => (
+                <Picker.Item label={k.name} value={k} />
               ))}
             </Picker>
           </Item>
@@ -737,7 +746,7 @@ class AddNookScreen extends React.Component {
               onValueChange={this.onValueChangeLocation.bind(this)}
             >
               <Picker.Item label="Select Street" value="" />
-              {areaLocation.map((k) => (
+              {areaLocation.locations.map((k) => (
                 <Picker.Item label={k.name} value={k} />
               ))}
             </Picker>

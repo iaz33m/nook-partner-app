@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView, Alert, TouchableWithoutFeedback,TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, Alert, TouchableWithoutFeedback,TouchableOpacity,Linking } from 'react-native';
 import { Text, Icon, Button as NativeButton, CheckBox, Textarea, Thumbnail, Item, Picker, ListItem, Body } from 'native-base';
 import Button from '../SeperateComponents/Button';
 import InputField from '../SeperateComponents/InputField';
@@ -25,6 +25,7 @@ class ProfileScreen extends React.Component {
     profile: '',
     address: '',
     city: '',
+    url:"http://nooks.pk/",
     occupation: '',
     aggreedToTerms: 0,
     oldPassword: '',
@@ -162,7 +163,9 @@ class ProfileScreen extends React.Component {
       }
     });
   }
-
+  loadInBrowser = () => {
+    Linking.openURL(this.state.url).catch(err => console.error("Couldn't load page", err));
+  };
   render() {
     let { name, number, gender, profile, address, oldPassword, password, confirmPassword, submitting, city, occupation, aggreedToTerms, shouldDisableFields , numberVerified, disablePhoneFields, disableNameFields, disableGenderFields,} = this.state;
 
@@ -266,10 +269,14 @@ class ProfileScreen extends React.Component {
               <ListItem>
                 <CheckBox color={Colors.orange} checked={aggreedToTerms} onPress={() => { this.setState({ aggreedToTerms: !aggreedToTerms }) }} />
                 <Body>
-                  <Text>I Agree to terms and conditions</Text>
+                  <TitleText>I Agree to terms and conditions</TitleText>
                 </Body>
               </ListItem>
-
+              <TouchableOpacity onPress={this.loadInBrowser}>
+                    <TitleText containerStyle={{alignItems: 'flex-start',}} style={{ marginStart: 40, marginTop: 10, fontSize: 16, color:Colors.orange }}>
+                      Read Terms and Conditions
+                    </TitleText>
+              </TouchableOpacity>
               <View style={{ justifyContent: 'center', marginBottom: 20, }}>
                 <Button disabled={submitting} onPress={this.updateProfile} >{submitting ? 'Please wait...' : 'Update'}</Button>
               </View>
