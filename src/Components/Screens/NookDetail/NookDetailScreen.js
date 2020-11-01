@@ -167,10 +167,17 @@ class NookDetailScreen extends React.Component {
     });
   }
   facilities(fc){
+    if(fc == null){
+      return true;
+    }
     if(fc.length == 0){
       return true;
     }
    return(
+     <>
+      <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >
+        Facilities
+      </TitleText>
         <View style={{ flexWrap: 'wrap', flexDirection: 'row', }}>
               {fc.map((fac, facI) =>
                 <View key={facI} style={{ width: "25%" }}>
@@ -180,6 +187,7 @@ class NookDetailScreen extends React.Component {
                 </View>
               )}
       </View>
+    </>
    )}
    
   generateReceipt = () => {
@@ -936,12 +944,6 @@ class NookDetailScreen extends React.Component {
                   </View>
                 </View>
               </Card>
-            }
-            {
-              (nook.facilities.length > 0) &&
-              <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, }} >
-                Facilities
-              </TitleText>
             }
 
             {this.facilities(nook.facilities)}
