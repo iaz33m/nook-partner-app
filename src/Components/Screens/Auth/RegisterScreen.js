@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Platform } from 'react-native';
 import { Text, Spinner } from 'native-base';
 import Button from './../../SeperateComponents/Button';
 import InputField from './../../SeperateComponents/InputField';
@@ -170,7 +170,7 @@ class RegisterScreen extends React.Component {
                 {processing && <Spinner color='black' />}
                 
                 {
-                  !processing &&
+                  !processing && Platform.OS !== 'ios' &&
                   <>
                     <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
                       <Image style={{ marginEnd: 20, width: 40, height: 40, marginBottom: 20 }}

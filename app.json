@@ -36,13 +36,13 @@
         }
       },
       "infoPlist": {
-        "NSCameraUsageDescription": "Nooks requires access to your camera to let you add pictures to post to your social media channels",
-        "NSPhotoLibraryUsageDescription": "Nooks needs to access your camera roll so that you can upload images. Your images will not be shared without your permission",
-        "NSPhotoLibraryAddUsageDescription": "Nooks needs to access your camera roll so that you can upload images. Your images will not be shared without your permission",
-        "NSLocationWhenInUseUsageDescription": "Nooks requires your location so that we can centre the map on you & show you your current location",
-        "NSLocationAlwaysUsageDescription": "Nooks requires your location so that we can centre the map on you & show you your current location",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Nooks requires your location so that we can centre the map on you & show you your current location",
-        "NSLocationUsageDescription": "Nooks requires your location so that we can centre the map on you & show you your current location"
+        "NSCameraUsageDescription": "Nooks Partner needs to access your camera roll so that you can update your profile picture of your account. Your images will not be shared without your permission",
+        "NSPhotoLibraryUsageDescription": "Nooks Partner needs to access your camera roll so that you can update your profile picture of your account. Your images will not be shared without your permission",
+        "NSPhotoLibraryAddUsageDescription": "Nooks Partner needs to access your camera roll so that you can update your profile picture of your account. Your images will not be shared without your permission",
+        "NSLocationWhenInUseUsageDescription": "Nooks Partner requires your location so that we can centre the map on you & show you your current location",
+        "NSLocationAlwaysUsageDescription": "Nooks Partner requires your location so that we can centre the map on you & show you your current location",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Nooks Partner requires your location so that we can centre the map on you & show you your current location",
+        "NSLocationUsageDescription": "Nooks Partner requires your location so that we can centre the map on you & show you your current location"
       }
     },
     "android": {

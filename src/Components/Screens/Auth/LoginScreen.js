@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity,Platform } from 'react-native';
 import { Spinner } from "native-base";
 import { Text } from 'native-base';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -127,20 +127,25 @@ class LoginScreen extends React.Component {
                   <View style={{ flex: 1, marginTop: 10, width: '100%', }}>
                     <Button disabled={submitting} onPress={this.login} >{submitting ? 'Please wait...' : 'Sign In'}</Button>
                   </View>
-                  <View style={{ marginTop: 10, alignItems: 'center' }}>
-                    <Text>or continue with</Text>
-                  </View>
-                  {
-                    processing && (
-                      <View style={{ marginTop: 10, alignItems: 'center' }}>
-                        <Spinner color='black' />
-                      </View>
-                    )
-                  }
+                  {(Platform.OS !== 'ios') && (
+                    <>
+                    <View style={{ marginTop: 10, alignItems: 'center' }}>
+                      <Text>or continue with</Text>
+                    </View>
+                    {
+                      processing && (
+                        <View style={{ marginTop: 10, alignItems: 'center' }}>
+                          <Spinner color='black' />
+                        </View>
+                      )
+                    }
+                    </>
+                  )}
+                  
                 </View>
                 <View style={{ flex: 1, alignContent: "center", alignItems: "center", marginTop: 10 }}>
                   {
-                    !processing && (
+                    !processing && Platform.OS !== 'ios' && (
                       <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity onPress={() => this.socialLogin('facebook')}>
                           <Image style={{ marginEnd: 20, width: 40, height: 40 }}
