@@ -13,12 +13,12 @@ const styles = StyleSheet.create({
     addButton: {
         alignItems: 'center',
         backgroundColor: '#E59413',
-        padding: 10,
+        padding: 5,
         display: 'flex',
         flexDirection: 'row',
-        borderRadius: 5,
-        marginStart: 5,
-        marginEnd: 5, height: 40
+        borderRadius: 3,
+        marginStart: 3,
+        marginEnd: 3, height: 40
       },
       bigButton: {
         alignItems: 'center',

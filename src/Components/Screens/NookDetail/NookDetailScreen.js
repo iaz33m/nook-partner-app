@@ -656,24 +656,20 @@ class NookDetailScreen extends React.Component {
                         )}
                         <View style={{ flex: 1 }}>
                           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                            {(!singleReceipt) && (
                               <TouchableOpacity
                                 style={styles.addButton}
                                 onPress={() => { this.setState({ isDialogVisible: true, isSchedule: true, user_id: b.user.id, extras:[] }); }}
                               >
                                 <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>Generate Receipt</Text>
                               </TouchableOpacity>
-                            
-                            )}
-                            {(singleReceipt) && (
-                              <TouchableOpacity
+
+                            <TouchableOpacity
                                 style={styles.addButton}
                                 onPress={() => this.publishReceipt({receipt_id: singleReceipt.id, user_id: b.user.id})}
                                 disabled={submitting}
                               >
                               <Text style={{justifyContent: 'center', color: 'white', fontWeight: 'bold'}}>{submitting ? "Please wait..." : "Publish Receipt"}</Text>
                             </TouchableOpacity>
-                            )}
                               <TouchableOpacity
                                 style={styles.addButton}
                                 onPress={() => { this.setState({ isDialogComplainVisible: true, user_id: b.user.id}); }}

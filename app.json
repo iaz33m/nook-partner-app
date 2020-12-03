@@ -11,7 +11,7 @@
     "facebookAppId":"214106956407112",
     "facebookDisplayName":"Nooks Partner",
     "facebookScheme":"fb214106956407112",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -28,7 +28,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "pk.nooks.nookPartner",
-      "buildNumber": "13",
+      "buildNumber": "14",
       "config": {
         "googleMapsApiKey": "AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw",
         "googleSignIn":{
@@ -47,7 +47,7 @@
     },
     "android": {
       "package": "pk.nooks.nookPartner",
-      "versionCode": 13,
+      "versionCode": 14,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw"
