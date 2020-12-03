@@ -48,16 +48,19 @@ class ComplaintsScreen extends React.Component {
       complainStatus:'',
       type: '',
       types: {
-        'internet': 'Internet',
-        'cleaning': 'Cleaning',
-        'entertainment': 'Entertainment',
-        'security': 'Security',
-        'food': 'Food',
         'maintenance': 'Maintenance',
-        'discipline': 'Discipline',
+        'car_wash':'Car Wash',
+        'delivery':'Delivery',
+        'security': 'Security',
+        'charity_stuff': 'Charity Stuff',
         'staff_related': 'Staff Related',
         'privacy': 'Privacy',
-        'other': 'Other'
+        'internet': 'Internet',
+        'food': 'Food',
+        'cleaning': 'Cleaning',
+        'entertainment': 'Entertainment',
+        'discipline': 'Discipline', 
+        'other': 'Other Support'
       },
       complains: [],
       id: "",
@@ -160,7 +163,7 @@ class ComplaintsScreen extends React.Component {
             placeholderIconColor="#007aff"
             selectedValue={filter.status}
             onValueChange={status => this.setState({ filter: { ...filter, status } })}>
-            <Picker.Item label="All Complains" value="" />
+            <Picker.Item label="All Complains/Services" value="" />
             {Object.keys(statses)
               .filter(k => k)
               .map(k => <Picker.Item key={k} label={statses[k]} value={k} />)}
@@ -325,7 +328,7 @@ class ComplaintsScreen extends React.Component {
             })}>
               <Image resizeMode="contain" source={require('./../../../assets/close.png')} style={{ height: 25, width: 25, alignSelf: 'flex-end' }} />
             </TouchableOpacity>
-            <Text style={{justifyContent: 'center', fontWeight: 'bold'}}>Update Complain {this.state.complainId}</Text>
+            <Text style={{justifyContent: 'center', fontWeight: 'bold'}}>Update Complain/Service {this.state.complainId}</Text>
             <Item picker style={styles.pickerStyle}>
               <Picker
                 mode="dropdown"
@@ -359,7 +362,7 @@ class ComplaintsScreen extends React.Component {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
         <Header backButton={true} />
-        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >{statses[status]} Complains</TitleText>
+        <TitleText style={{ marginTop: 25, fontWeight: 'bold', fontSize: 20, }} >{statses[status]} Complains/Services</TitleText>
         <View style={{ padding: 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
             <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 16, }}>
