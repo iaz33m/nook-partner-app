@@ -27,7 +27,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "pk.nooks.nookPartner",
-      "buildNumber": "16",
+      "buildNumber": "17",
       "config": {
         "googleMapsApiKey": "AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw",
         "googleSignIn": {
@@ -46,7 +46,7 @@
     },
     "android": {
       "package": "pk.nooks.nookPartner",
-      "versionCode": 16,
+      "versionCode": 17,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyDifbdkrDD1HkhIAx39S6-TU0t1FGk8bCw"

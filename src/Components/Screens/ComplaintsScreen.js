@@ -241,7 +241,7 @@ class ComplaintsScreen extends React.Component {
                 </View>
                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
                   <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen", item.nook)}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook && item.nook.nookCode}</TitleText>
                   </TouchableOpacity>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>

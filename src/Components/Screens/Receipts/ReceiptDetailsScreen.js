@@ -34,7 +34,7 @@ class itemDetailsScreen extends React.Component {
                         </View>
                         <View style={{ flex: 1, alignItems: 'flex-end' }}>
                             <Text style={{ marginTop: 10, fontSize: 16, }} >{item.id}</Text>
-                            <Text style={{ marginTop: 10, fontSize: 16, }} >{item.nook.nookCode}</Text>
+                            <Text style={{ marginTop: 10, fontSize: 16, }} >{item.nook && item.nook.nookCode}</Text>
                             <Text style={{ marginTop: 10, fontSize: 16, }} >{item.room_id}</Text>
                             <Text style={{ marginTop: 10, fontSize: 16, }} >{item.due_date}</Text>
                             <Text style={{ marginTop: 10, fontSize: 16, }} >{item.month}</Text>

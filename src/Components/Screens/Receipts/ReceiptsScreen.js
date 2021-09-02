@@ -169,7 +169,7 @@ class ReceiptsScreen extends React.Component {
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >Due Date</TitleText>
                   </View>
                   <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook && item.nook.nookCode}</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.id}</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.user.name}</TitleText>
                     <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.total_amount} PKR</TitleText>
