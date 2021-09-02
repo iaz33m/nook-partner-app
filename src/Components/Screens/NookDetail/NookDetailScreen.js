@@ -943,7 +943,7 @@ class NookDetailScreen extends React.Component {
             }
 
             {this.facilities(nook.facilities)}
-              {(nook.location)?
+            {/* {(nook.location)?
               <View>
                 <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
                   Location
@@ -956,7 +956,7 @@ class NookDetailScreen extends React.Component {
               <TitleText style={{ alignSelf: 'flex-start', fontWeight: 'bold', fontSize: 20, marginRight: 10, marginBottom: 10, marginTop: 15 }} >
                   Location
               </TitleText>
-            }
+            } */}
 
             <View style={[styles.child, { borderRadius: 30, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', paddingStart: 15, paddingEnd: 15 }]}>
               <Text style={{ margin: 15, fontSize: 16, fontWeight: 'bold' }}>Contact</Text>

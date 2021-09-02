@@ -145,7 +145,7 @@ class VisitsScreen extends React.Component {
                 </View>
                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
                   <TouchableOpacity onPress={() => NavigationService.navigate("NookDetailScreen", item.nook)}>
-                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook.nookCode}</TitleText>
+                    <TitleText style={{ color: Colors.orange, fontWeight: 'bold', fontSize: 16, }} >{item.nook && item.nook.nookCode}</TitleText>
                   </TouchableOpacity>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.date}</TitleText>
                   <TitleText style={{ marginTop: 10, fontWeight: 'bold', fontSize: 16, }} >{item.time}</TitleText>
@@ -155,7 +155,11 @@ class VisitsScreen extends React.Component {
               </View>
 
               <View style={{ justifyContent: 'center' }}>
-                <Button onPress={() => this.openGps(item.nook.location.lat, item.nook.location.lng, item.nook.address)}>Get Direction</Button>
+                <Button onPress={() => {
+                  if(item.nook){
+                    this.openGps(item.nook.location.lat, item.nook.location.lng, item.nook.address)
+                  }
+                }}>Get Direction</Button>
               </View>
               <View style={{ justifyContent: 'center', marginBottom: 10 }}>
                 {(item.status === 'Pending') && <Button onPress={() => this.cancelVisit(item)}>Cancel Visit</Button>}
