@@ -1,6 +1,6 @@
 import React from 'react';
 // import { connect } from "react-redux";
-import { StyleSheet, View, Image, ScrollView, Alert, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 // import { Item, Input, Icon } from 'native-base';
 import { Text, Item, Picker, Icon, Button as NativeButton, CheckBox, Textarea, Thumbnail } from 'native-base';
 import Button from '../../SeperateComponents/Button';

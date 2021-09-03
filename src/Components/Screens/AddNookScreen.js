@@ -5,12 +5,10 @@ import {
   View,
   Image,
   ScrollView,
-  Alert,
   TouchableWithoutFeedback,
   TouchableOpacity,
-  ViewPagerAndroid,
-  ImageBackground,
 } from "react-native";
+
 import {
   Text,
   Icon,
@@ -22,10 +20,11 @@ import {
   Textarea,
   Spinner,
 } from "native-base";
+
 import Header from "../SeperateComponents/Header";
 import TitleText from "../SeperateComponents/TitleText";
 import Colors from "../../helper/Colors";
-import MapView, { Marker } from "react-native-maps";
+import MapView from "react-native-maps";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { AirbnbRating } from "react-native-ratings";
 import PopupDialog from "react-native-popup-dialog";
@@ -839,14 +838,18 @@ class AddNookScreen extends React.Component {
         >
           {this.state.isMapReady && (
             <MapView.Marker
-              image={require("./../../../assets/marker.png")}
               style={{ width: 40, height: 62 }}
               draggable
               coordinate={{
                 latitude: Number(lat),
                 longitude: Number(lng),
               }}
-            />
+            >
+              <Image
+                  source={require('./../../../assets/marker.png')}
+                  style={{ width: 40, height: 62 }}
+              />
+            </MapView.Marker>
           )}
           <MapView.Circle
                 key = { (this.state.OriginalLatLng.latitude + this.state.OriginalLatLng.longitude + Number(radius)).toString() }
